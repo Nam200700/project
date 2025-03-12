@@ -28,6 +28,7 @@ public class view extends javax.swing.JFrame {
     public view() {
         initComponents();
         init();
+        this.setLocationRelativeTo(this);
     }
 
     private void init() {
