@@ -29,6 +29,10 @@ public class WindowsTabbed {
     private final int LIMIT = 5; // -1 for unlimit
     private final boolean REMOVE_WHEN_LIMIT = false;
 
+    public JPanel getBody() {
+        return body;
+    }
+
     public static WindowsTabbed getInstance() {
         if (instance == null) {
             instance = new WindowsTabbed();

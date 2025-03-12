@@ -1,5 +1,7 @@
 package raven.drawer;
 
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import raven.drawer.component.SimpleDrawerBuilder;
 import raven.drawer.component.footer.SimpleFooterData;
 import raven.drawer.component.header.SimpleHeaderData;
@@ -7,9 +9,11 @@ import raven.drawer.component.menu.MenuAction;
 import raven.drawer.component.menu.MenuEvent;
 import raven.drawer.component.menu.MenuValidation;
 import raven.drawer.component.menu.SimpleMenuOption;
+import main.main;
 import ui.view;
 import raven.swing.AvatarIcon;
 import ui.Test;
+
 /**
  *
  * @author RAVEN
@@ -44,7 +48,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             {"Logout"}};
 
         String icons[] = {
-            "chart.svg"
+            "chart.svg",
+            "book.svg"
         };
 
         return new SimpleMenuOption()
@@ -53,15 +58,24 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setBaseIconPath("drawer/svg")
                 .setIconScale(0.45f)
                 .addMenuEvent(new MenuEvent() {
-            @Override
-            public void selected(MenuAction action, int index, int subIndex) {
-                if (index == 0) {
-                    WindowsTabbed.getInstance().addTab("Test Form", new Test());
+                    @Override
+                    public void selected(MenuAction action, int index, int subIndex) {
+                        if (index == 0) {
+                            WindowsTabbed.getInstance().addTab("Test Form", new Test());
+                        } else if (index == 9) {
+                            JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
-                }
-                System.out.println("Menu selected " + index + " " + subIndex);
-            }})
-             .setMenuValidation(new MenuValidation() {
+                            if (currentFrame != null) {
+                                currentFrame.dispose(); // Đóng form hiện tại
+                            }
+
+                            // Hiển thị lại form login
+                            new main().setVisible(true);
+                        }
+                        System.out.println("Menu selected " + index + " " + subIndex);
+                    }
+                })
+                .setMenuValidation(new MenuValidation() {
                     @Override
                     public boolean menuValidation(int index, int subIndex) {
 //                        if(index==0){
@@ -71,13 +85,15 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 //                        }
                         return true;
                     }
-        });
+                });
     }
+    
 
+    
     @Override
     public SimpleFooterData getSimpleFooterData() {
         return new SimpleFooterData()
-                .setTitle("Hotel Mangement")
+                .setTitle("Libary Mangement")
                 .setDescription("Quản lý");
     }
 
