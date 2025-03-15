@@ -53,7 +53,7 @@ public class QL_luutrusachcu extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Mã lưu trữ sách cũ", "Mã sách", "Ngày lưu trữ", "Lý do"
             }
         ));
         jScrollPane1.setViewportView(jTable1);

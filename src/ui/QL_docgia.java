@@ -131,13 +131,13 @@ public class QL_docgia extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã độc giả", "Tên độc giả", "Giới tính", "Địa chỉ", "Ghi chú"
+                "Mã độc giả", "Tên độc giả", "Giới tính", "Địa chỉ", "Số điện thoại", "Email", "Ngày đăng kí"
             }
         ));
         jScrollPane1.setViewportView(jTable1);

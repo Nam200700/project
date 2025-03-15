@@ -72,6 +72,10 @@ public class QL_sach extends javax.swing.JPanel {
         panel.add(new JLabel("Số lượng:"));
         JTextField txtSoLuong = new JTextField();
         panel.add(txtSoLuong);
+        
+        panel.add(new JLabel("Lần tái bản:"));
+        JTextField txtlantaiban = new JTextField();
+        panel.add(txtSoLuong);
 
         // Panel chứa nút Lưu & Hủy
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -130,13 +134,13 @@ public class QL_sach extends javax.swing.JPanel {
 
         tbl_sach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã sách", "Tên sách", "Thể loại sách", "Tác giả", "Nhà xuất bản", "Năm xuất bản", "Ngôn ngữ ", "Số lượng"
+                "Mã sách", "Tên sách", "Thể loại sách", "Tác giả", "Nhà xuất bản", "Năm xuất bản", "Ngôn ngữ ", "Số lượng", "Lần tái bản"
             }
         ));
         jScrollPane1.setViewportView(tbl_sach);
@@ -151,15 +155,16 @@ public class QL_sach extends javax.swing.JPanel {
                     .addComponent(btn_them)
                     .addComponent(btn_sua)
                     .addComponent(btn_xoa))
-                .addGap(69, 69, 69)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(87, 87, 87)
+                        .addGap(156, 156, 156)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
                         .addComponent(jButton4))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(107, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,7 +190,6 @@ public class QL_sach extends javax.swing.JPanel {
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
         openFormCon();
     }//GEN-LAST:event_btn_themActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_sua;
