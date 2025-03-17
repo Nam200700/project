@@ -9,12 +9,14 @@ import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 import static main.forgot.userEmail;
+import util.jdbchelper;
 
 /**
  *
@@ -31,25 +33,27 @@ public class newpassword extends javax.swing.JFrame {
         setBackground(new Color(0, 0, 0, 0));
         fadeInEffect();
     }
-    
+
     private static boolean updatePasswordInDB(String email, String newPassword) {
-        String url = "jdbc:mysql://localhost:3306/assjava3";
-        String user = "root";
-        String password = "18102007";
-        
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+        // Câu lệnh SQL để cập nhật mật khẩu theo email
+        String query = "UPDATE user SET password = ? WHERE email = ?";
+
+        try {
+            // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
             String hashedPassword = encrypt(newPassword);
-            String query = "UPDATE users SET password = ? WHERE email = ?";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, hashedPassword);
-            pstmt.setString(2, email);
-            
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
+
+            // Gọi phương thức trong JDBCHelper để thực hiện truy vấn cập nhật
+            int rowsAffected = jdbchelper.executeUpdate(query, hashedPassword, email);
+
+            // Kiểm tra xem có ít nhất một dòng bị ảnh hưởng (cập nhật thành công hay không)
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            // In lỗi ra console để dễ dàng kiểm tra nếu có vấn đề xảy ra
             e.printStackTrace();
             return false;
         }
     }
+
     private static final String SECRET_KEY = "MySecretKey12345";  // Khóa bí mật cho AES phải có độ dài 16 ký tự
 
 // Hàm mã hóa AES
@@ -74,7 +78,8 @@ public class newpassword extends javax.swing.JFrame {
             throw new RuntimeException("Error during AES encryption", e);
         }
     }
-    public void newpassword(){
+
+    public void newpassword() {
         String newPassword = new String(txtnewpassword.getPassword());
         if (updatePasswordInDB(userEmail, newPassword)) {
             JOptionPane.showMessageDialog(this, "Mật khẩu đã được thay đổi thành công!");
@@ -85,6 +90,7 @@ public class newpassword extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Lỗi cập nhật mật khẩu.");
         }
     }
+
     private void fadeInEffect() {
         new Thread(() -> {
             for (double i = 0.0; i <= 1.0; i += 0.1) {
@@ -99,6 +105,7 @@ public class newpassword extends javax.swing.JFrame {
             }
         }).start();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -253,7 +260,7 @@ public class newpassword extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnewpasswordActionPerformed
 
     private void btndoimatkhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndoimatkhauActionPerformed
-       newpassword();
+        newpassword();
     }//GEN-LAST:event_btndoimatkhauActionPerformed
 
     private void btn_exitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_exitMouseClicked

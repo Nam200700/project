@@ -11,9 +11,9 @@ import java.util.List;
 public class jdbchelper {
       // Thông tin kết nối đến MySQL
 
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/qlsv";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/qltv";
     private static final String USER = "root";
-    private static final String PASSWORD = "tranhainam123";
+    private static final String PASSWORD = "18102007";
 
     // Đăng ký driver MySQL khi class được nạp
     static {

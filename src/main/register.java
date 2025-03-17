@@ -5,6 +5,12 @@
 package main;
 
 import java.awt.Color;
+import javax.swing.JOptionPane;
+import util.jdbchelper;
+import Entity.user;
+import util.AES;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -17,10 +23,11 @@ public class register extends javax.swing.JFrame {
      */
     public register() {
         initComponents();
-        setBackground(new Color(0,0,0,0));
+        setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(this);
         fadeInEffect();
     }
+
     // hiệu ứng mờ dần hiện lên
     private void fadeInEffect() {
         new Thread(() -> {
@@ -82,6 +89,11 @@ public class register extends javax.swing.JFrame {
         btn_register.setForeground(new java.awt.Color(255, 255, 255));
         btn_register.setText("Register");
         btn_register.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btn_register.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_registerActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -224,7 +236,7 @@ public class register extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-     
+
     }//GEN-LAST:event_formWindowOpened
 
     private void disableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_disableMouseClicked
@@ -243,40 +255,100 @@ public class register extends javax.swing.JFrame {
         show.setEnabled(false);
     }//GEN-LAST:event_showMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btn_registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registerActionPerformed
+        String username = txt_username.getText().trim();
+        String email = txt_email.getText().trim();
+        String password = new String(txt_password.getPassword()).trim();
+        // kiểm tra trống
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập tên!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new register().setVisible(true);
+        // kiểm tra trống
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập email!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        // kiểm tra định dạng của email
+        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng email!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        // kiểm tra trống
+        if (password.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập mật khẩu!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // mã hóa mật khẩu trước khi ta lưu vào database
+        String encryptedPassword = AES.encrypt(password);
+        // kiểm tra email đã tồn tại hay chưa
+        String checkemailsql = "SELECT * FROM user WHERE email = ?";
+        try (ResultSet rsemail = jdbchelper.executeQuery(checkemailsql, email)) {
+            if (rsemail != null && rsemail.next()) {
+                JOptionPane.showMessageDialog(null, "Email đã tồn tại vui lòng sử dụng email khác!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                return;
             }
-        });
-    }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // kiểm tra tên tài khoản đã tồn tại chưa
+        String checkusernamesql = "SELECT * FROM user WHERE fullname = ?";
+        try (ResultSet rsemail = jdbchelper.executeQuery(checkemailsql, email)) {
+            if (rsemail != null && rsemail.next()) {
+                JOptionPane.showMessageDialog(null, "Tên tài khoản đã tồn tại vui lòng sử dụng tên khác!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // cập nhật tên email và mật khẩu vào database
+        String insertSQL = "INSERT INTO user (fullname, email, password) VALUES (?, ?, ?)";
+        int rowinsert = jdbchelper.executeUpdate(insertSQL, username, email, encryptedPassword);
+        if (rowinsert > 0) {
+            JOptionPane.showMessageDialog(null, "Đăng kí thành công!!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            main mn = new main();
+            mn.setVisible(true);
+            mn.setLocationRelativeTo(mn);
+            this.dispose();
+        }
+
+    }//GEN-LAST:event_btn_registerActionPerformed
+
+//    /**
+//     * @param args the command line arguments
+//     */
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new register().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private login.Backgroundinregister backgroundinregister1;

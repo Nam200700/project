@@ -24,6 +24,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
+import util.jdbchelper;
+import java.sql.ResultSet;
 
 /**
  *
@@ -39,8 +41,9 @@ public class forgot extends javax.swing.JFrame {
         this.setLocationRelativeTo(this);
         setBackground(new Color(0, 0, 0, 0));
         fadeInEffect();
-        
+
     }
+
     private void fadeInEffect() {
         new Thread(() -> {
             for (double i = 0.0; i <= 1.0; i += 0.1) {
@@ -55,31 +58,11 @@ public class forgot extends javax.swing.JFrame {
             }
         }).start();
     }
-    private static final String url = "jdbc:mysql://localhost:3306/***";
-    private static final String user = "root";
-    private static final String password = "***";
 
-    // Đăng ký driver MySQL khi class được nạp
-    static {
-        try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to register MySQL driver", e);
-        }
-    }
-
-    public static Connection getconnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
-    }
-
+    // Kiểm tra xem email và tên người dùng có tồn tại trong cơ sở dữ liệu hay không.
     private static boolean verifyUser(String email, String username) {
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            String query = "SELECT COUNT(*) FROM users WHERE email = ? AND full_name = ?";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, email);
-            pstmt.setString(2, username);
-
-            ResultSet rs = pstmt.executeQuery();
+        String query = "SELECT COUNT(*) FROM users WHERE email = ? AND full_name = ?";
+        try (ResultSet rs = jdbchelper.executeQuery(query, email, username)) {
             return rs.next() && rs.getInt(1) > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,14 +70,17 @@ public class forgot extends javax.swing.JFrame {
         return false;
     }
 
+    // Sinh mã OTP gồm 6 chữ số ngẫu nhiên. 
     private static String generateOTP() {
         return String.valueOf(100000 + new Random().nextInt(900000));
     }
 
+    // Gửi email chứa mã OTP đến người dùng.
     private static void sendEmail(String recipient, String otp) {
         final String senderEmail = "nghiatttv00104@fpt.edu.vn";
         final String senderPassword = "qrzd hmib axkr ydlw"; // app password của mail bạn
 
+        // Cấu hình thông tin máy chủ SMTP của Gmail
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -111,56 +97,56 @@ public class forgot extends javax.swing.JFrame {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(senderEmail, "Hệ Thống OTP"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-            message.setSubject("Mã OTP của bạn");
-            message.setText("Mã OTP của bạn là: " + otp);
+            message.setSubject("Mã OTP của bạn"); // tiêu đề email
+            message.setText("Mã OTP của bạn là: " + otp); // nội dung của email
             Transport.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static boolean updatePasswordInDB(String email, String newPassword) {
-//        String url = "jdbc:mysql://localhost:3306/assjava3";
-//        String user = "root";
-//        String password = "18102007";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            String hashedPassword = encrypt(newPassword);
-            String query = "UPDATE users SET password = ? WHERE email = ?";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, hashedPassword);
-            pstmt.setString(2, email);
-
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    private static final String SECRET_KEY = "MySecretKey12345";  // Khóa bí mật cho AES phải có độ dài 16 ký tự
-
-// Hàm mã hóa AES
-    public static String encrypt(String input) {
-        try {
-            // Tạo đối tượng khóa AES từ chuỗi khóa bí mật
-            Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
-
-            // Khởi tạo đối tượng Cipher với thuật toán AES
-            Cipher cipher = Cipher.getInstance("AES");
-
-            // Thiết lập Cipher để mã hóa (ENCRYPT_MODE)
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-
-            // Mã hóa dữ liệu đầu vào
-            byte[] encryptedBytes = cipher.doFinal(input.getBytes());
-
-            // Trả về dữ liệu đã mã hóa dưới dạng chuỗi Base64
-            return Base64.getEncoder().encodeToString(encryptedBytes);
-        } catch (Exception e) {
-            // Nếu có lỗi trong quá trình mã hóa, ném ra một ngoại lệ với thông báo lỗi
-            throw new RuntimeException("Error during AES encryption", e);
-        }
-    }
+//    private static boolean updatePasswordInDB(String email, String newPassword) {
+////        String url = "jdbc:mysql://localhost:3306/assjava3";
+////        String user = "root";
+////        String password = "18102007";
+//
+//        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+//            String hashedPassword = encrypt(newPassword);
+//            String query = "UPDATE users SET password = ? WHERE email = ?";
+//            PreparedStatement pstmt = conn.prepareStatement(query);
+//            pstmt.setString(1, hashedPassword);
+//            pstmt.setString(2, email);
+//
+//            return pstmt.executeUpdate() > 0;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+//    private static final String SECRET_KEY = "MySecretKey12345";  // Khóa bí mật cho AES phải có độ dài 16 ký tự
+//
+//// Hàm mã hóa AES
+//    public static String encrypt(String input) {
+//        try {
+//            // Tạo đối tượng khóa AES từ chuỗi khóa bí mật
+//            Key key = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
+//
+//            // Khởi tạo đối tượng Cipher với thuật toán AES
+//            Cipher cipher = Cipher.getInstance("AES");
+//
+//            // Thiết lập Cipher để mã hóa (ENCRYPT_MODE)
+//            cipher.init(Cipher.ENCRYPT_MODE, key);
+//
+//            // Mã hóa dữ liệu đầu vào
+//            byte[] encryptedBytes = cipher.doFinal(input.getBytes());
+//
+//            // Trả về dữ liệu đã mã hóa dưới dạng chuỗi Base64
+//            return Base64.getEncoder().encodeToString(encryptedBytes);
+//        } catch (Exception e) {
+//            // Nếu có lỗi trong quá trình mã hóa, ném ra một ngoại lệ với thông báo lỗi
+//            throw new RuntimeException("Error during AES encryption", e);
+//        }
+//    }
     public static String OTP;
     public static String userEmail;
     public static String userUsername;
@@ -184,7 +170,6 @@ public class forgot extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Email hoặc tên đăng nhập không hợp lệ!");
         }
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -332,11 +317,11 @@ public class forgot extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_exitMouseClicked
 
     private void btn_sendOTPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_sendOTPMouseClicked
-        
+
     }//GEN-LAST:event_btn_sendOTPMouseClicked
 
     private void btn_sendOTPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sendOTPActionPerformed
-       forget();
+        forget();
     }//GEN-LAST:event_btn_sendOTPActionPerformed
 
     private void btn_backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_backMouseClicked

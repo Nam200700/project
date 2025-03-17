@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import util.*;
+
 /**
  *
  * @author ACER
@@ -21,7 +23,8 @@ public class QL_doimatkhau extends javax.swing.JPanel {
     public QL_doimatkhau() {
         initComponents();
     }
-//         // Phương thức thay đổi mật khẩu
+    // cách 1 chưa sài jdbchelper
+    // Phương thức thay đổi mật khẩu
 //    private void changePassword() {
 //        // Lấy mật khẩu cũ, mật khẩu mới và xác nhận mật khẩu mới từ các trường nhập liệu
 //        char[] oldPassword = txt_mkcu.getPassword();  // Mật khẩu cũ
@@ -40,12 +43,12 @@ public class QL_doimatkhau extends javax.swing.JPanel {
 //            return;  // Dừng phương thức nếu mật khẩu không khớp
 //        }
 //
-//        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/***", "root", "18102007")) {
+//        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/qltv", "root", "18102007")) {
 //            // Mã hóa mật khẩu cũ bằng AES
 //            String encryptedOldPassword = AES.encrypt(oldPasswordStr);
 //
 //            // Kiểm tra mật khẩu cũ trong cơ sở dữ liệu
-//            PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM users WHERE password = ?");
+//            PreparedStatement checkStmt = conn.prepareStatement("SELECT * FROM user WHERE password = ?");
 //            checkStmt.setString(1, encryptedOldPassword);  // Truyền mật khẩu cũ đã mã hóa vào câu lệnh SQL
 //            ResultSet rs = checkStmt.executeQuery(); // Thực hiện truy vấn
 //
@@ -55,7 +58,7 @@ public class QL_doimatkhau extends javax.swing.JPanel {
 //                String encryptedNewPassword = AES.encrypt(newPasswordStr);
 //
 //                // Cập nhật mật khẩu mới vào cơ sở dữ liệu
-//                PreparedStatement updateStmt = conn.prepareStatement("UPDATE users SET password = ? WHERE id = ?");
+//                PreparedStatement updateStmt = conn.prepareStatement("UPDATE user SET password = ? WHERE id = ?");
 //                updateStmt.setString(1, encryptedNewPassword);  // Truyền mật khẩu mới đã mã hóa vào câu lệnh SQL
 //                updateStmt.setInt(2, rs.getInt("id"));  // Cập nhật cho người dùng có id tương ứng
 //                updateStmt.executeUpdate();  // Thực hiện cập nhật
@@ -68,6 +71,50 @@ public class QL_doimatkhau extends javax.swing.JPanel {
 //            }
 //        } catch (Exception ex) {
 //            // In ra lỗi và hiển thị thông báo lỗi nếu có bất kỳ sự cố nào
+//            ex.printStackTrace();
+//            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra!");
+//        }
+//    }
+        // cách tối ưu c2
+//    private void changePassword() {
+//        // Lấy mật khẩu từ các trường nhập liệu
+//        String oldPassword = new String(txt_mkcu.getPassword());  // Mật khẩu cũ
+//        String newPassword = new String(txt_mkmoi.getPassword()); // Mật khẩu mới
+//        String confirmPassword = new String(txt_nhaplaimk.getPassword()); // Xác nhận mật khẩu mới
+//
+//        // Kiểm tra mật khẩu mới và xác nhận mật khẩu
+//        if (!newPassword.equals(confirmPassword)) {
+//            JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp!");
+//            return;
+//        }
+//
+//        try {
+//            // Mã hóa mật khẩu cũ
+//            String encryptedOldPassword = AES.encrypt(oldPassword);
+//
+//            // Kiểm tra mật khẩu cũ trong cơ sở dữ liệu
+//            String checkQuery = "SELECT id FROM user WHERE password = ?";
+//            try (ResultSet rs = jdbchelper.executeQuery(checkQuery, encryptedOldPassword)) {
+//                if (rs.next()) { // Nếu tìm thấy tài khoản với mật khẩu cũ
+//                    int userId = rs.getInt("id"); // Lấy ID người dùng
+//
+//                    // Mã hóa mật khẩu mới
+//                    String encryptedNewPassword = AES.encrypt(newPassword);
+//
+//                    // Cập nhật mật khẩu mới
+//                    String updateQuery = "UPDATE user SET password = ? WHERE id = ?";
+//                    int rowsUpdated = jdbchelper.executeUpdate(updateQuery, encryptedNewPassword, userId);
+//
+//                    if (rowsUpdated > 0) {
+//                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
+//                    } else {
+//                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thất bại!");
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Mật khẩu cũ không đúng!");
+//                }
+//            }
+//        } catch (Exception ex) {
 //            ex.printStackTrace();
 //            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra!");
 //        }

@@ -11,6 +11,11 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.UIManager;
 import ui.view;
+import util.AES;
+import util.jdbchelper;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +48,6 @@ public class main extends javax.swing.JFrame {
             }
         }).start();
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -285,9 +289,34 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_usernameActionPerformed
 
     private void btn_signupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_signupActionPerformed
-       view vi = new view();
-       vi.setVisible(true);
-       this.dispose();
+        String username = txt_username.getText().trim();
+        String password = new String(txt_password.getPassword()).trim();
+        
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!!");
+            return;
+        }
+        if (password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu đăng nhập!!");
+            return;
+        }
+        // Mã hóa mật khẩu để so sánh
+        String encryptpassword = AES.encrypt(password);
+        String sql = "SELECT fullname, password FROM user WHERE fullname =? AND password =? ";
+        try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                view vi = new view();
+                vi.setVisible(true);
+                this.dispose();
+            }else{
+                JOptionPane.showMessageDialog(this,"Mật khẩu hoặc password sai vui lòng thử lại!!!");
+                return;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_btn_signupActionPerformed
 
     private void btn_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_exitActionPerformed
@@ -328,7 +357,7 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_disableMouseClicked
 
     private void showMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showMouseClicked
-         txt_password.setEchoChar((char) 8226);
+        txt_password.setEchoChar((char) 8226);
         disable.setVisible(true);
         show.setEnabled(false);
         disable.setEnabled(true);
