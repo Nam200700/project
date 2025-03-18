@@ -8,7 +8,7 @@ package Entity;
  *
  * @author Acer
  */
-class TheLoai {
+public class TheLoai {
     private int maTheLoai;
     private String tenTheLoai;
 

@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import util.jdbchelper;
 import java.sql.*;
 import DAO.TacGiaDAO;
+import raven.drawer.TabbedForm;
 
 
 
@@ -18,7 +19,7 @@ import DAO.TacGiaDAO;
  *
  * @author ACER
  */
-public class QL_tacgia extends javax.swing.JPanel {
+public class QL_tacgia extends TabbedForm {
 
     /**
      * Creates new form QL_tacgia

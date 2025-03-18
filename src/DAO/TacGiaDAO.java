@@ -21,7 +21,7 @@ public class TacGiaDAO {
             e.printStackTrace();
         }
         return false;
-    }
+    }   
     public boolean capNhatTacGia(TacGia tg) {
     String sql = "UPDATE TacGia SET TenTacGia = ? WHERE MaTacGia = ?";
     
