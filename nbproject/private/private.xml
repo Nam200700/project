@@ -2,6 +2,18 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group/>
+=======
+        <group>
+            <file>file:/C:/Users/Acer/project/src/DAO/TheLoaiDAO.java</file>
+            <file>file:/C:/Users/Acer/project/src/util/jdbchelper.java</file>
+            <file>file:/C:/Users/Acer/project/src/raven/drawer/MyDrawerBuilder.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/view.java</file>
+            <file>file:/C:/Users/Acer/project/src/DAO/TacGiaDAO.java</file>
+            <file>file:/C:/Users/Acer/project/src/Entity/TheLoai.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/QL_tacgia.java</file>
+        </group>
+>>>>>>> 1947458c1eac4b37801ab1113fe0e0935580a35b
     </open-files>
 </project-private>

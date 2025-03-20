@@ -12,7 +12,11 @@ import raven.drawer.component.menu.SimpleMenuOption;
 import main.main;
 import ui.view;
 import raven.swing.AvatarIcon;
+<<<<<<< HEAD
 import ui.QL_docgia;
+=======
+import ui.QL_tacgia;
+>>>>>>> 1947458c1eac4b37801ab1113fe0e0935580a35b
 import ui.Test;
 
 /**
@@ -58,6 +62,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setIcons(icons)
                 .setBaseIconPath("drawer/svg")
                 .setIconScale(0.45f)
+<<<<<<< HEAD
                 .addMenuEvent((MenuAction action, int index, int subIndex) -> {
                     if (index == 0) {
                         WindowsTabbed.getInstance().addTab("Test Form", new Test());
@@ -65,6 +70,24 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         if (subIndex == 1) {
                             WindowsTabbed.getInstance().addTab("Test Form", new QL_docgia());
                             
+=======
+                .addMenuEvent(new MenuEvent() {
+                    @Override
+                    public void selected(MenuAction action, int index, int subIndex) {
+                        if (index == 0) {
+                            WindowsTabbed.getInstance().addTab("Test Form", new Test());
+                        }else if(index == 2){
+                            WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
+                        }else if (index == 9) {
+                            JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
+
+                            if (currentFrame != null) {
+                                currentFrame.dispose(); // Đóng form hiện tại
+                            }
+
+                            // Hiển thị lại form login
+                            new main().setVisible(true);
+>>>>>>> 1947458c1eac4b37801ab1113fe0e0935580a35b
                         }
                     } 
                     else if (index == 9) {
