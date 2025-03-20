@@ -19,12 +19,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import raven.drawer.TabbedForm;
 
 /**
  *
  * @author ACER
  */
-public class QL_docgia extends javax.swing.JPanel {
+public class QL_docgia extends TabbedForm {
 
     /**
      * Creates new form QL_docgia

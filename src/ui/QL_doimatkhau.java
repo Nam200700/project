@@ -9,13 +9,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import raven.drawer.TabbedForm;
 import util.*;
 
 /**
  *
  * @author ACER
  */
-public class QL_doimatkhau extends javax.swing.JPanel {
+public class QL_doimatkhau extends TabbedForm {
 
     /**
      * Creates new form QL_doimatkhau
