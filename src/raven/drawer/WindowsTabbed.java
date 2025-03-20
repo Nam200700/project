@@ -1,13 +1,20 @@
 package raven.drawer;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -51,6 +58,11 @@ public class WindowsTabbed {
                 + "background:$TitlePane.background");
         menuBar.add(createDrawerButton());
         menuBar.add(createScroll(panelTabbed));
+        // Thêm khoảng trống để đẩy nút sang phải
+        menuBar.add(Box.createHorizontalGlue());
+
+        // Thêm Dark/Light Toggle Button
+        menuBar.add(createDarkLightSwitch());
         frame.setJMenuBar(menuBar);
     }
 
@@ -82,6 +94,44 @@ public class WindowsTabbed {
                 + "background:null;"
                 + "arc:5");
         return cmd;
+    }
+
+    private FlatToggleButton createDarkLightSwitch() {
+        FlatToggleButton toggle = new FlatToggleButton();
+        toggle.setSelected(false); // Mặc định Light Mode
+        toggle.setIcon(new DarkLightSwitchIcon());
+
+        // Loại bỏ viền xanh dư thừa
+        toggle.setFocusable(false);
+        toggle.setBorderPainted(false);
+        toggle.setContentAreaFilled(false);
+
+        toggle.addActionListener(e -> {
+            boolean darkMode = toggle.isSelected();
+            changeThemes(darkMode);
+        });
+
+        return toggle;
+    }
+
+    private void changeThemes(boolean dark) {
+        if (FlatLaf.isLafDark() != dark) {
+            if (!dark) {
+                EventQueue.invokeLater(() -> {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatIntelliJLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                });
+            } else {
+                EventQueue.invokeLater(() -> {
+                    FlatAnimatedLafChange.showSnapshot();
+                    FlatDarculaLaf.setup();
+                    FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
+                });
+            }
+        }
     }
 
     private JScrollPane createScroll(Component com) {
