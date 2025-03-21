@@ -4,10 +4,16 @@
  */
 package ui;
 
+import DAO.TheLoaiDAO;
+import Entity.TheLoai;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -16,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import util.jdbchelper;
 
 /**
  *
@@ -24,10 +32,34 @@ import javax.swing.SwingUtilities;
 public class QL_theloaisach extends javax.swing.JPanel {
 
     /**
-     * Creates new form QL_theloaisach
+     * Creates new form QL_
      */
     public QL_theloaisach() {
         initComponents();
+        loadDataToTable();
+        clearFields();
+    }
+     private void loadDataToTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ
+
+        try (Connection conn = jdbchelper.getconnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TheLoai");
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getString("MaTheLoai"),
+                    rs.getString("TenTheLoai")
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void clearFields() {
+        txtMaLoaiSach.setText("");
+        txtTenLoaiSach.setText("");
     }
      private void openFormCon() {
         JDialog formCon = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm loại sách", true);
@@ -91,6 +123,10 @@ public class QL_theloaisach extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
+        txtMaLoaiSach = new javax.swing.JTextField();
+        txtTenLoaiSach = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         btn_them.setText("Thêm");
         btn_them.addActionListener(new java.awt.event.ActionListener() {
@@ -102,42 +138,72 @@ public class QL_theloaisach extends javax.swing.JPanel {
         btn_xoa.setText("Xóa");
 
         btn_sua.setText("Sửa");
+        btn_sua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_suaActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Mã loại sách", "Tên loại sách", "Ghi chú"
+                "Mã loại sách", "Tên loại sách"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
         jButton4.setText("Tìm kiếm");
 
+        txtMaLoaiSach.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMaLoaiSachActionPerformed(evt);
+            }
+        });
+
+        txtTenLoaiSach.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTenLoaiSachActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("TenLoaiSach");
+
+        jLabel2.setText("MaLoaiSach");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btn_xoa)
-                        .addComponent(btn_them))
-                    .addComponent(btn_sua))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
                 .addComponent(jButton4)
                 .addGap(193, 193, 193))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtTenLoaiSach, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                            .addComponent(txtMaLoaiSach, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btn_them)
+                            .addComponent(btn_xoa)
+                            .addComponent(btn_sua))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,23 +213,82 @@ public class QL_theloaisach extends javax.swing.JPanel {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_them)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMaLoaiSach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTenLoaiSach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addComponent(btn_them)
+                        .addGap(32, 32, 32)
                         .addComponent(btn_xoa)
-                        .addGap(18, 18, 18)
+                        .addGap(27, 27, 27)
                         .addComponent(btn_sua))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(116, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
         openFormCon();
+        String maTL = txtMaLoaiSach.getText().trim();
+    String tenTL = txtTenLoaiSach.getText().trim();
+    
+
+    if (maTL.isEmpty() || tenTL.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    TheLoai tl = new TheLoai(Integer.parseInt(maTL), tenTL);
+    TheLoaiDAO dao = new TheLoaiDAO();
+    
+    if (dao.ThemTheLoai(tl)) {
+        JOptionPane.showMessageDialog(this, "Thêm tác giả thành công!");
+        loadDataToTable(); // Cập nhật lại bảng
+        clearFields();
+    } else {
+        JOptionPane.showMessageDialog(this, "Lỗi khi thêm tác giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+        
     }//GEN-LAST:event_btn_themActionPerformed
+
+    private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
+        // TODO add your handling code here:
+        String maTL = txtMaLoaiSach.getText().trim();
+    String tenTL = txtTenLoaiSach.getText().trim();
+
+    // Kiểm tra xem mã tác giả có trống không
+    if (maTL.isEmpty() || tenTL.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // Tạo đối tượng tác giả với dữ liệu mới
+    TheLoai tl = new TheLoai(Integer.parseInt(maTL), tenTL);
+    TheLoaiDAO dao = new TheLoaiDAO();
+
+    // Gọi phương thức cập nhật từ DAO
+    if (dao.capNhatTheLoai(tl)) {
+        JOptionPane.showMessageDialog(this, "Cập nhật tác giả thành công!");
+        loadDataToTable(); // Cập nhật lại bảng dữ liệu
+        clearFields(); // Xóa dữ liệu trên form
+    } else {
+        JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật tác giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_btn_suaActionPerformed
+
+    private void txtTenLoaiSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTenLoaiSachActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTenLoaiSachActionPerformed
+
+    private void txtMaLoaiSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaLoaiSachActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaLoaiSachActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -171,8 +296,12 @@ public class QL_theloaisach extends javax.swing.JPanel {
     private javax.swing.JButton btn_them;
     private javax.swing.JButton btn_xoa;
     private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtMaLoaiSach;
+    private javax.swing.JTextField txtTenLoaiSach;
     // End of variables declaration//GEN-END:variables
 }

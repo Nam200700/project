@@ -11,11 +11,9 @@ public class TacGiaDAO {
         String sql = "INSERT INTO TacGia (MaTacGia, TenTacGia) VALUES (?, ?)";
         
         try (Connection conn = jdbchelper.getconnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+             PreparedStatement stmt = conn.prepareStatement(sql)) {          
             stmt.setString(1, tg.getMaTacGia());
             stmt.setString(2, tg.getTenTacGia());
-
             return stmt.executeUpdate() > 0; // Trả về true nếu thêm thành công
         } catch (SQLException e) {
             e.printStackTrace();
@@ -28,12 +26,11 @@ public class TacGiaDAO {
     try (Connection conn = jdbchelper.getconnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
          
-        stmt.setString(1, tg.getTenTacGia());
-        stmt.setString(2, tg.getMaTacGia());
+        stmt.setString(1, tg.getMaTacGia());
+        stmt.setString(2, tg.getTenTacGia());
 
         int rowsUpdated = stmt.executeUpdate();
         return rowsUpdated > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng -> Cập nhật thành công
-
     } catch (SQLException e) {
         e.printStackTrace();
         return false;

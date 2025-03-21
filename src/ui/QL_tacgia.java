@@ -79,6 +79,11 @@ public class QL_tacgia extends javax.swing.JPanel {
         });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setText("Cập Nhật");
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
@@ -162,7 +167,7 @@ public class QL_tacgia extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        String maTG = txtMaTacGia.getText().trim();
+    String maTG = txtMaTacGia.getText().trim();
     String tenTG = txtTenTacGia.getText().trim();
 
     if (maTG.isEmpty() || tenTG.isEmpty()) {
@@ -215,6 +220,10 @@ public class QL_tacgia extends javax.swing.JPanel {
     }
         
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnXoaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
