@@ -4,24 +4,34 @@
  */
 package ui;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import raven.drawer.TabbedForm;
 import util.*;
 
 /**
  *
  * @author ACER
  */
-public class QL_doimatkhau extends javax.swing.JPanel {
+public class QL_doimatkhau extends TabbedForm {
 
     /**
      * Creates new form QL_doimatkhau
      */
     public QL_doimatkhau() {
         initComponents();
+        FlatRobotoFont.install();
+        FlatLaf.registerCustomDefaultsSource("raven.themes");
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
+        FlatMacLightLaf.setup();
     }
     // cách 1 chưa sài jdbchelper
     // Phương thức thay đổi mật khẩu
@@ -75,50 +85,57 @@ public class QL_doimatkhau extends javax.swing.JPanel {
 //            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra!");
 //        }
 //    }
-        // cách tối ưu c2
-//    private void changePassword() {
-//        // Lấy mật khẩu từ các trường nhập liệu
-//        String oldPassword = new String(txt_mkcu.getPassword());  // Mật khẩu cũ
-//        String newPassword = new String(txt_mkmoi.getPassword()); // Mật khẩu mới
-//        String confirmPassword = new String(txt_nhaplaimk.getPassword()); // Xác nhận mật khẩu mới
-//
-//        // Kiểm tra mật khẩu mới và xác nhận mật khẩu
-//        if (!newPassword.equals(confirmPassword)) {
-//            JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp!");
-//            return;
-//        }
-//
-//        try {
-//            // Mã hóa mật khẩu cũ
-//            String encryptedOldPassword = AES.encrypt(oldPassword);
-//
-//            // Kiểm tra mật khẩu cũ trong cơ sở dữ liệu
-//            String checkQuery = "SELECT id FROM user WHERE password = ?";
-//            try (ResultSet rs = jdbchelper.executeQuery(checkQuery, encryptedOldPassword)) {
-//                if (rs.next()) { // Nếu tìm thấy tài khoản với mật khẩu cũ
-//                    int userId = rs.getInt("id"); // Lấy ID người dùng
-//
-//                    // Mã hóa mật khẩu mới
-//                    String encryptedNewPassword = AES.encrypt(newPassword);
-//
-//                    // Cập nhật mật khẩu mới
-//                    String updateQuery = "UPDATE user SET password = ? WHERE id = ?";
-//                    int rowsUpdated = jdbchelper.executeUpdate(updateQuery, encryptedNewPassword, userId);
-//
-//                    if (rowsUpdated > 0) {
-//                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
-//                    } else {
-//                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thất bại!");
-//                    }
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Mật khẩu cũ không đúng!");
-//                }
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra!");
-//        }
-//    }
+    // cách tối ưu c2
+    private void changePassword() {
+        // Lấy mật khẩu từ các trường nhập liệu
+        String oldPassword = new String(txt_mkcu.getPassword());  // Mật khẩu cũ
+        String newPassword = new String(txt_mkmoi.getPassword()); // Mật khẩu mới
+        String confirmPassword = new String(txt_nhaplaimk.getPassword()); // Xác nhận mật khẩu mới
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu
+        if (!newPassword.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp!");
+            return;
+        }
+
+        try {
+            // Mã hóa mật khẩu cũ
+            String encryptedOldPassword = AES.encrypt(oldPassword);
+
+            // Kiểm tra mật khẩu cũ trong cơ sở dữ liệu
+            String checkQuery = "SELECT MaTaiKhoan FROM taikhoan WHERE MatKhau = ?";
+            try (ResultSet rs = jdbchelper.executeQuery(checkQuery, encryptedOldPassword)) {
+                if (rs.next()) { // Nếu tìm thấy tài khoản với mật khẩu cũ
+                    int userId = rs.getInt("MaTaiKhoan"); // Lấy ID người dùng
+
+                    // Mã hóa mật khẩu mới
+                    String encryptedNewPassword = AES.encrypt(newPassword);
+
+                    // Cập nhật mật khẩu mới
+                    String updateQuery = "UPDATE taikhoan SET MatKhau = ? WHERE MaTaiKhoan = ?";
+                    int rowsUpdated = jdbchelper.executeUpdate(updateQuery, encryptedNewPassword, userId);
+
+                    if (rowsUpdated > 0) {
+                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
+                        clear();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thất bại!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Mật khẩu cũ không đúng!");
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra!");
+        }
+    }
+
+    private void clear() {
+        txt_mkcu.setText("");
+        txt_mkmoi.setText("");
+        txt_nhaplaimk.setText("");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -139,6 +156,8 @@ public class QL_doimatkhau extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
+        jPanel1.setBackground(new java.awt.Color(0, 204, 255));
+
         btn_change.setText("Đổi mật khẩu");
         btn_change.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -146,13 +165,24 @@ public class QL_doimatkhau extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Mật khẩu cũ :");
 
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Mật khẩu mới :");
 
-        jLabel3.setText("Nhập lại mật khẩu ở trên :");
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Nhập lại mật khẩu mới :");
 
+        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Đổi mật khẩu");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -160,32 +190,33 @@ public class QL_doimatkhau extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(67, 67, 67)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(126, 126, 126)
-                        .addComponent(btn_change))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(37, 37, 37)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txt_mkcu)
-                            .addComponent(txt_mkmoi)
-                            .addComponent(txt_nhaplaimk))))
-                .addGap(94, 94, 94))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(37, 37, 37)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txt_mkmoi, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_mkcu, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_nhaplaimk, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(26, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(127, 127, 127))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(btn_change)
+                        .addGap(210, 210, 210))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(37, 37, 37)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
+                .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txt_mkcu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -197,25 +228,31 @@ public class QL_doimatkhau extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txt_nhaplaimk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49)
+                .addGap(59, 59, 59)
                 .addComponent(btn_change)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(244, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(179, 179, 179))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(63, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_changeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_changeActionPerformed
-
+        changePassword();
     }//GEN-LAST:event_btn_changeActionPerformed
 
 

@@ -4,17 +4,120 @@
  */
 package ui;
 
+import DAO.nhaxuatbanDAO;
+import Entity.nhaxuatban;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import raven.drawer.TabbedForm;
+
 /**
  *
  * @author ACER
  */
-public class QL_nhaxuatban extends javax.swing.JPanel {
+public class QL_nhaxuatban extends TabbedForm {
+
+    List<nhaxuatban> dsNhaXuatBan = new ArrayList<nhaxuatban>();
 
     /**
      * Creates new form QL_nhaxuatban
      */
     public QL_nhaxuatban() {
         initComponents();
+        fillTable();
+    }
+
+    public void addNhaXuatBan() {
+        // Kiểm tra các trường nhập liệu
+        if (txt_tennhaxuatban.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập tên nhà xuất bản", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo đối tượng nhà xuất bản
+        nhaxuatban nxb = new nhaxuatban();
+        nxb.setTennhaxuatban(txt_tennhaxuatban.getText());
+
+        // Thêm nhà xuất bản vào danh sách và cập nhật giao diện
+        dsNhaXuatBan.add(nxb);
+        // Lưu nhà xuất bản vào cơ sở dữ liệu
+        nhaxuatbanDAO.insert(nxb);
+        fillTable();
+    }
+
+    public void removeNhaXuatBan() {
+        // Lấy danh sách các dòng được chọn trong bảng
+        int[] selectedRows = tbl_nhaxuatban.getSelectedRows();
+
+        // Kiểm tra nếu không có dòng nào được chọn
+        if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn nhà xuất bản nào để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Xác nhận trước khi xóa
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhà xuất bản đã chọn?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                for (int i = selectedRows.length - 1; i >= 0; i--) {
+                    int index = selectedRows[i];
+                    String maNhaXuatBan = (String) tbl_nhaxuatban.getValueAt(index, 0);
+
+                    // Xóa khỏi cơ sở dữ liệu
+                    boolean isDeleted = nhaxuatbanDAO.delete(maNhaXuatBan);
+
+                    if (isDeleted) {
+                        dsNhaXuatBan.removeIf(nxb -> nxb.getManhaxuatban().equals(maNhaXuatBan));
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Không thể xóa nhà xuất bản " + maNhaXuatBan + " do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                // Cập nhật lại bảng sau khi xóa
+                fillTable();
+                JOptionPane.showMessageDialog(this, "Xóa nhà xuất bản thành công!");
+
+                if (tbl_nhaxuatban.getRowCount() > 0) {
+                    int newIndex = Math.min(selectedRows[0], tbl_nhaxuatban.getRowCount() - 1);
+                    tbl_nhaxuatban.setRowSelectionInterval(newIndex, newIndex);
+                    loadRowIndexField(newIndex);
+                } else {
+                    clean();
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi xóa nhà xuất bản: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void fillTable() {
+        List<nhaxuatban> nxbList = nhaxuatbanDAO.getAll();
+        dsNhaXuatBan.clear();
+        dsNhaXuatBan.addAll(nxbList);
+
+        DefaultTableModel model = (DefaultTableModel) tbl_nhaxuatban.getModel();
+        model.setRowCount(0);
+
+        for (nhaxuatban nxb : dsNhaXuatBan) {
+            Object[] row = new Object[]{nxb.getManhaxuatban(), nxb.getTennhaxuatban()};
+            model.addRow(row);
+        }
+    }
+
+    public void loadRowIndexField(int newRowIndex) {
+        String maNhaXuatBan = (String) tbl_nhaxuatban.getValueAt(newRowIndex, 0);
+        String tenNhaXuatBan = (String) tbl_nhaxuatban.getValueAt(newRowIndex, 1);
+
+        txt_tennhaxuatban.setText(tenNhaXuatBan);
+    }
+
+    public void clean() {
+        txt_tennhaxuatban.setText("");
     }
 
     /**
@@ -26,23 +129,31 @@ public class QL_nhaxuatban extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btn_them = new javax.swing.JButton();
+        btn_xoa = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbl_nhaxuatban = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txt_tennhaxuatban = new javax.swing.JTextField();
 
-        jButton1.setText("Thêm");
+        btn_them.setText("Thêm");
+        btn_them.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_themActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Xóa");
+        btn_xoa.setText("Xóa");
+        btn_xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xoaActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Sửa");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_nhaxuatban.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -53,11 +164,9 @@ public class QL_nhaxuatban extends javax.swing.JPanel {
                 "Tên nhà xuất bản", "Mã nhà xuất bản"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbl_nhaxuatban);
 
         jLabel1.setText("Tên nhà xuất bản");
-
-        jLabel2.setText("Mã nhà xuất bản");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -69,18 +178,14 @@ public class QL_nhaxuatban extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(20, 20, 20)
-                        .addComponent(jTextField2))
+                        .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton3)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(btn_them)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2)))
+                                .addComponent(btn_xoa)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -94,15 +199,11 @@ public class QL_nhaxuatban extends javax.swing.JPanel {
                         .addGap(49, 49, 49)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
+                            .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(116, 116, 116)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(btn_them)
+                            .addComponent(btn_xoa))
                         .addGap(18, 18, 18)
                         .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
@@ -112,16 +213,22 @@ public class QL_nhaxuatban extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
+        removeNhaXuatBan();
+    }//GEN-LAST:event_btn_xoaActionPerformed
+
+    private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
+        addNhaXuatBan();
+    }//GEN-LAST:event_btn_themActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btn_them;
+    private javax.swing.JButton btn_xoa;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tbl_nhaxuatban;
+    private javax.swing.JTextField txt_tennhaxuatban;
     // End of variables declaration//GEN-END:variables
 }

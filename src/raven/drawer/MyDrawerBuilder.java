@@ -12,6 +12,10 @@ import raven.drawer.component.menu.SimpleMenuOption;
 import main.main;
 import ui.view;
 import raven.swing.AvatarIcon;
+import ui.QL_doimatkhau;
+import ui.QL_nhaxuatban;
+import ui.QL_tacgia;
+import ui.QL_theloaisach;
 import ui.Test;
 
 /**
@@ -61,8 +65,16 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
                         if (index == 0) {
-                            WindowsTabbed.getInstance().addTab("Test Form", new Test());
-                        } else if (index == 9) {
+                            WindowsTabbed.getInstance().addTab("Test Form", new QL_theloaisach());
+                        }else if(index == 3){
+                            WindowsTabbed.getInstance().addTab("Test Form", new QL_doimatkhau());
+                        } 
+                        else if(index == 2){
+                            WindowsTabbed.getInstance().addTab("Test Form", new QL_tacgia());
+                        } else if(index == 4){
+                            WindowsTabbed.getInstance().addTab("Test Form", new QL_nhaxuatban());
+                        }
+                        else if (index == 9) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

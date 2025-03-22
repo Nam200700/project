@@ -100,6 +100,7 @@ public class QL_docgia extends javax.swing.JPanel {
         formCon.setLocationRelativeTo(this);
         formCon.setVisible(true);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

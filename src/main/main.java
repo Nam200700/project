@@ -103,7 +103,7 @@ public class main extends javax.swing.JFrame {
         });
 
         btn_signup.setForeground(new java.awt.Color(255, 255, 255));
-        btn_signup.setText("Sign up");
+        btn_signup.setText("Login up");
         btn_signup.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btn_signup.setPreferredSize(new java.awt.Dimension(100, 32));
         btn_signup.addActionListener(new java.awt.event.ActionListener() {
@@ -115,7 +115,7 @@ public class main extends javax.swing.JFrame {
         lbl_signup.setBackground(new java.awt.Color(255, 255, 255));
         lbl_signup.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         lbl_signup.setForeground(new java.awt.Color(255, 255, 255));
-        lbl_signup.setText("Sign up");
+        lbl_signup.setText("Login");
 
         lbl_register.setBackground(new java.awt.Color(255, 255, 255));
         lbl_register.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -302,7 +302,7 @@ public class main extends javax.swing.JFrame {
         }
         // Mã hóa mật khẩu để so sánh
         String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT fullname, password FROM user WHERE fullname =? AND password =? ";
+        String sql = "SELECT TenDangNhap, MatKhau FROM taikhoan WHERE TenDangNhap =? AND MatKhau =? ";
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);

@@ -4,17 +4,130 @@
  */
 package ui;
 
+import DAO.tacgiaDAO;
+import DAO.theloaiDAO;
+import Entity.tacgia;
+import Entity.theloai;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import raven.drawer.TabbedForm;
+
 /**
  *
  * @author ACER
  */
-public class QL_tacgia extends javax.swing.JPanel {
+public class QL_tacgia extends TabbedForm {
+
+    List<tacgia> tacgiasach = new ArrayList<>();
 
     /**
      * Creates new form QL_tacgia
      */
     public QL_tacgia() {
         initComponents();
+        fillTable();
+    }
+
+    public void addtacgia() {
+        // Kiểm tra các trường nhập liệu
+        if (txt_tentacgia.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập tên tác giả", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo đối tượng ngành học
+        tacgia tg = new tacgia();
+
+        tg.setTentacgia(txt_tentacgia.getText());
+
+        // Thêm ngành học vào danh sách và cập nhật giao diện
+        tacgiasach.add(tg);
+        // Lưu ngành học vào cơ sở dữ liệu
+        tacgiaDAO.insert(tg);
+        fillTable();
+    }
+
+    public void removetacgia() {
+        // Lấy danh sách các dòng được chọn trong bảng
+        int[] selectedRows = tbl_tacgia.getSelectedRows();
+
+        // Kiểm tra nếu không có dòng nào được chọn
+        if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn tác giả nào để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Xác nhận trước khi xóa
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa tác giả đã chọn?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                // Duyệt qua từng dòng được chọn và xóa khỏi cơ sở dữ liệu
+                for (int i = selectedRows.length - 1; i >= 0; i--) {
+                    int index = selectedRows[i];
+                    String tentacgia = (String) tbl_tacgia.getValueAt(index, 0); // Lấy tên thể loại
+
+                    // Xóa khỏi cơ sở dữ liệu
+                    boolean isDeleted = tacgiaDAO.delete(tentacgia);
+
+                    if (isDeleted) {
+                        // Xóa khỏi danh sách tacgia
+                        tacgiasach.removeIf(tg -> tg.getTentacgia().equals(tentacgia));
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Không thể xóa tác giả" + tentacgia + "' do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                // Cập nhật lại bảng sau khi xóa
+                fillTable();
+                JOptionPane.showMessageDialog(this, "Xóa tác giả thành công!");
+
+                // Nếu còn dữ liệu trong bảng, chọn lại một dòng
+                if (tbl_tacgia.getRowCount() > 0) {
+                    int newIndex = Math.min(selectedRows[0], tbl_tacgia.getRowCount() - 1);
+                    tbl_tacgia.setRowSelectionInterval(newIndex, newIndex);
+                    loadRowindexfield(newIndex);
+                } else {
+                    clean(); // Nếu không còn dữ liệu, làm sạch form
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi xóa tác giả: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void fillTable() {
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        List<tacgia> tacgia1 = tacgiaDAO.getAll();
+
+        tacgiasach.clear(); // Xóa danh sách cũ
+        tacgiasach.addAll(tacgia1); // Cập nhật danh sách mới
+
+        // Cập nhật JTable
+        DefaultTableModel model = (DefaultTableModel) tbl_tacgia.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ trong bảng
+
+        for (tacgia tg : tacgiasach) {
+            Object[] row = new Object[]{tg.getMatacgia(), tg.getTentacgia()};
+            model.addRow(row); // Thêm dữ liệu vào bảng
+        }
+    }
+
+    public void loadRowindexfield(int newrowintdex) {
+        String matacgia = (String) tbl_tacgia.getValueAt(newrowintdex, 0);
+        String tentacgia = (String) tbl_tacgia.getValueAt(newrowintdex, 1);
+
+        txt_tentacgia.setText(tentacgia);
+
+    }
+
+    public void clean() {
+        txt_tentacgia.setText("");
     }
 
     /**
@@ -26,23 +139,31 @@ public class QL_tacgia extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btn_them = new javax.swing.JButton();
+        btn_xoa = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbl_tacgia = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txt_tentacgia = new javax.swing.JTextField();
 
-        jButton1.setText("Thêm");
+        btn_them.setText("Thêm");
+        btn_them.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_themActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Xóa");
+        btn_xoa.setText("Xóa");
+        btn_xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xoaActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Sửa");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_tacgia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -53,11 +174,9 @@ public class QL_tacgia extends javax.swing.JPanel {
                 "Mã tác giả", "Tên tác giả"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbl_tacgia);
 
         jLabel1.setText("Tên tác giả");
-
-        jLabel2.setText("Mã tác giả");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -69,18 +188,14 @@ public class QL_tacgia extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1))
+                        .addComponent(txt_tentacgia))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(20, 20, 20)
-                        .addComponent(jTextField2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btn_them)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
+                        .addComponent(btn_xoa)))
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
@@ -93,15 +208,11 @@ public class QL_tacgia extends javax.swing.JPanel {
                         .addGap(49, 49, 49)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
+                            .addComponent(txt_tentacgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(116, 116, 116)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(btn_them)
+                            .addComponent(btn_xoa))
                         .addGap(18, 18, 18)
                         .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
@@ -111,16 +222,22 @@ public class QL_tacgia extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
+        removetacgia();
+    }//GEN-LAST:event_btn_xoaActionPerformed
+
+    private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
+        addtacgia();
+    }//GEN-LAST:event_btn_themActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btn_them;
+    private javax.swing.JButton btn_xoa;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tbl_tacgia;
+    private javax.swing.JTextField txt_tentacgia;
     // End of variables declaration//GEN-END:variables
 }
