@@ -8,20 +8,20 @@ import util.jdbchelper;
 
 public class TacGiaDAO {
     public boolean themTacGia(TacGia tg) {
-        String sql = "INSERT INTO TacGia (MaTacGia, TenTacGia) VALUES (?, ?)";
-        
-        try (Connection conn = jdbchelper.getconnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, tg.getMaTacGia());
-            stmt.setString(2, tg.getTenTacGia());
+    String sql = "INSERT INTO TacGia (TenTacGia) VALUES (?)";
 
-            return stmt.executeUpdate() > 0; // Trả về true nếu thêm thành công
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }   
+    try (Connection conn = jdbchelper.getconnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, tg.getTenTacGia()); // Chỉ cần tên tác giả
+
+        return stmt.executeUpdate() > 0; // Trả về true nếu thêm thành công
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
     public boolean capNhatTacGia(TacGia tg) {
     String sql = "UPDATE TacGia SET TenTacGia = ? WHERE MaTacGia = ?";
     

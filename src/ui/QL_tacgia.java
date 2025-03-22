@@ -185,18 +185,16 @@ public class QL_tacgia extends TabbedForm {
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
 
-    String maTG = txtMaTacGia.getText().trim();
-    String tenTG = txtTenTacGia.getText().trim();
+        String tenTG = txtTenTacGia.getText().trim();
 
-    // Kiểm tra xem mã tác giả có trống không
-    if (maTG.isEmpty() || tenTG.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    if (tenTG.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập tên tác giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // Tạo đối tượng tác giả với dữ liệu mới
-    TacGia tg = new TacGia(maTG, tenTG);
-    TacGiaDAO dao = new TacGiaDAO();
+    TacGia tg = new TacGia(null, tenTG); // Không cần truyền MaTacGia nữa
+
+        TacGiaDAO dao = new TacGiaDAO();
 
     // Gọi phương thức cập nhật từ DAO
     if (dao.capNhatTacGia(tg)) {
