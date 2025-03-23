@@ -13,7 +13,7 @@ public class jdbchelper {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/qltv";
     private static final String USER = "root";
-    private static final String PASSWORD = "Tuilaben2007!!";
+    private static final String PASSWORD = "18102007";
 
     // Đăng ký driver MySQL khi class được nạp
     static {

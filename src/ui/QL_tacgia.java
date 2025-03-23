@@ -10,16 +10,17 @@ import javax.swing.table.DefaultTableModel;
 import util.jdbchelper;
 import java.sql.*;
 import DAO.TacGiaDAO;
+import java.util.ArrayList;
+import java.util.List;
 import raven.drawer.TabbedForm;
-
-
-
 
 /**
  *
  * @author ACER
  */
 public class QL_tacgia extends TabbedForm {
+
+    List<TacGia> tacgiasach = new ArrayList<>();
 
     /**
      * Creates new form QL_tacgia
@@ -30,13 +31,174 @@ public class QL_tacgia extends TabbedForm {
         clearFields();
     }
 
+    public void addTacGia() {
+        // Kiểm tra các trường nhập liệu
+        if (txtTenTacGia.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập tên tác giả", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo đối tượng tac gia
+        TacGia tg = new TacGia();
+
+        tg.setTenTacGia(txtTenTacGia.getText());
+
+        // Thêm ngành học vào danh sách và cập nhật giao diện
+        tacgiasach.add(tg);
+        // Lưu tac gia vào cơ sở dữ liệu
+        TacGiaDAO.insert(tg);
+        fillTable();
+        clean();
+    }
+
+    public void updateTacGia() {
+        // Kiểm tra xem có dòng nào được chọn không
+        int index = tbltacgia.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn hàng nào để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Kiểm tra danh sách có dữ liệu hợp lệ không
+        if (index >= tacgiasach.size()) {
+            JOptionPane.showMessageDialog(this, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Lấy thông tin tác giả từ danh sách
+        TacGia tacgia = tacgiasach.get(index);
+        String tenTacGia = txtTenTacGia.getText().trim();
+
+        // Kiểm tra tên tác giả có bị rỗng không
+        if (tenTacGia.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên tác giả không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Cập nhật thông tin tác giả
+        tacgia.setTenTacGia(tenTacGia);
+
+        // Cập nhật vào cơ sở dữ liệu
+        try {
+            TacGiaDAO.update(tacgia);
+            fillTable();
+            JOptionPane.showMessageDialog(this, "Cập nhật tác giả thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật tác giả: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void removetacgia() {
+        // Lấy danh sách các dòng được chọn trong bảng
+        int[] selectedRows = tbltacgia.getSelectedRows();
+
+        // Kiểm tra nếu không có dòng nào được chọn
+        if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn tác giả nào để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Xác nhận trước khi xóa
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa tác giả đã chọn?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                // Duyệt qua từng dòng được chọn và xóa khỏi cơ sở dữ liệu
+                for (int i = selectedRows.length - 1; i >= 0; i--) {
+                    int index = selectedRows[i];
+                    String tentacgia = (String) tbltacgia.getValueAt(index, 0); // Lấy tên tac gia
+
+                    // Xóa khỏi cơ sở dữ liệu
+                    boolean isDeleted = TacGiaDAO.delete(tentacgia);
+
+                    if (isDeleted) {
+                        // Xóa khỏi danh sách tacgia
+                        tacgiasach.removeIf(tg -> tg.getTenTacGia().equals(tentacgia));
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Không thể xóa tác giả" + tentacgia + "' do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                // Cập nhật lại bảng sau khi xóa
+                fillTable();
+                JOptionPane.showMessageDialog(this, "Xóa tác giả thành công!");
+
+                // Nếu còn dữ liệu trong bảng, chọn lại một dòng
+                if (tbltacgia.getRowCount() > 0) {
+                    int newIndex = Math.min(selectedRows[0], tbltacgia.getRowCount() - 1);
+                    tbltacgia.setRowSelectionInterval(newIndex, newIndex);
+                    loadRowindexfield(newIndex);
+                } else {
+                    clean(); // Nếu không còn dữ liệu, làm sạch form
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi xóa tác giả: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void fillTable() {
+        // Lấy dữ liệu từ cơ sở dữ liệu
+        List<TacGia> tacgia1 = TacGiaDAO.getAll();
+
+        tacgiasach.clear(); // Xóa danh sách cũ
+        tacgiasach.addAll(tacgia1); // Cập nhật danh sách mới
+
+        // Cập nhật JTable
+        DefaultTableModel model = (DefaultTableModel) tbltacgia.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ trong bảng
+
+        for (TacGia tg : tacgiasach) {
+            Object[] row = new Object[]{tg.getMaTacGia(), tg.getTenTacGia()};
+            model.addRow(row); // Thêm dữ liệu vào bảng
+        }
+    }
+
+    public void loadRowindexfield(int newrowintdex) {
+        String matacgia = (String) tbltacgia.getValueAt(newrowintdex, 0);
+        String tentacgia = (String) tbltacgia.getValueAt(newrowintdex, 1);
+
+        txtTenTacGia.setText(tentacgia);
+
+    }
+
+    public void clean() {
+        txtTenTacGia.setText("");
+    }
+
+    public void clickTacGia() {
+        // Kiểm tra xem bảng có dữ liệu hay không
+        if (tbltacgia.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu trong bảng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Lấy chỉ số dòng được chọn
+        int row = tbltacgia.getSelectedRow();
+
+        // Kiểm tra xem có dòng nào được chọn không
+        if (row != -1) {
+            // Lấy dữ liệu từ bảng và điền vào các trường nhập liệu
+            String hoTen = tbltacgia.getValueAt(row, 1).toString();     // Họ tên
+
+            // Cập nhật các trường nhập liệu
+            txtTenTacGia.setText(hoTen);
+
+        } else {
+            // Nếu không có dòng nào được chọn
+            JOptionPane.showMessageDialog(this, "Chưa chọn dòng nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     private void loadDataToTable() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) tbltacgia.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
 
-        try (Connection conn = jdbchelper.getconnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TacGia");
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = jdbchelper.getconnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TacGia"); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
@@ -48,8 +210,8 @@ public class QL_tacgia extends TabbedForm {
             e.printStackTrace();
         }
     }
+
     private void clearFields() {
-        txtMaTacGia.setText("");
         txtTenTacGia.setText("");
     }
 
@@ -62,14 +224,12 @@ public class QL_tacgia extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtMaTacGia = new javax.swing.JTextField();
         btnThem = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbltacgia = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         txtTenTacGia = new javax.swing.JTextField();
 
         btnThem.setText("Thêm");
@@ -80,6 +240,11 @@ public class QL_tacgia extends TabbedForm {
         });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setText("Cập Nhật");
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
@@ -88,7 +253,7 @@ public class QL_tacgia extends TabbedForm {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbltacgia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -99,123 +264,72 @@ public class QL_tacgia extends TabbedForm {
                 "Mã tác giả", "Tên tác giả"
             }
         ));
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        tbltacgia.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                tbltacgiaMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbltacgia);
 
         jLabel1.setText("Tên tác giả");
-
-        jLabel2.setText("Mã tác giả");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(170, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTenTacGia))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnCapNhat)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(20, 20, 20)
-                        .addComponent(txtMaTacGia))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnThem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnXoa)))
-                .addGap(12, 12, 12)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnXoa)
+                        .addGap(12, 12, 12))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnThem)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnCapNhat))
+                        .addGap(27, 27, 27)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtMaTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65)
+                        .addGap(139, 139, 139)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnThem)
                             .addComponent(btnXoa))
-                        .addGap(18, 18, 18)
+                        .addGap(29, 29, 29)
                         .addComponent(btnCapNhat))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        String maTG = txtMaTacGia.getText().trim();
-    String tenTG = txtTenTacGia.getText().trim();
-
-    if (maTG.isEmpty() || tenTG.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    TacGia tg = new TacGia(maTG, tenTG);
-    TacGiaDAO dao = new TacGiaDAO();
-    
-    if (dao.themTacGia(tg)) {
-        JOptionPane.showMessageDialog(this, "Thêm tác giả thành công!");
-        loadDataToTable(); // Cập nhật lại bảng
-        clearFields();
-    } else {
-        JOptionPane.showMessageDialog(this, "Lỗi khi thêm tác giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
+        addTacGia();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
-
-    String maTG = txtMaTacGia.getText().trim();
-    String tenTG = txtTenTacGia.getText().trim();
-
-    // Kiểm tra xem mã tác giả có trống không
-    if (maTG.isEmpty() || tenTG.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // Tạo đối tượng tác giả với dữ liệu mới
-    TacGia tg = new TacGia(maTG, tenTG);
-    TacGiaDAO dao = new TacGiaDAO();
-
-    // Gọi phương thức cập nhật từ DAO
-    if (dao.capNhatTacGia(tg)) {
-        JOptionPane.showMessageDialog(this, "Cập nhật tác giả thành công!");
-        loadDataToTable(); // Cập nhật lại bảng dữ liệu
-        clearFields(); // Xóa dữ liệu trên form
-    } else {
-        JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật tác giả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
+        updateTacGia();
     }//GEN-LAST:event_btnCapNhatActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow != -1) {
-        txtMaTacGia.setText(jTable1.getValueAt(selectedRow, 0).toString());
-        txtTenTacGia.setText(jTable1.getValueAt(selectedRow, 1).toString());
-    }
-        
-    }//GEN-LAST:event_jTable1MouseClicked
+    private void tbltacgiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbltacgiaMouseClicked
+        clickTacGia();
+    }//GEN-LAST:event_tbltacgiaMouseClicked
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        removetacgia();
+    }//GEN-LAST:event_btnXoaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -223,10 +337,8 @@ public class QL_tacgia extends TabbedForm {
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtMaTacGia;
+    private javax.swing.JTable tbltacgia;
     private javax.swing.JTextField txtTenTacGia;
     // End of variables declaration//GEN-END:variables
 }

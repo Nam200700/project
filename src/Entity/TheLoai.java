@@ -6,30 +6,33 @@ package Entity;
 
 /**
  *
- * @author Acer
+ * @author ACER
  */
 public class TheLoai {
-    private int maTheLoai;
-    private String tenTheLoai;
+    public String matheloai;
+    public String tentheloai;
 
-    public TheLoai(int maTheLoai, String tenTheLoai) {
-        this.maTheLoai = maTheLoai;
-        this.tenTheLoai = tenTheLoai;
+    public TheLoai() {
     }
 
-    public int getMaTheLoai() {
-        return maTheLoai;
+    public String getMatheloai() {
+        return matheloai;
     }
 
-    public void setMaTheLoai(int maTheLoai) {
-        this.maTheLoai = maTheLoai;
+    public void setMatheloai(String matheloai) {
+        this.matheloai = matheloai;
     }
 
-    public String getTenTheLoai() {
-        return tenTheLoai;
+    public String getTentheloai() {
+        return tentheloai;
     }
 
-    public void setTenTheLoai(String tenTheLoai) {
-        this.tenTheLoai = tenTheLoai;
+    public void setTentheloai(String tentheloai) {
+        this.tentheloai = tentheloai;
+    }
+
+    public TheLoai(String matheloai, String tentheloai) {
+        this.matheloai = matheloai;
+        this.tentheloai = tentheloai;
     }
 }
