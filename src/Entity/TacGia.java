@@ -9,8 +9,11 @@ package Entity;
  * @author Acer
  */
 public class TacGia {
-    private String maTacGia;
-    private String tenTacGia;
+    public String maTacGia;
+    public String tenTacGia;
+
+    public TacGia() {
+    }
 
     public TacGia(String maTacGia, String tenTacGia) {
         this.maTacGia = maTacGia;

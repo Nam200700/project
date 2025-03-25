@@ -17,7 +17,10 @@ import raven.drawer.component.menu.SimpleMenuOption;
 import main.main;
 import ui.view;
 import raven.swing.AvatarIcon;
+import ui.QL_docgia;
+import ui.QL_nhaxuatban;
 import ui.QL_tacgia;
+import ui.QL_theloaisach;
 import ui.Test;
 import java.util.Set;
 
@@ -105,6 +108,14 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         } else if (index == 2) {
                             WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
                         } else if (index == 15) {
+                        }else if(index == 3){
+                            WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
+                        }else if(index == 1){
+                            WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
+                        }else if(index == 4){
+                            WindowsTabbed.getInstance().addTab("QL theloai", new QL_theloaisach());
+                        }
+                        else if (index == 9) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

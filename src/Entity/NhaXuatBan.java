@@ -6,40 +6,33 @@ package Entity;
 
 /**
  *
- * @author Acer
+ * @author ACER
  */
 public class NhaXuatBan {
-    private int maNhaXuatBan;
-    private String tenNhaXuatBan;
-    private String diaChi;
+    public String manhaxuatban;
+    public String tennhaxuatban;
 
-    public NhaXuatBan(int maNhaXuatBan, String tenNhaXuatBan, String diaChi) {
-        this.maNhaXuatBan = maNhaXuatBan;
-        this.tenNhaXuatBan = tenNhaXuatBan;
-        this.diaChi = diaChi;
+    public String getManhaxuatban() {
+        return manhaxuatban;
     }
 
-    public int getMaNhaXuatBan() {
-        return maNhaXuatBan;
+    public void setManhaxuatban(String manhaxuatban) {
+        this.manhaxuatban = manhaxuatban;
     }
 
-    public void setMaNhaXuatBan(int maNhaXuatBan) {
-        this.maNhaXuatBan = maNhaXuatBan;
+    public String getTennhaxuatban() {
+        return tennhaxuatban;
     }
 
-    public String getTenNhaXuatBan() {
-        return tenNhaXuatBan;
+    public void setTennhaxuatban(String tennhaxuatban) {
+        this.tennhaxuatban = tennhaxuatban;
     }
 
-    public void setTenNhaXuatBan(String tenNhaXuatBan) {
-        this.tenNhaXuatBan = tenNhaXuatBan;
+    public NhaXuatBan(String manhaxuatban, String tennhaxuatban) {
+        this.manhaxuatban = manhaxuatban;
+        this.tennhaxuatban = tennhaxuatban;
     }
 
-    public String getDiaChi() {
-        return diaChi;
-    }
-
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public NhaXuatBan() {
     }
 }

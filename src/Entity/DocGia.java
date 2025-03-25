@@ -4,6 +4,8 @@
  */
 package Entity;
 
+import java.util.Date;
+
 /**
  *
  * @author Acer
@@ -11,18 +13,25 @@ package Entity;
 public class DocGia {
     private int maDocGia;
     private String hoTen;
-    private String diaChi;
+    private String gioiTinh;
     private String soDienThoai;
     private String email;
+    private Date ngayDangKy;
+    private int maTaiKhoan;
 
-    public DocGia(int maDocGia, String hoTen, String diaChi, String soDienThoai, String email) {
+    public DocGia() {}
+
+    public DocGia(int maDocGia, String hoTen, String gioiTinh, String soDienThoai, String email, Date ngayDangKy, int maTaiKhoan) {
         this.maDocGia = maDocGia;
         this.hoTen = hoTen;
-        this.diaChi = diaChi;
+        this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
         this.email = email;
+        this.ngayDangKy = ngayDangKy;
+        this.maTaiKhoan = maTaiKhoan;
     }
 
+    // Getter và Setter
     public int getMaDocGia() {
         return maDocGia;
     }
@@ -39,12 +48,12 @@ public class DocGia {
         this.hoTen = hoTen;
     }
 
-    public String getDiaChi() {
-        return diaChi;
+    public String getGioiTinh() {
+        return gioiTinh;
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
     }
 
     public String getSoDienThoai() {
@@ -62,5 +71,21 @@ public class DocGia {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public Date getNgayDangKy() {
+        return ngayDangKy;
+    }
+
+    public void setNgayDangKy(Date ngayDangKy) {
+        this.ngayDangKy = ngayDangKy;
+    }
+
+    public int getMaTaiKhoan() {
+        return maTaiKhoan;
+    }
+
+    public void setMaTaiKhoan(int maTaiKhoan) {
+        this.maTaiKhoan = maTaiKhoan;
+    }
 }
+
