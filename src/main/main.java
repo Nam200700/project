@@ -16,6 +16,7 @@ import util.jdbchelper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import raven.drawer.MyDrawerBuilder;
 
 /**
  *
@@ -291,7 +292,7 @@ public class main extends javax.swing.JFrame {
     private void btn_signupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_signupActionPerformed
         String username = txt_username.getText().trim();
         String password = new String(txt_password.getPassword()).trim();
-        
+
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!!");
             return;
@@ -300,17 +301,37 @@ public class main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu đăng nhập!!");
             return;
         }
+
         // Mã hóa mật khẩu để so sánh
         String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT fullname, password FROM user WHERE fullname =? AND password =? ";
+        String sql = "SELECT TenDangNhap, MatKhau FROM TAIKHOAN WHERE TenDangNhap =? AND MatKhau =? ";
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
             if (rs.next()) {
-                JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                view vi = new view();
-                vi.setVisible(true);
-                this.dispose();
-            }else{
-                JOptionPane.showMessageDialog(this,"Mật khẩu hoặc password sai vui lòng thử lại!!!");
+                // Lấy quyền người dùng từ cơ sở dữ liệu
+                String getRoleSql = "SELECT pq.TenQuyen FROM PHANQUYEN pq "
+                        + "JOIN PHANQUYEN_TAIKHOAN pt ON pq.MaQuyen = pt.MaQuyen "
+                        + "JOIN TAIKHOAN tk ON pt.MaTaiKhoan = tk.MaTaiKhoan "
+                        + "WHERE tk.TenDangNhap = ?";
+                try (ResultSet roleRs = jdbchelper.executeQuery(getRoleSql, username)) {
+                    if (roleRs.next()) {
+                        String role = roleRs.getString("TenQuyen");
+                        MyDrawerBuilder.setuserName(username);
+
+                        // Lưu quyền của người dùng vào một biến toàn cục để sử dụng trong MyDrawerBuilder
+                        MyDrawerBuilder.setUserRole(role);
+
+                        JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công với quyền: " + role, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                        // Mở giao diện chính
+                        view vi = new view();
+                        vi.setVisible(true);
+                        this.dispose();
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi lấy quyền người dùng: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Mật khẩu hoặc tên đăng nhập sai vui lòng thử lại!!!");
                 return;
             }
         } catch (SQLException e) {

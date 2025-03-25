@@ -1,5 +1,10 @@
 package raven.drawer;
 
+import DAO.userDAO;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import raven.drawer.component.SimpleDrawerBuilder;
@@ -14,43 +19,76 @@ import ui.view;
 import raven.swing.AvatarIcon;
 import ui.QL_tacgia;
 import ui.Test;
+import java.util.Set;
 
-/**
- *
- * @author RAVEN
- */
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
+
+    private static String userRole = "";  // Biến toàn cục để lưu quyền người dùng
+    private static String userName = "";
+
+    public static void setUserRole(String role) {
+        userRole = role;  // Cập nhật quyền người dùng
+    }
+
+    public static void setuserName(String name) {
+        userName = name;  // Cập nhật quyền người dùng
+    }
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
         return new SimpleHeaderData()
                 .setIcon(new AvatarIcon(getClass().getResource("/image/profile.png"), 65, 65, 999))
-                .setTitle("Nam")
+                .setTitle(userName)
                 .setDescription("raven@gmail.com");
-
     }
 
     @Override
     public SimpleMenuOption getSimpleMenuOption() {
+
+        // Gọi setUserRole để đảm bảo quyền người dùng được cập nhật
+        userDAO.setUserRole(userName); 
+
+        Set<String> allowedFunctions = new HashSet<>(userDAO.getAllowedFunctions());
+
+        // In ra các chức năng hợp lệ
+        System.out.println("Allowed functions: " + allowedFunctions);
+
         String menus[][] = {
-            {"~MAIN~"},
             {"Dashboard"},
-            {"~WEB APP~"},
-            {"Email", "Inbox", "Read", "Compost"},
-            {"Chat"},
-            {"Calendar"},
-            {"~COMPONENT~"},
-            {"Advanced UI", "Cropper", "Owl Carousel", "Sweet Alert"},
-            {"Forms", "Basic Elements", "Advanced Elements", "SEditors", "Wizard"},
-            {"~OTHER~"},
-            {"Charts", "Apex", "Flot", "Sparkline"},
-            {"Icons", "Feather Icons", "Flag Icons", "Mdi Icons"},
-            {"Special Pages", "Blank page", "Faq", "Invoice", "Profile", "Pricing", "Timeline"},
-            {"Logout"}};
+            {"Quản lý độc giả"},
+            {"Đăng ký thẻ"},
+            {"Mượn sách"},
+            {"Trả sách"},
+            {"Sách"},
+            {"Thể loại"},
+            {"Tác giả"},
+            {"Nhà xuất bản"},
+            {"Khu vực sách"},
+            {"Lưu trữ sách cũ"},
+            {"Duyệt yêu cầu"},
+            {"Phiếu mượn"},
+            {"Phiếu trả"},
+            {"Send mail"},
+            {"Logout"}
+        };
 
         String icons[] = {
             "chart.svg",
-            "book.svg"
+            "reader.svg",
+            "membership.svg",
+            "book.svg",
+            "book_return.svg",
+            "book1.svg",
+            "bookmark.svg",
+            "author.svg",
+            "publisher.svg",
+            "area_book.svg",
+            "old_book.svg",
+            "approve.svg",
+            "slip.svg",
+            "return_slip.svg",
+            "sendmail.svg",
+            "logout.svg"
         };
 
         return new SimpleMenuOption()
@@ -61,11 +99,12 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .addMenuEvent(new MenuEvent() {
                     @Override
                     public void selected(MenuAction action, int index, int subIndex) {
+                        // Xử lý khi người dùng chọn một menu hợp lệ
                         if (index == 0) {
                             WindowsTabbed.getInstance().addTab("Test Form", new Test());
-                        }else if(index == 2){
+                        } else if (index == 2) {
                             WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
-                        }else if (index == 9) {
+                        } else if (index == 15) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {
@@ -81,18 +120,21 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 .setMenuValidation(new MenuValidation() {
                     @Override
                     public boolean menuValidation(int index, int subIndex) {
-//                        if(index==0){
-//                            return false;
-//                        }else if(index==3){
-//                            return false;
-//                        }
-                        return true;
+                        if (index >= 0 && index < menus.length) {
+                            String menuName = menus[index][subIndex];  // Lấy tên menu con
+                            if (allowedFunctions.contains(menuName)) {
+                                System.out.println("Access granted for: " + menuName);  // Debug thông báo
+                                return true;  // Nếu có quyền truy cập thì cho phép
+                            } else {
+                                System.out.println("Access denied for: " + menuName);  // Debug thông báo
+                                return false;  // Nếu không có quyền thì từ chối
+                            }
+                        }
+                        return false;
                     }
                 });
     }
-    
 
-    
     @Override
     public SimpleFooterData getSimpleFooterData() {
         return new SimpleFooterData()
