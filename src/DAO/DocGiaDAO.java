@@ -15,8 +15,8 @@ import Entity.DocGia;
 public class DocGiaDAO {
 
     public static void insert(DocGia dg) {
-        String sql = "INSERT INTO docgia (HoTen, GioiTinh, SoDienThoai, Email, NgayDangKy, MaTaiKhoan) VALUES (?, ?, ?, ?, ?, ?)";
-        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getEmail(), dg.getNgayDangKy(), dg.getMaTaiKhoan());
+        String sql = "INSERT INTO docgia (HoTen, GioiTinh, SoDienThoai, DiaChi, NgayDangKy, MaTaiKhoan) VALUES (?, ?, ?, ?, ?, ?)";
+        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiachi(), dg.getNgayDangKy(), dg.getMaTaiKhoan());
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Thêm độc giả thành công!");
@@ -26,8 +26,8 @@ public class DocGiaDAO {
     }
 
     public static void update(DocGia dg) {
-        String sql = "UPDATE docgia SET HoTen = ?, GioiTinh = ?, SoDienThoai = ?, Email = ?, NgayDangKy = ?, MaTaiKhoan = ? WHERE MaDocGia = ?";
-        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getEmail(), dg.getNgayDangKy(), dg.getMaTaiKhoan(), dg.getMaDocGia());
+        String sql = "UPDATE docgia SET HoTen = ?, GioiTinh = ?, SoDienThoai = ?, DiaChi = ?, NgayDangKy = ?, MaTaiKhoan = ? WHERE MaDocGia = ?";
+        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiachi(), dg.getNgayDangKy(), dg.getMaTaiKhoan(), dg.getMaDocGia());
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Cập nhật độc giả thành công!");
@@ -59,7 +59,7 @@ public class DocGiaDAO {
                 dg.setHoTen(rs.getString("HoTen"));
                 dg.setGioiTinh(rs.getString("GioiTinh"));
                 dg.setSoDienThoai(rs.getString("SoDienThoai"));
-                dg.setEmail(rs.getString("Email"));
+                dg.setDiachi(rs.getString("DiaChi"));
                 dg.setNgayDangKy(rs.getDate("NgayDangKy"));
                 dg.setMaTaiKhoan(rs.getInt("MaTaiKhoan"));
                 docGiaList.add(dg);

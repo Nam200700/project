@@ -274,71 +274,70 @@ public class register extends javax.swing.JFrame {
 
         // Mã hóa mật khẩu
         String encryptedPassword = AES.encrypt(password);
-
-        try {
-            // Kiểm tra email đã tồn tại hay chưa
-            String checkEmailSql = "SELECT * FROM TAIKHOAN WHERE Email = ?";
-            try (ResultSet rs = jdbchelper.executeQuery(checkEmailSql, email)) {
-                if (rs.next()) {
-                    JOptionPane.showMessageDialog(null, "Email đã tồn tại, vui lòng sử dụng email khác!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                }
-            }
-
-            // Kiểm tra tên tài khoản đã tồn tại chưa
-            String checkUsernameSql = "SELECT * FROM TAIKHOAN WHERE TenDangNhap = ?";
-            try (ResultSet rs = jdbchelper.executeQuery(checkUsernameSql, username)) {
-                if (rs.next()) {
-                    JOptionPane.showMessageDialog(null, "Tên tài khoản đã tồn tại, vui lòng sử dụng tên khác!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                }
-            }
-
-            // Thêm tài khoản mới vào bảng TAIKHOAN
-            String insertUserSql = "INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, Email) VALUES (?, ?, ?)";
-            int rowInsert = jdbchelper.executeUpdate(insertUserSql, username, encryptedPassword, email);
-
-            if (rowInsert > 0) {
-                // Lấy MaTaiKhoan của tài khoản vừa tạo
-                String getUserIdSql = "SELECT MaTaiKhoan FROM TAIKHOAN WHERE TenDangNhap = ?";
-                int maTaiKhoan = -1;
-
-                try (ResultSet rs = jdbchelper.executeQuery(getUserIdSql, username)) {
-                    if (rs.next()) {
-                        maTaiKhoan = rs.getInt("MaTaiKhoan");
-                    }
-                }
-
-                if (maTaiKhoan != -1) {
-                    // Lấy MaQuyen của "Độc giả"
-                    String getRoleIdSql = "SELECT MaQuyen FROM PHANQUYEN WHERE TenQuyen = 'Độc giả'";
-                    int maQuyen = -1;
-
-                    try (ResultSet rs = jdbchelper.executeQuery(getRoleIdSql)) {
-                        if (rs.next()) {
-                            maQuyen = rs.getInt("MaQuyen");
-                        }
-                    }
-
-                    if (maQuyen != -1) {
-                        // Gán quyền "Độc giả" cho tài khoản mới
-                        String assignRoleSql = "INSERT INTO PHANQUYEN_TAIKHOAN (MaTaiKhoan, MaQuyen) VALUES (?, ?)";
-                        jdbchelper.executeUpdate(assignRoleSql, maTaiKhoan, maQuyen);
-                    }
-                }
-
-                JOptionPane.showMessageDialog(null, "Đăng ký thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                main mn = new main();
-                mn.setVisible(true);
-                mn.setLocationRelativeTo(null);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(null, "Đăng ký thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+try {
+    // Kiểm tra email đã tồn tại hay chưa
+    String checkEmailSql = "SELECT * FROM TAIKHOAN WHERE Email = ?";
+    try (ResultSet rs = jdbchelper.executeQuery(checkEmailSql, email)) {
+        if (rs.next()) {
+            JOptionPane.showMessageDialog(null, "Email đã tồn tại, vui lòng sử dụng email khác!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
+    }
+
+    // Kiểm tra tên tài khoản đã tồn tại chưa
+    String checkUsernameSql = "SELECT * FROM TAIKHOAN WHERE TenDangNhap = ?";
+    try (ResultSet rs = jdbchelper.executeQuery(checkUsernameSql, username)) {
+        if (rs.next()) {
+            JOptionPane.showMessageDialog(null, "Tên tài khoản đã tồn tại, vui lòng sử dụng tên khác!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+    }
+
+    // Thêm tài khoản mới vào bảng TAIKHOAN
+    String insertUserSql = "INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, Email) VALUES (?, ?, ?)";
+    int rowInsert = jdbchelper.executeUpdate(insertUserSql, username, encryptedPassword, email);
+
+    if (rowInsert > 0) {
+        // Lấy MaTaiKhoan của tài khoản vừa tạo
+        String getUserIdSql = "SELECT MaTaiKhoan FROM TAIKHOAN WHERE TenDangNhap = ?";
+        int maTaiKhoan = -1;
+
+        try (ResultSet rs = jdbchelper.executeQuery(getUserIdSql, username)) {
+            if (rs.next()) {
+                maTaiKhoan = rs.getInt("MaTaiKhoan");
+            }
+        }
+
+        if (maTaiKhoan != -1) {
+            // Lấy MaQuyen của "Độc giả"
+            String getRoleIdSql = "SELECT MaQuyen FROM PHANQUYEN WHERE TenQuyen = 'Độc giả'";
+            int maQuyen = -1;
+
+            try (ResultSet rs = jdbchelper.executeQuery(getRoleIdSql)) {
+                if (rs.next()) {
+                    maQuyen = rs.getInt("MaQuyen");
+                }
+            }
+
+            if (maQuyen != -1) {
+                // Gán quyền "Độc giả" cho tài khoản mới
+                String assignRoleSql = "INSERT INTO PHANQUYEN_TAIKHOAN (MaTaiKhoan, MaQuyen) VALUES (?, ?)";
+                jdbchelper.executeUpdate(assignRoleSql, maTaiKhoan, maQuyen);
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Đăng ký thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        main mn = new main();
+        mn.setVisible(true);
+        mn.setLocationRelativeTo(null);
+        this.dispose();
+    } else {
+        JOptionPane.showMessageDialog(null, "Đăng ký thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+}
     }//GEN-LAST:event_btn_registerActionPerformed
 
 //    /**

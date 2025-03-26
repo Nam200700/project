@@ -53,7 +53,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txtsodienthoai" max="32767" attributes="0"/>
-                          <Component id="txtemail" min="-2" pref="113" max="-2" attributes="0"/>
+                          <Component id="txtdiachi" min="-2" pref="113" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -85,7 +85,7 @@
               </Group>
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtemail" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtdiachi" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtmataikhoan" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -153,7 +153,7 @@
                 <Column editable="true" title="T&#xea;n &#x111;&#x1ed9;c gi&#x1ea3;" type="java.lang.Object"/>
                 <Column editable="true" title="Gi&#x1edb;i t&#xed;nh" type="java.lang.Object"/>
                 <Column editable="true" title="S&#x1ed1; &#x111;i&#x1ec7;n tho&#x1ea1;i" type="java.lang.Object"/>
-                <Column editable="true" title="Email" type="java.lang.Object"/>
+                <Column editable="true" title="&#x110;&#x1ecb;a ch&#x1ec9;" type="java.lang.Object"/>
                 <Column editable="true" title="Ng&#xe0;y &#x111;&#x103;ng k&#xed;" type="java.lang.Object"/>
                 <Column editable="true" title="M&#xe3; t&#xe0;i kho&#x1ea3;n" type="java.lang.Object"/>
               </Table>
@@ -233,11 +233,11 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtsodienthoai">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtemail">
+    <Component class="javax.swing.JTextField" name="txtdiachi">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Email"/>
+        <Property name="text" type="java.lang.String" value="&#x110;&#x1ecb;a ch&#x1ec9;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">

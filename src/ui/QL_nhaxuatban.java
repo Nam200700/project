@@ -6,24 +6,84 @@ package ui;
 
 import DAO.NhaXuatBanDAO;
 import Entity.NhaXuatBan;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import raven.drawer.TabbedForm;
+import swing.RoundTablenhaxuatban;
+import swing.RoundTabletheloai;
 
 /**
  *
  * @author ACER
  */
 public class QL_nhaxuatban extends TabbedForm {
+
     List<NhaXuatBan> dsNhaXuatBan = new ArrayList<>();
+
     /**
      * Creates new form QL_nhaxuatban
      */
     public QL_nhaxuatban() {
         initComponents();
         fillTable();
+        guitacgia();
+        // Bo góc cho JTextField
+        txt_tennhaxuatban.putClientProperty("JComponent.roundRect", true);
+        txt_tennhaxuatban.putClientProperty("JTextField.placeholderText", "Nhập tên nhà xuất bản...");
+        txt_tennhaxuatban.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        btn_them.putClientProperty("JComponent.roundRect", true);
+        btn_them.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        panel.setBackground(Color.white);
+        panel.setBounds(50, 50, 250, 150);
+
+    }
+    public void guitacgia() {
+        // Áp dụng FlatLaf
+        FlatLightLaf.setup();
+        UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
+
+        // Kiểm tra nếu `tbltheloai` chưa khởi tạo
+        if (tbl_nhaxuatban == null) {
+            DefaultTableModel model = new DefaultTableModel(
+                    new Object[][]{},
+                    new String[]{"Mã The loai", "Tên The loai"}
+            );
+            tbl_nhaxuatban = new RoundTablenhaxuatban(model);
+        } else {
+            DefaultTableModel model = (DefaultTableModel) tbl_nhaxuatban.getModel();
+            tbl_nhaxuatban = new RoundTablenhaxuatban(model); // Tạo lại với model cũ
+        }
+
+        tbl_nhaxuatban.setPreferredScrollableViewportSize(new Dimension(500, 200)); // Kích thước mặc định
+
+        // Đảm bảo jScrollPane1 đang chứa `tbltacgia`
+        jScrollPane1.setViewportView(tbl_nhaxuatban); // Cập nhật bảng vào ScrollPane
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
+        jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
+
+        // Bo góc cho JTextField
+        txt_tennhaxuatban.putClientProperty("JComponent.roundRect", true);
+        txt_tennhaxuatban.putClientProperty("JTextField.placeholderText", "Nhập tên thể loại...");
+        txt_tennhaxuatban.putClientProperty("JTextField.showClearButton", true);
+        txt_tennhaxuatban.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        // Cập nhật lại JButton với bo góc
+        btn_them.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
+        btn_capnhat.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
+        btn_xoa.setIcon(new ImageIcon(getClass().getResource("/image/delete.png")));
+
+        // Refresh UI
+        SwingUtilities.updateComponentTreeUI(jScrollPane1);
     }
     public void addNhaXuatBan() {
         // Kiểm tra các trường nhập liệu
@@ -44,6 +104,7 @@ public class QL_nhaxuatban extends TabbedForm {
         fillTable();
         clean();
     }
+
     public void updateNhaXuatBan() {
         // Kiểm tra xem có dòng nào được chọn không
         int index = tbl_nhaxuatban.getSelectedRow();
@@ -81,6 +142,7 @@ public class QL_nhaxuatban extends TabbedForm {
             JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật nhà xuất bản: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public void removeNhaXuatBan() {
         // Lấy danh sách các dòng được chọn trong bảng
         int[] selectedRows = tbl_nhaxuatban.getSelectedRows();
@@ -153,6 +215,7 @@ public class QL_nhaxuatban extends TabbedForm {
     public void clean() {
         txt_tennhaxuatban.setText("");
     }
+
     public void clickNhaXuatBan() {
         // Kiểm tra xem bảng có dữ liệu hay không
         if (tbl_nhaxuatban.getRowCount() == 0) {
@@ -186,13 +249,61 @@ public class QL_nhaxuatban extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panel = new swing.RoundedPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txt_tennhaxuatban = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl_nhaxuatban = new javax.swing.JTable();
         btn_them = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
         btn_capnhat = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tbl_nhaxuatban = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        txt_tennhaxuatban = new javax.swing.JTextField();
+
+        setOpaque(false);
+
+        panel.setPreferredSize(new java.awt.Dimension(777, 481));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setText("Tên nhà xuất bản");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 19, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        tbl_nhaxuatban.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Mã nhà xuất bản", "Tên nhà xuất bản"
+            }
+        ));
+        tbl_nhaxuatban.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_nhaxuatbanMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbl_nhaxuatban);
 
         btn_them.setText("Thêm");
         btn_them.addActionListener(new java.awt.event.ActionListener() {
@@ -215,86 +326,74 @@ public class QL_nhaxuatban extends TabbedForm {
             }
         });
 
-        tbl_nhaxuatban.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Mã nhà xuất bản", "Tên nhà xuất bản"
-            }
-        ));
-        tbl_nhaxuatban.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbl_nhaxuatbanMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tbl_nhaxuatban);
-
-        jLabel1.setText("Tên nhà xuất bản");
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(btn_them)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_xoa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_capnhat))
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 731, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(79, Short.MAX_VALUE))
+        );
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_them)
+                        .addComponent(btn_xoa)
+                        .addComponent(btn_capnhat)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(54, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_capnhat)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btn_them)
-                                .addGap(18, 18, 18)
-                                .addComponent(btn_xoa)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                .addGap(74, 74, 74)
+                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 838, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txt_tennhaxuatban, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(116, 116, 116)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_them)
-                            .addComponent(btn_xoa))
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_capnhat))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addGap(51, 51, 51)
+                .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-       addNhaXuatBan();
+        addNhaXuatBan();
     }//GEN-LAST:event_btn_themActionPerformed
 
     private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
         removeNhaXuatBan();
     }//GEN-LAST:event_btn_xoaActionPerformed
 
-    private void btn_capnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_capnhatActionPerformed
-        updateNhaXuatBan();
-    }//GEN-LAST:event_btn_capnhatActionPerformed
-
     private void tbl_nhaxuatbanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_nhaxuatbanMouseClicked
         clickNhaXuatBan();
     }//GEN-LAST:event_tbl_nhaxuatbanMouseClicked
+
+    private void btn_capnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_capnhatActionPerformed
+        updateNhaXuatBan();
+    }//GEN-LAST:event_btn_capnhatActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -302,7 +401,9 @@ public class QL_nhaxuatban extends TabbedForm {
     private javax.swing.JButton btn_them;
     private javax.swing.JButton btn_xoa;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private swing.RoundedPanel panel;
     private javax.swing.JTable tbl_nhaxuatban;
     private javax.swing.JTextField txt_tennhaxuatban;
     // End of variables declaration//GEN-END:variables
