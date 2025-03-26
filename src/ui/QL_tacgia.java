@@ -13,6 +13,11 @@ import DAO.TacGiaDAO;
 import java.util.ArrayList;
 import java.util.List;
 import raven.drawer.TabbedForm;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 
 /**
  *
@@ -20,6 +25,7 @@ import raven.drawer.TabbedForm;
  */
 public class QL_tacgia extends TabbedForm {
 
+    
     List<TacGia> tacgiasach = new ArrayList<>();
 
     /**
@@ -29,8 +35,26 @@ public class QL_tacgia extends TabbedForm {
         initComponents();
         loadDataToTable();
         clearFields();
+        guitacgia();
     }
+        public void guitacgia(){
+            try {
+        UIManager.setLookAndFeel(new FlatLightLaf()); // Dùng theme sáng
+        // UIManager.setLookAndFeel(new FlatDarculaLaf()); // Nếu muốn Dark Mode
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+        SwingUtilities.updateComponentTreeUI(this);
 
+
+
+
+}
+    
+    
+    
+    
+    
     public void addTacGia() {
         // Kiểm tra các trường nhập liệu
         if (txtTenTacGia.getText().equals("")) {

@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Git/project/src/main/main.java</file>
-            <file>file:/D:/Git/project/src/DAO/userDAO.java</file>
-            <file>file:/D:/Git/project/src/main/register.java</file>
-            <file>file:/D:/Git/project/src/ui/view.java</file>
-            <file>file:/D:/Git/project/src/raven/drawer/MyDrawerBuilder.java</file>
-            <file>file:/D:/Git/project/src/util/jdbchelper.java</file>
+            <file>file:/C:/Users/Acer/project/src/raven/drawer/TabbedForm.java</file>
+            <file>file:/C:/Users/Acer/project/src/swing/RoundedScrollPane.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/QL_mail.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/view.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/QL_nhaxuatban.java</file>
+            <file>file:/C:/Users/Acer/project/src/ui/QL_tacgia.java</file>
         </group>
     </open-files>
 </project-private>
