@@ -29,6 +29,7 @@ public class view extends javax.swing.JFrame {
         initComponents();
         init();
         this.setLocationRelativeTo(this);
+        setSize(1000, 700);
     }
 
     private void init() {
@@ -107,6 +108,7 @@ public class view extends javax.swing.JFrame {
         FlatLaf.registerCustomDefaultsSource("raven.themes");
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
         FlatMacLightLaf.setup();
+        UIManager.put("Button.arc", 20); // Bo góc 20px cho tất cả các JButton
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 View = new view();

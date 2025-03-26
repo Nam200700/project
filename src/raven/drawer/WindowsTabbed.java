@@ -8,7 +8,9 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -116,22 +118,36 @@ public class WindowsTabbed {
 
     private void changeThemes(boolean dark) {
         if (FlatLaf.isLafDark() != dark) {
-            if (!dark) {
-                EventQueue.invokeLater(() -> {
-                    FlatAnimatedLafChange.showSnapshot();
+            EventQueue.invokeLater(() -> {
+                FlatAnimatedLafChange.showSnapshot();
+                if (!dark) {
                     FlatIntelliJLaf.setup();
-                    FlatLaf.updateUI();
-                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
-                });
-            } else {
-                EventQueue.invokeLater(() -> {
-                    FlatAnimatedLafChange.showSnapshot();
+                } else {
                     FlatDarculaLaf.setup();
-                    FlatLaf.updateUI();
-                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
-                });
+                }
+                FlatLaf.updateUI();
+                FlatAnimatedLafChange.hideSnapshotWithAnimation();
+
+                // Cập nhật màu nền cho body và tất cả JPanel bên trong
+                updatePanelColors(body, dark);
+            });
+        }
+    }
+
+    private void updatePanelColors(Container container, boolean dark) {
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof JPanel) {
+                JPanel panel = (JPanel) comp;
+                if (dark) {
+                    panel.setBackground(new Color(45, 45, 45));
+                    panel.setForeground(Color.gray);
+                } else {
+                    panel.setBackground(Color.gray);
+                    panel.setForeground(Color.BLACK);
+                }
             }
         }
+        container.repaint();
     }
 
     private JScrollPane createScroll(Component com) {

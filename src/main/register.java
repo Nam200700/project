@@ -283,7 +283,7 @@ public class register extends javax.swing.JFrame {
         // mã hóa mật khẩu trước khi ta lưu vào database
         String encryptedPassword = AES.encrypt(password);
         // kiểm tra email đã tồn tại hay chưa
-        String checkemailsql = "SELECT * FROM user WHERE email = ?";
+        String checkemailsql = "SELECT * FROM taikhoan WHERE Email = ?";
         try (ResultSet rsemail = jdbchelper.executeQuery(checkemailsql, email)) {
             if (rsemail != null && rsemail.next()) {
                 JOptionPane.showMessageDialog(null, "Email đã tồn tại vui lòng sử dụng email khác!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -293,7 +293,7 @@ public class register extends javax.swing.JFrame {
             e.printStackTrace();
         }
         // kiểm tra tên tài khoản đã tồn tại chưa
-        String checkusernamesql = "SELECT * FROM user WHERE fullname = ?";
+        String checkusernamesql = "SELECT * FROM taikhoan WHERE TenDangNhap = ?";
         try (ResultSet rsemail = jdbchelper.executeQuery(checkemailsql, email)) {
             if (rsemail != null && rsemail.next()) {
                 JOptionPane.showMessageDialog(null, "Tên tài khoản đã tồn tại vui lòng sử dụng tên khác!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -303,7 +303,7 @@ public class register extends javax.swing.JFrame {
             e.printStackTrace();
         }
         // cập nhật tên email và mật khẩu vào database
-        String insertSQL = "INSERT INTO user (fullname, email, password) VALUES (?, ?, ?)";
+        String insertSQL = "INSERT INTO taikhoan (TenDangNhap, Email, MatKhau) VALUES (?, ?, ?)";
         int rowinsert = jdbchelper.executeUpdate(insertSQL, username, email, encryptedPassword);
         if (rowinsert > 0) {
             JOptionPane.showMessageDialog(null, "Đăng kí thành công!!", "Success", JOptionPane.INFORMATION_MESSAGE);

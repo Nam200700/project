@@ -10,9 +10,26 @@ import javax.swing.table.DefaultTableModel;
 import util.jdbchelper;
 import java.sql.*;
 import DAO.TacGiaDAO;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneLayout;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import raven.drawer.TabbedForm;
+import swing.RoundButton;
+import swing.ImageHeaderRenderer;
+import swing.RoundTable;
 
 /**
  *
@@ -29,8 +46,46 @@ public class QL_tacgia extends TabbedForm {
         initComponents();
         loadDataToTable();
         clearFields();
+        guitacgia();
     }
+    public void guitacgia() {
+        // Áp dụng FlatLaf
+        FlatLightLaf.setup();
+        UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
 
+        // Kiểm tra nếu `tbltacgia` chưa khởi tạo
+        if (tbltacgia == null) {
+            DefaultTableModel model = new DefaultTableModel(
+                    new Object[][]{},
+                    new String[]{"Mã TG", "Tên tác giả", "Năm sinh"}
+            );
+            tbltacgia = new RoundTable(model);
+        } else {
+            DefaultTableModel model = (DefaultTableModel) tbltacgia.getModel();
+            tbltacgia = new RoundTable(model); // Tạo lại với model cũ
+        }
+
+        tbltacgia.setPreferredScrollableViewportSize(new Dimension(500, 200)); // Kích thước mặc định
+
+        // Đảm bảo jScrollPane1 đang chứa `tbltacgia`
+        jScrollPane1.setViewportView(tbltacgia); // Cập nhật bảng vào ScrollPane
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
+        jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
+
+        // Bo góc cho JTextField
+        txtTenTacGia.putClientProperty("JComponent.roundRect", true);
+        txtTenTacGia.putClientProperty("JTextField.placeholderText", "Nhập tên tác giả...");
+        txtTenTacGia.putClientProperty("JTextField.showClearButton", true);
+        txtTenTacGia.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        // Cập nhật lại JButton với bo góc
+        btnThem.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
+        btnCapNhat.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
+        btnXoa.setIcon(new ImageIcon(getClass().getResource("/image/delete.png")));
+
+        // Refresh UI
+        SwingUtilities.updateComponentTreeUI(jScrollPane1);
+    }
     public void addTacGia() {
         // Kiểm tra các trường nhập liệu
         if (txtTenTacGia.getText().equals("")) {
@@ -224,13 +279,14 @@ public class QL_tacgia extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        roundedPanel1 = new swing.RoundedPanel();
         btnThem = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tbltacgia = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         txtTenTacGia = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbltacgia = new javax.swing.JTable();
 
         btnThem.setText("Thêm");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
@@ -253,6 +309,8 @@ public class QL_tacgia extends TabbedForm {
             }
         });
 
+        jLabel1.setText("Tên tác giả");
+
         tbltacgia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -271,47 +329,57 @@ public class QL_tacgia extends TabbedForm {
         });
         jScrollPane1.setViewportView(tbltacgia);
 
-        jLabel1.setText("Tên tác giả");
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(191, 191, 191)
+                        .addComponent(btnThem)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnXoa)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCapNhat)))
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThem)
+                    .addComponent(btnXoa)
+                    .addComponent(btnCapNhat))
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(170, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnXoa)
-                        .addGap(12, 12, 12))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnThem)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnCapNhat))
-                        .addGap(27, 27, 27)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                .addGap(64, 64, 64)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtTenTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(139, 139, 139)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnThem)
-                            .addComponent(btnXoa))
-                        .addGap(29, 29, 29)
-                        .addComponent(btnCapNhat))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -338,6 +406,7 @@ public class QL_tacgia extends TabbedForm {
     private javax.swing.JButton btnXoa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tbltacgia;
     private javax.swing.JTextField txtTenTacGia;
     // End of variables declaration//GEN-END:variables

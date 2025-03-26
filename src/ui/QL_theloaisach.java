@@ -6,11 +6,19 @@ package ui;
 
 import DAO.TheLoaiDAO;
 import Entity.TheLoai;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import raven.drawer.TabbedForm;
+import swing.RoundTabletheloai;
 
 /**
  *
@@ -27,8 +35,46 @@ public class QL_theloaisach extends TabbedForm {
     public QL_theloaisach() {
         initComponents();
         fillTable();
+        guitacgia();
     }
+    public void guitacgia() {
+        // Áp dụng FlatLaf
+        FlatLightLaf.setup();
+        UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
 
+        // Kiểm tra nếu `tbltheloai` chưa khởi tạo
+        if (tblloaisach == null) {
+            DefaultTableModel model = new DefaultTableModel(
+                    new Object[][]{},
+                    new String[]{"Mã The loai", "Tên The loai"}
+            );
+            tblloaisach = new RoundTabletheloai(model);
+        } else {
+            DefaultTableModel model = (DefaultTableModel) tblloaisach.getModel();
+            tblloaisach = new RoundTabletheloai(model); // Tạo lại với model cũ
+        }
+
+        tblloaisach.setPreferredScrollableViewportSize(new Dimension(500, 200)); // Kích thước mặc định
+
+        // Đảm bảo jScrollPane1 đang chứa `tbltacgia`
+        jScrollPane1.setViewportView(tblloaisach); // Cập nhật bảng vào ScrollPane
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
+        jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
+
+        // Bo góc cho JTextField
+        txt_tenloaisach.putClientProperty("JComponent.roundRect", true);
+        txt_tenloaisach.putClientProperty("JTextField.placeholderText", "Nhập tên thể loại...");
+        txt_tenloaisach.putClientProperty("JTextField.showClearButton", true);
+        txt_tenloaisach.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        // Cập nhật lại JButton với bo góc
+        btn_them.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
+        btn_sua.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
+        btn_xoa.setIcon(new ImageIcon(getClass().getResource("/image/delete.png")));
+
+        // Refresh UI
+        SwingUtilities.updateComponentTreeUI(jScrollPane1);
+    }
     public void addtheloai() {
         // Kiểm tra các trường nhập liệu
         if (txt_tenloaisach.getText().equals("")) {
@@ -203,22 +249,18 @@ public class QL_theloaisach extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btn_them = new javax.swing.JButton();
+        roundedPanel1 = new swing.RoundedPanel();
         btn_xoa = new javax.swing.JButton();
         btn_sua = new javax.swing.JButton();
+        btn_them = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txt_tenloaisach = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblloaisach = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        txt_tenloaisach = new javax.swing.JTextField();
 
-        btn_them.setText("Thêm");
-        btn_them.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_themActionPerformed(evt);
-            }
-        });
+        setOpaque(false);
 
         btn_xoa.setText("Xóa");
         btn_xoa.addActionListener(new java.awt.event.ActionListener() {
@@ -233,6 +275,15 @@ public class QL_theloaisach extends TabbedForm {
                 btn_suaActionPerformed(evt);
             }
         });
+
+        btn_them.setText("Thêm");
+        btn_them.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_themActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Tên loại sách:");
 
         tblloaisach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -254,56 +305,67 @@ public class QL_theloaisach extends TabbedForm {
 
         jButton4.setText("Tìm kiếm");
 
-        jLabel1.setText("Tên loại sách:");
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(129, 129, 129)
+                        .addComponent(btn_them)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_xoa)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_sua))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGap(196, 196, 196)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(jButton4))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 718, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(53, Short.MAX_VALUE))
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_them)
+                    .addComponent(btn_xoa)
+                    .addComponent(btn_sua))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                .addGap(39, 39, 39)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4))
+                .addGap(20, 20, 20))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
-                .addComponent(jButton4)
-                .addGap(193, 193, 193))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 62, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_them, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btn_sua, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_xoa))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(37, 37, 37)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addGap(74, 74, 74)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(53, 53, 53)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_xoa)
-                            .addComponent(btn_them))
-                        .addGap(30, 30, 30)
-                        .addComponent(btn_sua))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGap(51, 51, 51)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(52, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -332,6 +394,7 @@ public class QL_theloaisach extends TabbedForm {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
+    private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tblloaisach;
     private javax.swing.JTextField txt_tenloaisach;
     // End of variables declaration//GEN-END:variables

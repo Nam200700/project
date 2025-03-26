@@ -38,55 +38,37 @@ public class QL_docgia extends TabbedForm {
         // Kiểm tra từng trường nhập liệu
         if (txttendocgia.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên độc giả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
         if (cbbgioitinh.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
         if (txtsodienthoai.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
         if (!txtsodienthoai.getText().matches("\\d{10,11}")) {
             JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
-        if (txtemail.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập email!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
-        }
-
-        if (!txtemail.getText().matches("^[\\w-]+(\\.[\\w-]+)*@[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$")) {
-            JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+        if (txtdiachi.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
         if (txtngaydangki.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày đăng ký!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
         if (txtmataikhoan.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mã tài khoản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return ;
-        }
-
-        // Kiểm tra email đã tồn tại hay chưa
-        String checkEmailSQL = "SELECT * FROM taikhoan WHERE Email = ?";
-        try (ResultSet rsEmail = jdbchelper.executeQuery(checkEmailSQL, txtemail.getText())) {
-            if (rsEmail != null && rsEmail.next()) {
-                JOptionPane.showMessageDialog(null, "Email đã tồn tại, vui lòng sử dụng email khác!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                return ;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi kiểm tra email: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return ;
+            return;
         }
 
         // Chuyển đổi ngày đăng ký từ chuỗi sang java.sql.Date
@@ -98,7 +80,7 @@ public class QL_docgia extends TabbedForm {
             ngayDangKy = new Date(utilDate.getTime());
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(this, "Ngày đăng ký không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return ;
+            return;
         }
 
         // Chuyển đổi mã tài khoản từ String sang int
@@ -107,7 +89,7 @@ public class QL_docgia extends TabbedForm {
             maTaiKhoan = Integer.parseInt(txtmataikhoan.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Mã tài khoản phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return ;
+            return;
         }
 
         // Tạo đối tượng độc giả
@@ -115,7 +97,7 @@ public class QL_docgia extends TabbedForm {
         dg.setHoTen(txttendocgia.getText().trim());
         dg.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
         dg.setSoDienThoai(txtsodienthoai.getText().trim());
-        dg.setEmail(txtemail.getText().trim());
+        dg.setDiachi(txtdiachi.getText().trim());
         dg.setNgayDangKy(ngayDangKy);
         dg.setMaTaiKhoan(maTaiKhoan);
 
@@ -125,11 +107,11 @@ public class QL_docgia extends TabbedForm {
             docgialist.add(dg);
             fillTable();
             clean();
-            return ;
+            return;
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return ;
+            return;
         }
     }
 
@@ -161,15 +143,12 @@ public class QL_docgia extends TabbedForm {
             return;
         }
 
-        if (txtemail.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập email!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+        if (txtdiachi.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (!txtemail.getText().matches("^[\\w-]+(\\.[\\w-]+)*@[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$")) {
-            JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        
 
         if (txtngaydangki.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày đăng ký!", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -207,7 +186,7 @@ public class QL_docgia extends TabbedForm {
         docgia.setHoTen(txttendocgia.getText().trim());
         docgia.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
         docgia.setSoDienThoai(txtsodienthoai.getText().trim());
-        docgia.setEmail(txtemail.getText().trim());
+        docgia.setDiachi(txtdiachi.getText().trim());
         docgia.setNgayDangKy(ngayDangKy);
         docgia.setMaTaiKhoan(maTaiKhoan);
         // Cập nhật vào cơ sở dữ liệu
@@ -263,7 +242,7 @@ public class QL_docgia extends TabbedForm {
         model.setRowCount(0);
 
         for (DocGia dg : docgialist) {
-            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getEmail(), dg.getNgayDangKy(), dg.getMaTaiKhoan()};
+            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiachi(), dg.getNgayDangKy(), dg.getMaTaiKhoan()};
             model.addRow(row);
         }
     }
@@ -273,14 +252,14 @@ public class QL_docgia extends TabbedForm {
         String hoTen = (String) tbl_docgia.getValueAt(rowIndex, 1);
         String gioiTinh = (String) tbl_docgia.getValueAt(rowIndex, 2);
         String soDienThoai = (String) tbl_docgia.getValueAt(rowIndex, 3);
-        String email = (String) tbl_docgia.getValueAt(rowIndex, 4);
+        String diaChi = (String) tbl_docgia.getValueAt(rowIndex, 4);
         Date ngayDangKy = (Date) tbl_docgia.getValueAt(rowIndex, 5);
         int maTaiKhoan = (int) tbl_docgia.getValueAt(rowIndex, 6);
 
         txttendocgia.setText(hoTen);
         cbbgioitinh.setSelectedItem(gioiTinh);
         txtsodienthoai.setText(soDienThoai);
-        txtemail.setText(email);
+        txtdiachi.setText(diaChi);
         txtmataikhoan.setText(String.valueOf(maTaiKhoan));
     }
 
@@ -288,11 +267,10 @@ public class QL_docgia extends TabbedForm {
         txttendocgia.setText("");
         cbbgioitinh.setSelectedIndex(0);
         txtsodienthoai.setText("");
-        txtemail.setText("");
+        txtdiachi.setText("");
         txtmataikhoan.setText("");
         txtngaydangki.setText("");
     }
-
 //    public void clickDocgiachitiet() {
 //        // Lấy chỉ mục của hàng được chọn trong bảng
 //        int selectedRow = tbl_docgia.getSelectedRow();
@@ -342,6 +320,7 @@ public class QL_docgia extends TabbedForm {
 //
 //        detailDialog.setVisible(true);
 //    }
+
     public void clickDocGia() {
         // Kiểm tra xem bảng có dữ liệu hay không
         if (tbl_docgia.getRowCount() == 0) {
@@ -358,7 +337,7 @@ public class QL_docgia extends TabbedForm {
             String hoTen = tbl_docgia.getValueAt(row, 1).toString();     // Họ tên
             String gioiTinh = tbl_docgia.getValueAt(row, 2).toString();  // Giới tính
             String soDienThoai = tbl_docgia.getValueAt(row, 3).toString(); // Số điện thoại
-            String email = tbl_docgia.getValueAt(row, 4).toString();     // Email
+            String diachi = tbl_docgia.getValueAt(row, 4).toString();     // Email
             String ngayDangKy = tbl_docgia.getValueAt(row, 5).toString(); // Ngày đăng ký
             String maTaiKhoan = tbl_docgia.getValueAt(row, 6).toString(); // Mã tài khoản
 
@@ -366,7 +345,7 @@ public class QL_docgia extends TabbedForm {
             txttendocgia.setText(hoTen);
             cbbgioitinh.setSelectedItem(gioiTinh);
             txtsodienthoai.setText(soDienThoai);
-            txtemail.setText(email);
+            txtdiachi.setText(diachi);
             txtngaydangki.setText(ngayDangKy);
             txtmataikhoan.setText(maTaiKhoan);
         } else {
@@ -396,7 +375,7 @@ public class QL_docgia extends TabbedForm {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtsodienthoai = new javax.swing.JTextField();
-        txtemail = new javax.swing.JTextField();
+        txtdiachi = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtngaydangki = new javax.swing.JTextField();
@@ -433,7 +412,7 @@ public class QL_docgia extends TabbedForm {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã độc giả", "Tên độc giả", "Giới tính", "Số điện thoại", "Email", "Ngày đăng kí", "Mã tài khoản"
+                "Mã độc giả", "Tên độc giả", "Giới tính", "Số điện thoại", "Địa chỉ", "Ngày đăng kí", "Mã tài khoản"
             }
         ));
         tbl_docgia.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -451,7 +430,7 @@ public class QL_docgia extends TabbedForm {
 
         jLabel3.setText("Số điện thoại");
 
-        jLabel4.setText("Email");
+        jLabel4.setText("Địa chỉ");
 
         jLabel5.setText("Ngày đăng kí");
 
@@ -494,7 +473,7 @@ public class QL_docgia extends TabbedForm {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtsodienthoai)
-                            .addComponent(txtemail, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(44, 44, 44)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -518,7 +497,7 @@ public class QL_docgia extends TabbedForm {
                     .addComponent(txtngaydangki, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtemail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(txtmataikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
@@ -550,7 +529,7 @@ public class QL_docgia extends TabbedForm {
     }//GEN-LAST:event_btn_xoaActionPerformed
 
     private void tbl_docgiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_docgiaMouseClicked
-      clickDocGia();
+        clickDocGia();
     }//GEN-LAST:event_tbl_docgiaMouseClicked
 
     private void btn_capnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_capnhatActionPerformed
@@ -573,7 +552,7 @@ public class QL_docgia extends TabbedForm {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tbl_docgia;
-    private javax.swing.JTextField txtemail;
+    private javax.swing.JTextField txtdiachi;
     private javax.swing.JTextField txtmataikhoan;
     private javax.swing.JTextField txtngaydangki;
     private javax.swing.JTextField txtsodienthoai;

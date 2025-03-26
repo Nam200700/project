@@ -15,18 +15,18 @@ public class DocGia {
     private String hoTen;
     private String gioiTinh;
     private String soDienThoai;
-    private String email;
+    private String diachi;
     private Date ngayDangKy;
     private int maTaiKhoan;
 
     public DocGia() {}
 
-    public DocGia(int maDocGia, String hoTen, String gioiTinh, String soDienThoai, String email, Date ngayDangKy, int maTaiKhoan) {
+    public DocGia(int maDocGia, String hoTen, String gioiTinh, String soDienThoai, String diachi, Date ngayDangKy, int maTaiKhoan) {
         this.maDocGia = maDocGia;
         this.hoTen = hoTen;
         this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
-        this.email = email;
+        this.diachi = diachi;
         this.ngayDangKy = ngayDangKy;
         this.maTaiKhoan = maTaiKhoan;
     }
@@ -64,12 +64,12 @@ public class DocGia {
         this.soDienThoai = soDienThoai;
     }
 
-    public String getEmail() {
-        return email;
+    public String getDiachi() {
+        return diachi;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDiachi(String diachi) {
+        this.diachi = diachi;
     }
 
     public Date getNgayDangKy() {

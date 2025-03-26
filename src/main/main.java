@@ -302,7 +302,7 @@ public class main extends javax.swing.JFrame {
         }
         // Mã hóa mật khẩu để so sánh
         String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT fullname, password FROM user WHERE fullname =? AND password =? ";
+        String sql = "SELECT TenDangNhap, MatKhau FROM taikhoan WHERE TenDangNhap =? AND MatKhau =?";
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
