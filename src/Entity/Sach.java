@@ -9,34 +9,28 @@ package Entity;
  * @author Acer
  */
 public class Sach {
-    private int maSach;
-    private String tenSach;
-    private int maTheLoai;
-    private int maTacGia;
-    private int maNhaXuatBan;
-    private int namXuatBan;
-    private int lanTaiBan;
-    private String ngonNgu;
-    private int soLuong;
+    public String tenSach;
+    public String theLoai;
+    public String tacGia;
+    public String nhaXuatBan;
+    public int namXuatBan;
+    public String ngonNgu;
+    public int soLuong;
+    public int lanTaiBan;
 
-    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
-        this.maSach = maSach;
+    public Sach(String tenSach, String theLoai, String tacGia, String nhaXuatBan, int namXuatBan, String ngonNgu, int soLuong, int lanTaiBan) {
         this.tenSach = tenSach;
-        this.maTheLoai = maTheLoai;
-        this.maTacGia = maTacGia;
-        this.maNhaXuatBan = maNhaXuatBan;
+        this.theLoai = theLoai;
+        this.tacGia = tacGia;
+        this.nhaXuatBan = nhaXuatBan;
         this.namXuatBan = namXuatBan;
-        this.lanTaiBan = lanTaiBan;
         this.ngonNgu = ngonNgu;
         this.soLuong = soLuong;
+        this.lanTaiBan = lanTaiBan;
     }
-
-    public int getMaSach() {
-        return maSach;
-    }
-
-    public void setMaSach(int maSach) {
-        this.maSach = maSach;
+    
+    public Sach(){
+        
     }
 
     public String getTenSach() {
@@ -47,28 +41,28 @@ public class Sach {
         this.tenSach = tenSach;
     }
 
-    public int getMaTheLoai() {
-        return maTheLoai;
+    public String getTheLoai() {
+        return theLoai;
     }
 
-    public void setMaTheLoai(int maTheLoai) {
-        this.maTheLoai = maTheLoai;
+    public void setTheLoai(String theLoai) {
+        this.theLoai = theLoai;
     }
 
-    public int getMaTacGia() {
-        return maTacGia;
+    public String getTacGia() {
+        return tacGia;
     }
 
-    public void setMaTacGia(int maTacGia) {
-        this.maTacGia = maTacGia;
+    public void setTacGia(String tacGia) {
+        this.tacGia = tacGia;
     }
 
-    public int getMaNhaXuatBan() {
-        return maNhaXuatBan;
+    public String getNhaXuatBan() {
+        return nhaXuatBan;
     }
 
-    public void setMaNhaXuatBan(int maNhaXuatBan) {
-        this.maNhaXuatBan = maNhaXuatBan;
+    public void setNhaXuatBan(String nhaXuatBan) {
+        this.nhaXuatBan = nhaXuatBan;
     }
 
     public int getNamXuatBan() {
@@ -77,14 +71,6 @@ public class Sach {
 
     public void setNamXuatBan(int namXuatBan) {
         this.namXuatBan = namXuatBan;
-    }
-
-    public int getLanTaiBan() {
-        return lanTaiBan;
-    }
-
-    public void setLanTaiBan(int lanTaiBan) {
-        this.lanTaiBan = lanTaiBan;
     }
 
     public String getNgonNgu() {
@@ -103,6 +89,15 @@ public class Sach {
         this.soLuong = soLuong;
     }
 
+    public int getLanTaiBan() {
+        return lanTaiBan;
+    }
+
+    public void setLanTaiBan(int lanTaiBan) {
+        this.lanTaiBan = lanTaiBan;
+    }
+    
+        
     
     }
 

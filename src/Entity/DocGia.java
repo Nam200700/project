@@ -11,34 +11,25 @@ import java.util.Date;
  * @author Acer
  */
 public class DocGia {
-    private int maDocGia;
     private String hoTen;
     private String gioiTinh;
     private String soDienThoai;
-    private String email;
+    private String diaChi;
     private Date ngayDangKy;
     private int maTaiKhoan;
 
     public DocGia() {}
 
-    public DocGia(int maDocGia, String hoTen, String gioiTinh, String soDienThoai, String email, Date ngayDangKy, int maTaiKhoan) {
-        this.maDocGia = maDocGia;
+    public DocGia( String hoTen, String gioiTinh, String soDienThoai, String diaChi, Date ngayDangKy, int maTaiKhoan) {
         this.hoTen = hoTen;
         this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
-        this.email = email;
+        this.diaChi = diaChi;
         this.ngayDangKy = ngayDangKy;
         this.maTaiKhoan = maTaiKhoan;
     }
 
-    // Getter và Setter
-    public int getMaDocGia() {
-        return maDocGia;
-    }
-
-    public void setMaDocGia(int maDocGia) {
-        this.maDocGia = maDocGia;
-    }
+  
 
     public String getHoTen() {
         return hoTen;
@@ -64,12 +55,12 @@ public class DocGia {
         this.soDienThoai = soDienThoai;
     }
 
-    public String getEmail() {
-        return email;
+    public String getDiaChi() {
+        return diaChi;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
     }
 
     public Date getNgayDangKy() {
@@ -87,5 +78,7 @@ public class DocGia {
     public void setMaTaiKhoan(int maTaiKhoan) {
         this.maTaiKhoan = maTaiKhoan;
     }
+
+   
 }
 

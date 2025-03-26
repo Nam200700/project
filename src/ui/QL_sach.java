@@ -4,10 +4,13 @@
  */
 package ui;
 
+import DAO.SachDao;
+import Entity.Sach;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,18 +20,57 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import raven.drawer.TabbedForm;
 
 /**
  *
  * @author ACER
  */
-public class QL_sach extends javax.swing.JPanel {
-
+public class QL_sach extends TabbedForm {
+     private DefaultTableModel model;
+    private SachDao sachDao = new SachDao();
+    private List<Sach> listSach;
     /**
      * Creates new form QL_sach
      */
     public QL_sach() {
         initComponents();
+                init();
+
+    }
+    
+     private void init() {
+        // Khởi tạo model và set lên JTable
+        model = new DefaultTableModel(new String[]{
+            "Tên Sách", "Thể Loại", "Tác Giả", "Nhà Xuất Bản", "Năm Xuất Bản", "Ngôn Ngữ", "Số Lượng", "Lần Tái Bản"
+        }, 0);
+        tbl_sach.setModel(model);
+
+        // Load dữ liệu từ database
+        loadData();
+    }
+
+    private void loadData() {
+        listSach = sachDao.getAll();
+        fillToTable();
+    }
+
+    private void fillToTable() {
+        model.setRowCount(0); // Xóa dữ liệu cũ
+        for (Sach sach : listSach) {
+            model.addRow(new Object[]{
+                
+                sach.getTenSach(),
+                sach.getTheLoai(),
+                sach.getTacGia(),
+                sach.getNhaXuatBan(),
+                sach.getNamXuatBan(),
+                sach.getNgonNgu(),
+                sach.getSoLuong(),
+                sach.getLanTaiBan()
+            });
+        }
     }
     // tạo form con để thêm thông tin sách  
     private void openFormCon() {
@@ -127,6 +169,11 @@ public class QL_sach extends javax.swing.JPanel {
         });
 
         btn_xoa.setText("Xóa");
+        btn_xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xoaActionPerformed(evt);
+            }
+        });
 
         btn_sua.setText("Sửa");
 
@@ -190,6 +237,28 @@ public class QL_sach extends javax.swing.JPanel {
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
         openFormCon();
     }//GEN-LAST:event_btn_themActionPerformed
+
+    private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
+        // TODO add your handling code here:
+               // TODO add your handling code here:
+          int selectedRow = tbl_sach.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn sách cần xóa!");
+        return;
+    }
+
+    String tenSach = (String) tbl_sach.getValueAt(selectedRow, 0);
+
+    int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa sách này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (sachDao.delete(tenSach)) {
+            JOptionPane.showMessageDialog(this, "Xóa sách thành công!");
+            loadData(); // Cập nhật lại bảng sau khi xóa
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa sách thất bại!");
+        }
+    }
+    }//GEN-LAST:event_btn_xoaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_sua;

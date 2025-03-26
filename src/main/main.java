@@ -4,6 +4,7 @@
  */
 package main;
 
+import Entity.Session;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -16,6 +17,7 @@ import util.jdbchelper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import ui.QL_ThongTinTheDocGia;
 
 /**
  *
@@ -32,6 +34,39 @@ public class main extends javax.swing.JFrame {
         setBackground(new Color(0, 0, 0, 0));
         fadeInEffect();
 
+    }
+
+    public void luuDangnhap() {
+        String username = txt_username.getText();
+        String password = new String(txt_password.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // Mã hóa mật khẩu nếu cần
+            String encryptedPassword = AES.encrypt(password);
+
+            // Kiểm tra tài khoản trong database
+            String sql = "SELECT MaTaiKhoan FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";
+            ResultSet rs = jdbchelper.executeQuery(sql, username, encryptedPassword);
+
+            if (rs.next()) {
+                int maTaiKhoanTuDatabase = rs.getInt("MaTaiKhoan"); // Lấy mã tài khoản từ DB
+                Session.setMaTaiKhoan(maTaiKhoanTuDatabase); // Lưu vào session
+
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                new QL_ThongTinTheDocGia().setVisible(true); // Mở form thẻ độc giả
+                this.dispose(); // Đóng form đăng nhập
+            } else {
+                JOptionPane.showMessageDialog(this, "Sai tài khoản hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void fadeInEffect() {
@@ -291,7 +326,7 @@ public class main extends javax.swing.JFrame {
     private void btn_signupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_signupActionPerformed
         String username = txt_username.getText().trim();
         String password = new String(txt_password.getPassword()).trim();
-        
+
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!!");
             return;
@@ -302,15 +337,22 @@ public class main extends javax.swing.JFrame {
         }
         // Mã hóa mật khẩu để so sánh
         String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT fullname, password FROM user WHERE fullname =? AND password =? ";
+        String sql = "SELECT MaTaiKhoan, Tendangnhap,Email, MatKhau FROM taikhoan WHERE Tendangnhap =? AND MatKhau =? ";
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
             if (rs.next()) {
+                // ✅ Lấy mã tài khoản từ database
+                int maTaiKhoan = rs.getInt("MaTaiKhoan");
+
+                // ✅ Lưu mã tài khoản vào Session
+                Session.setMaTaiKhoan(maTaiKhoan);
+                System.out.println("Đăng nhập thành công! Mã tài khoản: " + Session.getMaTaiKhoan());
+                
                 JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công!!!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 view vi = new view();
                 vi.setVisible(true);
                 this.dispose();
-            }else{
-                JOptionPane.showMessageDialog(this,"Mật khẩu hoặc password sai vui lòng thử lại!!!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Mật khẩu hoặc password sai vui lòng thử lại!!!");
                 return;
             }
         } catch (SQLException e) {

@@ -10,10 +10,13 @@ import raven.drawer.component.menu.MenuEvent;
 import raven.drawer.component.menu.MenuValidation;
 import raven.drawer.component.menu.SimpleMenuOption;
 import main.main;
+import raven.drawer.WindowsTabbed;
 import ui.view;
 import raven.swing.AvatarIcon;
+import ui.QL_ThongTinTheDocGia;
 import ui.QL_docgia;
 import ui.QL_nhaxuatban;
+import ui.QL_sach;
 import ui.QL_tacgia;
 import ui.QL_theloaisach;
 import ui.Test;
@@ -66,14 +69,15 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     public void selected(MenuAction action, int index, int subIndex) {
                         if (index == 0) {
                             WindowsTabbed.getInstance().addTab("Test Form", new Test());
-                        }else if(index == 2){
-                            WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
+                        }else if(index == 1){
+                            WindowsTabbed.getInstance().addTab("QL_ThongTinDocGia", new QL_ThongTinTheDocGia());
                         }else if(index == 3){
                             WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
-                        }else if(index == 1){
-                            WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
-                        }else if(index == 4){
+                      
+                        }else if(index == 5){
                             WindowsTabbed.getInstance().addTab("QL theloai", new QL_theloaisach());
+                         }else if(index == 4){
+                            WindowsTabbed.getInstance().addTab("QL sach", new QL_sach());
                         }
                         else if (index == 9) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());

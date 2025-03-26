@@ -3,13 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/DAO/DocGiaDAO.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/DAO/TacGiaDAO.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/ui/QL_tacgia.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/raven/drawer/MyDrawerBuilder.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/ui/QL_docgia.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/util/jdbchelper.java</file>
-            <file>file:/D:/MonHoc/Do_an_tot_Nghiep/Example/project/src/main/register.java</file>
+            <file>file:/C:/Users/admin/Desktop/du_an/project/src/ui/QL_ThongTinTheDocGia.java</file>
+            <file>file:/C:/Users/admin/Desktop/du_an/project/src/Entity/Session.java</file>
+            <file>file:/C:/Users/admin/Desktop/du_an/project/src/DAO/DocGiaDAO.java</file>
         </group>
     </open-files>
 </project-private>
