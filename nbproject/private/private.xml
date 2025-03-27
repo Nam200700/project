@@ -3,14 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <!-- Các file từ nhánh main -->
             <file>file:/D:/Git/project/src/main/main.java</file>
-            <file>file:/D:/Git/project/src/DAO/userDAO.java</file>
-            <file>file:/D:/Git/project/src/main/register.java</file>
-            <file>file:/D:/Git/project/src/ui/view.java</file>
+            <file>file:/D:/Git/project/src/DAO/DocGiaDAO.java</file>
+            <file>file:/D:/Git/project/src/swing/RoundPanel.java</file>
+            <file>file:/D:/Git/project/src/ui/QL_docgia.java</file>
             <file>file:/D:/Git/project/src/raven/drawer/MyDrawerBuilder.java</file>
-            <file>file:/D:/Git/project/src/util/jdbchelper.java</file>
-            <!-- Nếu có file mới từ dasuaformtheloaivanhaxuatban, thêm vào đây -->
         </group>
     </open-files>
 </project-private>

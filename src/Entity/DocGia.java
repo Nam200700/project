@@ -1,43 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entity;
 
 import java.util.Date;
 
-/**
- *
- * @author Acer
- */
 public class DocGia {
-    private int maDocGia;
+    private int MaDocGia;
     private String hoTen;
     private String gioiTinh;
     private String soDienThoai;
-    private String diachi;
+    private String diaChi;
     private Date ngayDangKy;
     private int maTaiKhoan;
 
-    public DocGia() {}
+    public DocGia() {
+    }
 
-    public DocGia(int maDocGia, String hoTen, String gioiTinh, String soDienThoai, String diachi, Date ngayDangKy, int maTaiKhoan) {
-        this.maDocGia = maDocGia;
+    public DocGia(String hoTen, String gioiTinh, String soDienThoai, String diaChi, Date ngayDangKy, int maTaiKhoan) {
         this.hoTen = hoTen;
         this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
-        this.diachi = diachi;
+        this.diaChi = diaChi;
         this.ngayDangKy = ngayDangKy;
         this.maTaiKhoan = maTaiKhoan;
-    }
-
-    // Getter và Setter
-    public int getMaDocGia() {
-        return maDocGia;
-    }
-
-    public void setMaDocGia(int maDocGia) {
-        this.maDocGia = maDocGia;
     }
 
     public String getHoTen() {
@@ -64,12 +47,12 @@ public class DocGia {
         this.soDienThoai = soDienThoai;
     }
 
-    public String getDiachi() {
-        return diachi;
+    public String getDiaChi() {
+        return diaChi;
     }
 
-    public void setDiachi(String diachi) {
-        this.diachi = diachi;
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
     }
 
     public Date getNgayDangKy() {
@@ -87,5 +70,14 @@ public class DocGia {
     public void setMaTaiKhoan(int maTaiKhoan) {
         this.maTaiKhoan = maTaiKhoan;
     }
-}
 
+    public int getMaDocGia() {
+        return MaDocGia;
+    }
+
+    public void setMaDocGia(int MaDocGia) {
+        this.MaDocGia = MaDocGia;
+    }
+    
+    
+}

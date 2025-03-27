@@ -34,86 +34,7 @@ public class QL_docgia extends TabbedForm {
         fillTable();
     }
 
-    public void addDocGia() {
-        // Kiểm tra từng trường nhập liệu
-        if (txttendocgia.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên độc giả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (cbbgioitinh.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (txtsodienthoai.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (!txtsodienthoai.getText().matches("\\d{10,11}")) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (txtdiachi.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (txtngaydangki.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày đăng ký!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (txtmataikhoan.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập mã tài khoản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Chuyển đổi ngày đăng ký từ chuỗi sang java.sql.Date
-        String ngayDangKyStr = txtngaydangki.getText().trim();
-        Date ngayDangKy;
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            java.util.Date utilDate = dateFormat.parse(ngayDangKyStr);
-            ngayDangKy = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày đăng ký không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Chuyển đổi mã tài khoản từ String sang int
-        int maTaiKhoan;
-        try {
-            maTaiKhoan = Integer.parseInt(txtmataikhoan.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Mã tài khoản phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Tạo đối tượng độc giả
-        DocGia dg = new DocGia();
-        dg.setHoTen(txttendocgia.getText().trim());
-        dg.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
-        dg.setSoDienThoai(txtsodienthoai.getText().trim());
-        dg.setDiachi(txtdiachi.getText().trim());
-        dg.setNgayDangKy(ngayDangKy);
-        dg.setMaTaiKhoan(maTaiKhoan);
-
-        // Thêm vào danh sách và cập nhật giao diện
-        try {
-            DocGiaDAO.insert(dg);
-            docgialist.add(dg);
-            fillTable();
-            clean();
-            return;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-    }
+    
 
     public void updateDocGia() {
         // Lấy dòng được chọn trong bảng
@@ -186,7 +107,7 @@ public class QL_docgia extends TabbedForm {
         docgia.setHoTen(txttendocgia.getText().trim());
         docgia.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
         docgia.setSoDienThoai(txtsodienthoai.getText().trim());
-        docgia.setDiachi(txtdiachi.getText().trim());
+        docgia.setDiaChi(txtdiachi.getText().trim());
         docgia.setNgayDangKy(ngayDangKy);
         docgia.setMaTaiKhoan(maTaiKhoan);
         // Cập nhật vào cơ sở dữ liệu
@@ -242,7 +163,7 @@ public class QL_docgia extends TabbedForm {
         model.setRowCount(0);
 
         for (DocGia dg : docgialist) {
-            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiachi(), dg.getNgayDangKy(), dg.getMaTaiKhoan()};
+            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiaChi(), dg.getNgayDangKy(), dg.getMaTaiKhoan()};
             model.addRow(row);
         }
     }
@@ -521,7 +442,6 @@ public class QL_docgia extends TabbedForm {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-        addDocGia();
     }//GEN-LAST:event_btn_themActionPerformed
 
     private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed

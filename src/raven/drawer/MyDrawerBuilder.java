@@ -1,10 +1,7 @@
 package raven.drawer;
 
 import DAO.userDAO;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import raven.drawer.component.SimpleDrawerBuilder;
@@ -15,7 +12,6 @@ import raven.drawer.component.menu.MenuEvent;
 import raven.drawer.component.menu.MenuValidation;
 import raven.drawer.component.menu.SimpleMenuOption;
 import main.main;
-import ui.view;
 import raven.swing.AvatarIcon;
 import ui.QL_docgia;
 import ui.QL_nhaxuatban;
@@ -23,6 +19,7 @@ import ui.QL_tacgia;
 import ui.QL_theloaisach;
 import ui.Test;
 import java.util.Set;
+import ui.QL_ThongTinTheDocGia;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -49,7 +46,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public SimpleMenuOption getSimpleMenuOption() {
 
         // Gọi setUserRole để đảm bảo quyền người dùng được cập nhật
-        userDAO.setUserRole(userName); 
+        userDAO.setUserRole(userName);
 
         Set<String> allowedFunctions = new HashSet<>(userDAO.getAllowedFunctions());
 
@@ -106,16 +103,18 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         if (index == 0) {
                             WindowsTabbed.getInstance().addTab("Test Form", new Test());
                         } else if (index == 2) {
+                            WindowsTabbed.getInstance().addTab("Thẻ thành viên", new QL_ThongTinTheDocGia());
+
+                        } else if (index == 7) {
                             WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
-                        } else if (index == 15) {
-                        }else if(index == 3){
+                        } else if (index == 4) {
+                        } else if (index == 3) {
                             WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
-                        }else if(index == 1){
+                        } else if (index == 8) {
                             WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
-                        }else if(index == 4){
+                        } else if (index == 6) {
                             WindowsTabbed.getInstance().addTab("QL theloai", new QL_theloaisach());
-                        }
-                        else if (index == 9) {
+                        } else if (index == 15) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

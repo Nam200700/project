@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import raven.drawer.MyDrawerBuilder;
+import ui.QL_ThongTinTheDocGia;
 
 /**
  *
@@ -104,7 +105,7 @@ public class main extends javax.swing.JFrame {
         });
 
         btn_signup.setForeground(new java.awt.Color(255, 255, 255));
-        btn_signup.setText("Sign up");
+        btn_signup.setText("Login");
         btn_signup.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btn_signup.setPreferredSize(new java.awt.Dimension(100, 32));
         btn_signup.addActionListener(new java.awt.event.ActionListener() {
@@ -116,7 +117,7 @@ public class main extends javax.swing.JFrame {
         lbl_signup.setBackground(new java.awt.Color(255, 255, 255));
         lbl_signup.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         lbl_signup.setForeground(new java.awt.Color(255, 255, 255));
-        lbl_signup.setText("Sign up");
+        lbl_signup.setText("Login");
 
         lbl_register.setBackground(new java.awt.Color(255, 255, 255));
         lbl_register.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -189,24 +190,6 @@ public class main extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(lbl_signup))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btn_signup, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addComponent(lbl_forgetPassword))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_register)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(65, 65, 65)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -219,13 +202,31 @@ public class main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(54, 54, 54))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(76, 76, 76)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btn_signup, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addComponent(lbl_forgetPassword))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lbl_register))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(134, 134, 134)
+                        .addComponent(lbl_signup)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(15, 15, 15)
                 .addComponent(lbl_signup, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
@@ -304,9 +305,11 @@ public class main extends javax.swing.JFrame {
 
         // Mã hóa mật khẩu để so sánh
         String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT TenDangNhap, MatKhau FROM taikhoan WHERE TenDangNhap =? AND MatKhau =?";
+        String sql = "SELECT MaTaiKhoan, TenDangNhap, MatKhau FROM taikhoan WHERE TenDangNhap =? AND MatKhau =?";
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
             if (rs.next()) {
+                int mataikhoan = rs.getInt("MaTaiKhoan");
+                QL_ThongTinTheDocGia.setMaTaiKhoan(mataikhoan);
                 // Lấy quyền người dùng từ cơ sở dữ liệu
                 String getRoleSql = "SELECT pq.TenQuyen FROM PHANQUYEN pq "
                         + "JOIN PHANQUYEN_TAIKHOAN pt ON pq.MaQuyen = pt.MaQuyen "

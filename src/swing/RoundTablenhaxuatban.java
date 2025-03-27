@@ -50,7 +50,7 @@ public class RoundTablenhaxuatban extends JTable{
         TableColumnModel columnModel = getColumnModel();
         if (columnModel.getColumnCount() > 0) {
             columnModel.getColumn(0).setHeaderRenderer(new ImageHeaderRenderer("image/application.png", "Mã nhà xuất bản"));
-            columnModel.getColumn(1).setHeaderRenderer(new ImageHeaderRenderer("image/name.png", "Tên nhà xuất bản"));
+            columnModel.getColumn(1).setHeaderRenderer(new ImageHeaderRenderer("image/publisher.png", "Tên nhà xuất bản"));
 
         }
 

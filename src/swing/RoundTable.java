@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package swing;
-
 
 import com.formdev.flatlaf.ui.FlatTableHeaderUI;
 import javax.swing.*;
@@ -36,7 +31,7 @@ public class RoundTable extends JTable {
         TableColumnModel columnModel = getColumnModel();
         if (columnModel.getColumnCount() > 0) {
             columnModel.getColumn(0).setHeaderRenderer(new ImageHeaderRenderer("image/user.png", "Mã"));
-            columnModel.getColumn(1).setHeaderRenderer(new ImageHeaderRenderer("image/name.png", "Tên Tác Giả"));
+            columnModel.getColumn(1).setHeaderRenderer(new ImageHeaderRenderer("image/internship.png", "Tên Tác Giả"));
 
         }
 
