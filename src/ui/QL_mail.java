@@ -13,12 +13,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
+import raven.drawer.TabbedForm;
 
 /**
  *
  * @author ACER
  */
-public class QL_mail extends javax.swing.JPanel {
+public class QL_mail extends TabbedForm {
 
     /**
      * Creates new form QL_mail
@@ -32,7 +33,8 @@ public class QL_mail extends javax.swing.JPanel {
     // nếu không muốn hiện lên thì chỉ cần gán thẳng vô là được 
     String chude = "Kính gửi độc giả thân mến tôi gửi từ thư viên Thủ Dầu Một!";
     String labfrom1 = "nghiatttv00104@fpt.edu.vn";
-    String note ="Thời gian bạn mượn sách hiện tại sắp hết vui lòng đăng kí lại và xin hãy trả sách đúng hạn ạ!!!!";
+    String note = "Thời gian bạn mượn sách hiện tại sắp hết vui lòng đăng kí lại và xin hãy trả sách đúng hạn ạ!!!!";
+
     private void sendmail() {
         String toEmail = txt_nguoinhan.getText();
         String fromEmail = lablfrom.getText(); // lấy cái mail mặc định từ lable đã set ở trên 

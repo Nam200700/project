@@ -19,7 +19,13 @@ import ui.QL_tacgia;
 import ui.QL_theloaisach;
 import ui.Test;
 import java.util.Set;
+import ui.QL_Muon;
 import ui.QL_ThongTinTheDocGia;
+import ui.QL_Tra;
+import ui.QL_chitietphieumuon;
+import ui.QL_khuvucsach;
+import ui.QL_mail;
+import ui.QL_sach;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -39,7 +45,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         return new SimpleHeaderData()
                 .setIcon(new AvatarIcon(getClass().getResource("/image/profile.png"), 65, 65, 999))
                 .setTitle(userName)
-                .setDescription("raven@gmail.com");
+                .setDescription("nghia@gmail.com");
     }
 
     @Override
@@ -102,18 +108,29 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         // Xử lý khi người dùng chọn một menu hợp lệ
                         if (index == 0) {
                             WindowsTabbed.getInstance().addTab("Test Form", new Test());
+                        } else if (index == 1) {
+                            WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
                         } else if (index == 2) {
                             WindowsTabbed.getInstance().addTab("Thẻ thành viên", new QL_ThongTinTheDocGia());
-
-                        } else if (index == 7) {
-                            WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
-                        } else if (index == 4) {
                         } else if (index == 3) {
-                            WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
-                        } else if (index == 8) {
-                            WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
+                            WindowsTabbed.getInstance().addTab("Quản lý mượn sách", new QL_Muon());
+                        } else if (index == 4) {
+                            WindowsTabbed.getInstance().addTab("QL trả sách", new QL_Tra());
+                        } else if (index == 5) {
+                            WindowsTabbed.getInstance().addTab("QL sách", new QL_sach());
+
                         } else if (index == 6) {
                             WindowsTabbed.getInstance().addTab("QL theloai", new QL_theloaisach());
+                        } else if (index == 7) {
+                            WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
+                        } else if (index == 8) {
+                            WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
+                        } else if (index == 9) {
+                            WindowsTabbed.getInstance().addTab("QL khu vực sách", new QL_khuvucsach());
+                        } else if (index == 12) {
+                            WindowsTabbed.getInstance().addTab("QL chi tiết phiếu mượn", new QL_chitietphieumuon());
+                        } else if (index == 14) {
+                            WindowsTabbed.getInstance().addTab("QL sendmail", new QL_mail());
                         } else if (index == 15) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 

@@ -11,18 +11,31 @@ import java.util.Date;
  * @author Acer
  */
 public class PhieuMuon {
+
     private String maPhieuMuon;
     private String maDocGia;
-    private String maSach;
     private Date ngayMuon;
     private Date hanTra;
+    private String trangthai;
 
-    public PhieuMuon(String maPhieuMuon, String maDocGia, String maSach, Date ngayMuon, Date hanTra) {
+    public PhieuMuon() {
+
+    }
+
+    public PhieuMuon(String maPhieuMuon, String maDocGia, String maSach, Date ngayMuon, Date hanTra, String trangthai) {
         this.maPhieuMuon = maPhieuMuon;
         this.maDocGia = maDocGia;
-        this.maSach = maSach;
         this.ngayMuon = ngayMuon;
         this.hanTra = hanTra;
+        this.trangthai = trangthai;
+    }
+
+    public String getTrangthai() {
+        return trangthai;
+    }
+
+    public void setTrangthai(String trangthai) {
+        this.trangthai = trangthai;
     }
 
     public String getMaPhieuMuon() {
@@ -41,14 +54,6 @@ public class PhieuMuon {
         this.maDocGia = maDocGia;
     }
 
-    public String getMaSach() {
-        return maSach;
-    }
-
-    public void setMaSach(String maSach) {
-        this.maSach = maSach;
-    }
-
     public Date getNgayMuon() {
         return ngayMuon;
     }
@@ -65,5 +70,4 @@ public class PhieuMuon {
         this.hanTra = hanTra;
     }
 
-   
 }

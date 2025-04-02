@@ -36,7 +36,7 @@ public class QL_nhaxuatban extends TabbedForm {
     public QL_nhaxuatban() {
         initComponents();
         fillTable();
-        guitacgia();
+        guinhaxuatban();
         // Bo góc cho JTextField
         txt_tennhaxuatban.putClientProperty("JComponent.roundRect", true);
         txt_tennhaxuatban.putClientProperty("JTextField.placeholderText", "Nhập tên nhà xuất bản...");
@@ -47,7 +47,7 @@ public class QL_nhaxuatban extends TabbedForm {
         panel.setBounds(50, 50, 250, 150);
 
     }
-    public void guitacgia() {
+    public void guinhaxuatban() {
         // Áp dụng FlatLaf
         FlatLightLaf.setup();
         UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI

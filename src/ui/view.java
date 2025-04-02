@@ -29,7 +29,7 @@ public class view extends javax.swing.JFrame {
         initComponents();
         init();
         this.setLocationRelativeTo(this);
-        setSize(1000, 700);
+        setSize(1100, 700);
     }
 
     private void init() {

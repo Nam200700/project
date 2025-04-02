@@ -1,27 +1,26 @@
 package Entity;
 
-import java.util.Date;
 
 public class DocGia {
-    private int MaDocGia;
+    private String MaDocGia;
     private String hoTen;
     private String gioiTinh;
     private String soDienThoai;
     private String diaChi;
-    private Date ngayDangKy;
-    private int maTaiKhoan;
+    
 
     public DocGia() {
     }
 
-    public DocGia(String hoTen, String gioiTinh, String soDienThoai, String diaChi, Date ngayDangKy, int maTaiKhoan) {
+    public DocGia(String MaDocGia, String hoTen, String gioiTinh, String soDienThoai, String diaChi) {
+        this.MaDocGia = MaDocGia;
         this.hoTen = hoTen;
         this.gioiTinh = gioiTinh;
         this.soDienThoai = soDienThoai;
         this.diaChi = diaChi;
-        this.ngayDangKy = ngayDangKy;
-        this.maTaiKhoan = maTaiKhoan;
     }
+
+    
 
     public String getHoTen() {
         return hoTen;
@@ -55,27 +54,11 @@ public class DocGia {
         this.diaChi = diaChi;
     }
 
-    public Date getNgayDangKy() {
-        return ngayDangKy;
-    }
-
-    public void setNgayDangKy(Date ngayDangKy) {
-        this.ngayDangKy = ngayDangKy;
-    }
-
-    public int getMaTaiKhoan() {
-        return maTaiKhoan;
-    }
-
-    public void setMaTaiKhoan(int maTaiKhoan) {
-        this.maTaiKhoan = maTaiKhoan;
-    }
-
-    public int getMaDocGia() {
+    public String getMaDocGia() {
         return MaDocGia;
     }
 
-    public void setMaDocGia(int MaDocGia) {
+    public void setMaDocGia(String MaDocGia) {
         this.MaDocGia = MaDocGia;
     }
     

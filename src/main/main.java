@@ -303,24 +303,25 @@ public class main extends javax.swing.JFrame {
             return;
         }
 
-        // Mã hóa mật khẩu để so sánh
-        String encryptpassword = AES.encrypt(password);
-        String sql = "SELECT MaTaiKhoan, TenDangNhap, MatKhau FROM taikhoan WHERE TenDangNhap =? AND MatKhau =?";
-        try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptpassword)) {
+        // Mã hóa mật khẩu
+        String encryptedPassword = AES.encrypt(password);
+
+        // Kiểm tra tài khoản trong cơ sở dữ liệu
+        String sql = "SELECT MaTaiKhoan, MaQuyen FROM TAIKHOAN WHERE TenDangNhap = ? AND MatKhau = ?";
+
+        try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptedPassword)) {
             if (rs.next()) {
-                int mataikhoan = rs.getInt("MaTaiKhoan");
-                QL_ThongTinTheDocGia.setMaTaiKhoan(mataikhoan);
-                // Lấy quyền người dùng từ cơ sở dữ liệu
-                String getRoleSql = "SELECT pq.TenQuyen FROM PHANQUYEN pq "
-                        + "JOIN PHANQUYEN_TAIKHOAN pt ON pq.MaQuyen = pt.MaQuyen "
-                        + "JOIN TAIKHOAN tk ON pt.MaTaiKhoan = tk.MaTaiKhoan "
-                        + "WHERE tk.TenDangNhap = ?";
-                try (ResultSet roleRs = jdbchelper.executeQuery(getRoleSql, username)) {
+                int maTaiKhoan = rs.getInt("MaTaiKhoan");
+                int maQuyen = rs.getInt("MaQuyen"); // Lấy mã quyền trực tiếp
+
+                QL_ThongTinTheDocGia.setMaTaiKhoan(maTaiKhoan);
+
+                // Lấy tên quyền dựa trên MaQuyen
+                String getRoleSql = "SELECT TenQuyen FROM PHANQUYEN WHERE MaQuyen = ?";
+                try (ResultSet roleRs = jdbchelper.executeQuery(getRoleSql, maQuyen)) {
                     if (roleRs.next()) {
                         String role = roleRs.getString("TenQuyen");
                         MyDrawerBuilder.setuserName(username);
-
-                        // Lưu quyền của người dùng vào một biến toàn cục để sử dụng trong MyDrawerBuilder
                         MyDrawerBuilder.setUserRole(role);
 
                         JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công với quyền: " + role, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -329,16 +330,15 @@ public class main extends javax.swing.JFrame {
                         view vi = new view();
                         vi.setVisible(true);
                         this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Không tìm thấy quyền của tài khoản.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi lấy quyền người dùng: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Mật khẩu hoặc tên đăng nhập sai vui lòng thử lại!!!");
-                return;
+                JOptionPane.showMessageDialog(this, "Mật khẩu hoặc tên đăng nhập sai, vui lòng thử lại!!!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btn_signupActionPerformed

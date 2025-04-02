@@ -11,16 +11,18 @@ import java.util.Date;
  * @author Acer
  */
 public class PhieuTra {
-    private String maPhieuTra;
-    private String maPhieuMuon;
-    private Date ngayTra;
-    private double tienPhat;
+    public String maPhieuTra;
 
-    public PhieuTra(String maPhieuTra, String maPhieuMuon, Date ngayTra, double tienPhat) {
+    
+    public String maPhieuMuon;
+    public Date ngayTra;
+    public PhieuTra() {
+        
+    }
+    public PhieuTra(String maPhieuTra, String maPhieuMuon, Date ngayTra) {
         this.maPhieuTra = maPhieuTra;
         this.maPhieuMuon = maPhieuMuon;
         this.ngayTra = ngayTra;
-        this.tienPhat = tienPhat;
     }
 
     public String getMaPhieuTra() {
@@ -45,13 +47,5 @@ public class PhieuTra {
 
     public void setNgayTra(Date ngayTra) {
         this.ngayTra = ngayTra;
-    }
-
-    public double getTienPhat() {
-        return tienPhat;
-    }
-
-    public void setTienPhat(double tienPhat) {
-        this.tienPhat = tienPhat;
     }
 }

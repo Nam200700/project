@@ -39,26 +39,29 @@ public class DocGiaDAO {
     }
 
     // Thêm thẻ độc giả mới
-    public boolean themTheDocGia(DocGia dg) {
-        String sql = "INSERT INTO DocGia (MaTaiKhoan, HoTen, GioiTinh, DiaChi, NgayDangKy, SoDienThoai) VALUES (?, ?, ?, ?, ?, ?)";
+    public static boolean themTheDocGia(DocGia dg) {
+        String sql = "INSERT INTO DocGia ( HoTen, GioiTinh, DiaChi, SoDienThoai) VALUES ( ?, ?, ?, ?)";
         try (Connection conn = jdbchelper.getconnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, dg.getMaTaiKhoan());
-            ps.setString(2, dg.getHoTen());
-            ps.setString(3, dg.getGioiTinh());
-            ps.setString(4, dg.getDiaChi());
-            ps.setDate(5, (Date) dg.getNgayDangKy());
-            ps.setString(6, dg.getSoDienThoai());
-            return ps.executeUpdate() > 0;
+
+            ps.setString(1, dg.getHoTen());
+            ps.setString(2, dg.getGioiTinh());
+            ps.setString(3, dg.getDiaChi());
+            ps.setString(4, dg.getSoDienThoai());
+
+            return ps.executeUpdate() > 0; // Trả về true nếu thêm thành công
         } catch (SQLException e) {
-            e.printStackTrace(); // Debug lỗi
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Lỗi SQL: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        return false;
     }
 
+
+   
+
     public static void update(DocGia dg) {
-        String sql = "UPDATE docgia SET HoTen = ?, GioiTinh = ?, SoDienThoai = ?, Email = ?, NgayDangKy = ?, MaTaiKhoan = ? WHERE MaDocGia = ?";
-        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiaChi(), dg.getNgayDangKy(), dg.getMaTaiKhoan());
+        String sql = "UPDATE docgia SET HoTen = ?, GioiTinh = ?, SoDienThoai = ?, DiaChi =? WHERE MaDocGia = ?";
+        int result = jdbchelper.executeUpdate(sql, dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiaChi());
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Cập nhật độc giả thành công!");
@@ -86,12 +89,11 @@ public class DocGiaDAO {
         try (ResultSet rs = jdbchelper.executeQuery(sql)) {
             while (rs.next()) {
                 DocGia dg = new DocGia();
+                dg.setMaDocGia(rs.getString("MaDocGia"));
                 dg.setHoTen(rs.getString("HoTen"));
                 dg.setGioiTinh(rs.getString("GioiTinh"));
                 dg.setDiaChi(rs.getString("DiaChi")); // ✅ BỔ SUNG LẤY ĐỊA CHỈ
                 dg.setSoDienThoai(rs.getString("SoDienThoai"));
-                dg.setNgayDangKy(rs.getDate("NgayDangKy"));
-                dg.setMaTaiKhoan(rs.getInt("MaTaiKhoan"));
                 docGiaList.add(dg);
             }
         } catch (SQLException e) {

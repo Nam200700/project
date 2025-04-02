@@ -7,6 +7,9 @@ package ui;
 import javax.swing.JOptionPane;
 import DAO.DocGiaDAO;
 import Entity.DocGia;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -15,7 +18,13 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import java.text.ParseException;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import raven.drawer.TabbedForm;
+import swing.RoundTableDocgia;
+import swing.RoundTabletrasach;
 import util.jdbchelper;
 
 /**
@@ -32,9 +41,98 @@ public class QL_docgia extends TabbedForm {
     public QL_docgia() {
         initComponents();
         fillTable();
+        guitrasach();
     }
 
-    
+    public void guitrasach() {
+        // Áp dụng FlatLaf
+        FlatLightLaf.setup();
+        UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
+
+        // Kiểm tra nếu `tbltheloai` chưa khởi tạo
+        DefaultTableModel model = (DefaultTableModel) tbl_docgia.getModel();
+        tbl_docgia = new RoundTableDocgia(model); // Tạo lại với model cũ
+
+        tbl_docgia.setPreferredScrollableViewportSize(new Dimension(500, 200)); // Kích thước mặc định
+
+        // Đảm bảo jScrollPane1 đang chứa `tbltacgia`
+        jScrollPane1.setViewportView(tbl_docgia); // Cập nhật bảng vào ScrollPane
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
+        jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
+
+        // Bo góc cho JTextField
+        
+        txttendocgia.putClientProperty("JComponent.roundRect", true);
+        txttendocgia.putClientProperty("JTextField.placeholderText", "Nhập tên độc giả...");
+        txttendocgia.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txtdiachi.putClientProperty("JComponent.roundRect", true);
+        txtdiachi.putClientProperty("JTextField.placeholderText", "Nhập địa chỉ...");
+        txtdiachi.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txtsodienthoai.putClientProperty("JComponent.roundRect", true);
+        txtsodienthoai.putClientProperty("JTextField.placeholderText", "Nhập số điện thoại...");
+        txtsodienthoai.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_timkiem.putClientProperty("JTextField.placeholderText", "Vui lòng nhập tên hoặc mã để tìm kiếm...");
+        // Cập nhật lại JButton với bo góc
+        btn_them.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
+        btn_capnhat.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
+        btn_xoa.setIcon(new ImageIcon(getClass().getResource("/image/delete.png")));
+
+        // Refresh UI
+        SwingUtilities.updateComponentTreeUI(jScrollPane1);
+    }
+
+    public void addDocGia() {
+        
+        // Kiểm tra dữ liệu đầu vào
+        if (txttendocgia.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên độc giả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (cbbgioitinh.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (txtsodienthoai.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!txtsodienthoai.getText().matches("\\d{10,11}")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (txtdiachi.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo đối tượng độc giả
+        DocGia docgia = new DocGia();
+        docgia.setHoTen(txttendocgia.getText().trim());
+        docgia.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
+        docgia.setSoDienThoai(txtsodienthoai.getText().trim());
+        docgia.setDiaChi(txtdiachi.getText().trim());
+
+        // Thêm vào cơ sở dữ liệu
+        try {
+            boolean isSuccess = DocGiaDAO.themTheDocGia(docgia);
+            if (isSuccess) {
+                // Cập nhật danh sách độc giả
+                docgialist.add(docgia);
+                fillTable();
+                clean();
+                JOptionPane.showMessageDialog(this, "Thêm độc giả thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm độc giả thất bại! Kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm độc giả: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public void updateDocGia() {
         // Lấy dòng được chọn trong bảng
@@ -69,47 +167,12 @@ public class QL_docgia extends TabbedForm {
             return;
         }
 
-        
-
-        if (txtngaydangki.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày đăng ký!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (txtmataikhoan.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập mã tài khoản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Chuyển đổi ngày đăng ký từ String sang java.sql.Date
-        String ngayDangKyStr = txtngaydangki.getText().trim();
-        Date ngayDangKy;
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            java.util.Date utilDate = dateFormat.parse(ngayDangKyStr);
-            ngayDangKy = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày đăng ký không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Chuyển đổi mã tài khoản từ String sang int
-        int maTaiKhoan;
-        try {
-            maTaiKhoan = Integer.parseInt(txtmataikhoan.getText().trim());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Mã tài khoản phải là số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         // Cập nhật thông tin độc giả trong danh sách
         DocGia docgia = docgialist.get(index);
         docgia.setHoTen(txttendocgia.getText().trim());
         docgia.setGioiTinh(cbbgioitinh.getSelectedItem().toString());
         docgia.setSoDienThoai(txtsodienthoai.getText().trim());
         docgia.setDiaChi(txtdiachi.getText().trim());
-        docgia.setNgayDangKy(ngayDangKy);
-        docgia.setMaTaiKhoan(maTaiKhoan);
         // Cập nhật vào cơ sở dữ liệu
         try {
             DocGiaDAO.update(docgia);
@@ -135,7 +198,7 @@ public class QL_docgia extends TabbedForm {
                 int maDocGia = (int) tbl_docgia.getValueAt(index, 0);
                 boolean isDeleted = DocGiaDAO.delete(maDocGia);
                 if (isDeleted) {
-                    docgialist.removeIf(dg -> dg.getMaDocGia() == maDocGia);
+                    docgialist.removeIf(dg -> dg.getMaDocGia().equals(maDocGia));
                 } else {
                     JOptionPane.showMessageDialog(this, "Không thể xóa độc giả có mã " + maDocGia + " do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -163,25 +226,21 @@ public class QL_docgia extends TabbedForm {
         model.setRowCount(0);
 
         for (DocGia dg : docgialist) {
-            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiaChi(), dg.getNgayDangKy(), dg.getMaTaiKhoan()};
+            Object[] row = new Object[]{dg.getMaDocGia(), dg.getHoTen(), dg.getGioiTinh(), dg.getSoDienThoai(), dg.getDiaChi()};
             model.addRow(row);
         }
     }
 
     public void loadRowIndexField(int rowIndex) {
-        int maDocGia = (int) tbl_docgia.getValueAt(rowIndex, 0);
         String hoTen = (String) tbl_docgia.getValueAt(rowIndex, 1);
         String gioiTinh = (String) tbl_docgia.getValueAt(rowIndex, 2);
         String soDienThoai = (String) tbl_docgia.getValueAt(rowIndex, 3);
         String diaChi = (String) tbl_docgia.getValueAt(rowIndex, 4);
-        Date ngayDangKy = (Date) tbl_docgia.getValueAt(rowIndex, 5);
-        int maTaiKhoan = (int) tbl_docgia.getValueAt(rowIndex, 6);
 
         txttendocgia.setText(hoTen);
         cbbgioitinh.setSelectedItem(gioiTinh);
         txtsodienthoai.setText(soDienThoai);
         txtdiachi.setText(diaChi);
-        txtmataikhoan.setText(String.valueOf(maTaiKhoan));
     }
 
     public void clean() {
@@ -189,8 +248,7 @@ public class QL_docgia extends TabbedForm {
         cbbgioitinh.setSelectedIndex(0);
         txtsodienthoai.setText("");
         txtdiachi.setText("");
-        txtmataikhoan.setText("");
-        txtngaydangki.setText("");
+
     }
 //    public void clickDocgiachitiet() {
 //        // Lấy chỉ mục của hàng được chọn trong bảng
@@ -259,16 +317,13 @@ public class QL_docgia extends TabbedForm {
             String gioiTinh = tbl_docgia.getValueAt(row, 2).toString();  // Giới tính
             String soDienThoai = tbl_docgia.getValueAt(row, 3).toString(); // Số điện thoại
             String diachi = tbl_docgia.getValueAt(row, 4).toString();     // Email
-            String ngayDangKy = tbl_docgia.getValueAt(row, 5).toString(); // Ngày đăng ký
-            String maTaiKhoan = tbl_docgia.getValueAt(row, 6).toString(); // Mã tài khoản
 
             // Cập nhật các trường nhập liệu
             txttendocgia.setText(hoTen);
             cbbgioitinh.setSelectedItem(gioiTinh);
             txtsodienthoai.setText(soDienThoai);
             txtdiachi.setText(diachi);
-            txtngaydangki.setText(ngayDangKy);
-            txtmataikhoan.setText(maTaiKhoan);
+
         } else {
             // Nếu không có dòng nào được chọn
             JOptionPane.showMessageDialog(this, "Chưa chọn dòng nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -284,56 +339,40 @@ public class QL_docgia extends TabbedForm {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btn_them = new javax.swing.JButton();
-        btn_xoa = new javax.swing.JButton();
-        btn_capnhat = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tbl_docgia = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        roundedPanel1 = new swing.RoundedPanel();
         txttendocgia = new javax.swing.JTextField();
+        cbbgioitinh = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl_docgia = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtsodienthoai = new javax.swing.JTextField();
         txtdiachi = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txtngaydangki = new javax.swing.JTextField();
-        txtmataikhoan = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        cbbgioitinh = new javax.swing.JComboBox<>();
+        txt_timkiem = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        btn_capnhat = new javax.swing.JButton();
+        btn_them = new javax.swing.JButton();
+        btn_xoa = new javax.swing.JButton();
 
-        btn_them.setText("Thêm");
-        btn_them.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_themActionPerformed(evt);
-            }
-        });
+        setOpaque(false);
 
-        btn_xoa.setText("Xóa");
-        btn_xoa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_xoaActionPerformed(evt);
-            }
-        });
+        cbbgioitinh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam", "Nữ" }));
 
-        btn_capnhat.setText("Cập nhật");
-        btn_capnhat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_capnhatActionPerformed(evt);
-            }
-        });
+        jLabel1.setText("Tên độc giả");
+
+        jLabel2.setText("Giới tính");
 
         tbl_docgia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Mã độc giả", "Tên độc giả", "Giới tính", "Số điện thoại", "Địa chỉ", "Ngày đăng kí", "Mã tài khoản"
+                "Mã độc giả", "Tên độc giả", "Giới tính", "Số điện thoại", "Địa chỉ"
             }
         ));
         tbl_docgia.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -343,105 +382,119 @@ public class QL_docgia extends TabbedForm {
         });
         jScrollPane1.setViewportView(tbl_docgia);
 
-        jButton4.setText("Tìm kiếm");
-
-        jLabel1.setText("Tên độc giả");
-
-        jLabel2.setText("Giới tính");
+        jLabel4.setText("Địa chỉ");
 
         jLabel3.setText("Số điện thoại");
 
-        jLabel4.setText("Địa chỉ");
+        jButton4.setText("Tìm kiếm");
 
-        jLabel5.setText("Ngày đăng kí");
+        btn_capnhat.setText("Cập nhật độc giả");
+        btn_capnhat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_capnhatActionPerformed(evt);
+            }
+        });
 
-        jLabel6.setText("Mã tài khoản");
+        btn_them.setText("Thêm độc giả");
+        btn_them.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_themActionPerformed(evt);
+            }
+        });
 
-        cbbgioitinh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nam", "Nữ" }));
+        btn_xoa.setText("Xóa độc giả");
+        btn_xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xoaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(68, 68, 68)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(btn_them, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)
+                        .addComponent(btn_capnhat, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)
+                        .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbbgioitinh, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txttendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(84, 84, 84)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtsodienthoai)
+                            .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(68, Short.MAX_VALUE))
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txttendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(txtsodienthoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbbgioitinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_them)
+                    .addComponent(btn_capnhat)
+                    .addComponent(btn_xoa))
+                .addGap(28, 28, 28))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(194, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 784, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btn_capnhat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_them, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_xoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(167, 167, 167)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(jButton4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbbgioitinh, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txttendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(70, 70, 70)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtsodienthoai)
-                            .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(44, 44, 44)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtngaydangki)
-                            .addComponent(txtmataikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(33, 33, 33))
+                .addContainerGap(83, Short.MAX_VALUE)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txttendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3)
-                    .addComponent(txtsodienthoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtngaydangki, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtmataikhoan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(cbbgioitinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_them)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_capnhat)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_xoa)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
+        addDocGia();
     }//GEN-LAST:event_btn_themActionPerformed
 
     private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
@@ -467,14 +520,11 @@ public class QL_docgia extends TabbedForm {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tbl_docgia;
+    private javax.swing.JTextField txt_timkiem;
     private javax.swing.JTextField txtdiachi;
-    private javax.swing.JTextField txtmataikhoan;
-    private javax.swing.JTextField txtngaydangki;
     private javax.swing.JTextField txtsodienthoai;
     private javax.swing.JTextField txttendocgia;
     // End of variables declaration//GEN-END:variables

@@ -198,52 +198,52 @@ public class QL_ThongTinTheDocGia extends TabbedForm {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try {
-            int maTaiKhoan = QL_ThongTinTheDocGia.getMaTaiKhoan();
-            if (maTaiKhoan <= 0) {
-                JOptionPane.showMessageDialog(null, "Lỗi: Không tìm thấy tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String hoTen = txtHovaTen.getText().trim();
-            String diaChi = txtDiachi.getText().trim();
-            String soDienThoai = txtSdt.getText().trim();
-            if (hoTen.isEmpty() || diaChi.isEmpty() || soDienThoai.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (!rdoNam.isSelected() && !rdoNu.isSelected()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            String gioiTinhStr = rdoNam.isSelected() ? "Nam" : "Nữ";
-
-            if (!soDienThoai.matches("\\d{10}")) {
-                JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Lấy ngày đăng ký tự động
-            LocalDate today = LocalDate.now();
-            Date ngayDangKy = Date.valueOf(today);
-
-            DocGiaDAO dao = new DocGiaDAO();
-            if (dao.kiemTraTheDocGia(maTaiKhoan)) {
-                JOptionPane.showMessageDialog(null, "Tài khoản này đã có thẻ độc giả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            DocGia docGia = new DocGia(hoTen, gioiTinhStr, soDienThoai, diaChi, ngayDangKy, maTaiKhoan);
-            if (dao.themTheDocGia(docGia)) {
-                JOptionPane.showMessageDialog(null, "Đăng ký thẻ độc giả thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                clearForm();
-            } else {
-                JOptionPane.showMessageDialog(null, "Đăng ký thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Lỗi hệ thống: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            int maTaiKhoan = QL_ThongTinTheDocGia.getMaTaiKhoan();
+//            if (maTaiKhoan <= 0) {
+//                JOptionPane.showMessageDialog(null, "Lỗi: Không tìm thấy tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//
+//            String hoTen = txtHovaTen.getText().trim();
+//            String diaChi = txtDiachi.getText().trim();
+//            String soDienThoai = txtSdt.getText().trim();
+//            if (hoTen.isEmpty() || diaChi.isEmpty() || soDienThoai.isEmpty()) {
+//                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//
+//            if (!rdoNam.isSelected() && !rdoNu.isSelected()) {
+//                JOptionPane.showMessageDialog(null, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//            String gioiTinhStr = rdoNam.isSelected() ? "Nam" : "Nữ";
+//
+//            if (!soDienThoai.matches("\\d{10}")) {
+//                JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//
+//            // Lấy ngày đăng ký tự động
+//            LocalDate today = LocalDate.now();
+//            Date ngayDangKy = Date.valueOf(today);
+//
+//            DocGiaDAO dao = new DocGiaDAO();
+//            if (dao.kiemTraTheDocGia(maTaiKhoan)) {
+//                JOptionPane.showMessageDialog(null, "Tài khoản này đã có thẻ độc giả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//
+//            DocGia docGia = new DocGia(hoTen, gioiTinhStr, soDienThoai, diaChi);
+//            if (dao.themTheDocGia(docGia)) {
+//                JOptionPane.showMessageDialog(null, "Đăng ký thẻ độc giả thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+//                clearForm();
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Đăng ký thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//            }
+//        } catch (Exception ex) {
+//            JOptionPane.showMessageDialog(null, "Lỗi hệ thống: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+//        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
 

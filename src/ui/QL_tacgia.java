@@ -288,6 +288,7 @@ public class QL_tacgia extends TabbedForm {
         btnXoa = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
 
+        setOpaque(false);
         setPreferredSize(new java.awt.Dimension(939, 570));
 
         roundPanel1.setBackground(new java.awt.Color(255, 255, 255));

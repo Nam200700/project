@@ -9,22 +9,28 @@ package Entity;
  * @author Acer
  */
 public class Sach {
+
     private int maSach;
     private String tenSach;
     private int maTheLoai;
     private int maTacGia;
     private int maNhaXuatBan;
+    private String maDauSach;
     private int namXuatBan;
     private int lanTaiBan;
     private String ngonNgu;
     private int soLuong;
 
-    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
+    public Sach() {
+    }
+
+    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan,String maDauSach, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
         this.maSach = maSach;
         this.tenSach = tenSach;
         this.maTheLoai = maTheLoai;
         this.maTacGia = maTacGia;
         this.maNhaXuatBan = maNhaXuatBan;
+        this.maDauSach = maDauSach;
         this.namXuatBan = namXuatBan;
         this.lanTaiBan = lanTaiBan;
         this.ngonNgu = ngonNgu;
@@ -71,6 +77,14 @@ public class Sach {
         this.maNhaXuatBan = maNhaXuatBan;
     }
 
+    public String getMaDauSach() {
+        return maDauSach;
+    }
+
+    public void setMaDauSach(String maDauSach) {
+        this.maDauSach = maDauSach;
+    }
+
     public int getNamXuatBan() {
         return namXuatBan;
     }
@@ -103,7 +117,4 @@ public class Sach {
         this.soLuong = soLuong;
     }
 
-    
-    }
-
-    
+}

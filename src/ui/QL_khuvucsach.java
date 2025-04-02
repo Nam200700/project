@@ -4,79 +4,74 @@
  */
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Dimension;
+import java.awt.Font;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
+import raven.drawer.TabbedForm;
+import swing.RoundTablekhuvucsach;
 
 /**
  *
  * @author ACER
  */
-public class QL_khuvucsach extends javax.swing.JPanel {
+public class QL_khuvucsach extends TabbedForm {
 
     /**
      * Creates new form QL_khuvucsach
      */
     public QL_khuvucsach() {
         initComponents();
+        guimuonsach();
     }
 
-    private void openFormCon() {
-        JDialog formCon = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm khu vực", true);
-        formCon.setSize(400, 300);
-        formCon.setLayout(new BorderLayout());
+    public void guimuonsach() {
+        // Áp dụng FlatLaf
+        FlatLightLaf.setup();
+        UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
 
-        // Panel chứa form nhập liệu
-        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10)); // 4 hàng, 2 cột
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Tạo khoảng cách với viền
+        // Kiểm tra nếu `tbltheloai` chưa khởi tạo
+        DefaultTableModel model = (DefaultTableModel) tbl_khuvucsach.getModel();
+        tbl_khuvucsach = new RoundTablekhuvucsach(model); // Tạo lại với model cũ
 
-        panel.add(new JLabel("Mã khu vực:"));
-        JTextField txtMaKhuVuc = new JTextField();
-        panel.add(txtMaKhuVuc);
+        tbl_khuvucsach.setPreferredScrollableViewportSize(new Dimension(500, 200)); // Kích thước mặc định
 
-        panel.add(new JLabel("Tên khu vực:"));
-        JTextField txtTenKhuVuc = new JTextField();
-        panel.add(txtTenKhuVuc);
+        // Đảm bảo jScrollPane1 đang chứa `tbltacgia`
+        jScrollPane1.setViewportView(tbl_khuvucsach); // Cập nhật bảng vào ScrollPane
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
+        jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
 
-        panel.add(new JLabel("Dãy kệ:"));
-        JTextField txtDayKe = new JTextField();
-        panel.add(txtDayKe);
+        // Bo góc cho JTextField
+        txt_tenkhuvuc.putClientProperty("JComponent.roundRect", true);
+        txt_tenkhuvuc.putClientProperty("JTextField.placeholderText", "Nhập tên khu vực...");
+        txt_tenkhuvuc.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_ke.putClientProperty("JComponent.roundRect", true);
+        txt_ke.putClientProperty("JTextField.placeholderText", "Nhập số kệ...");
+        txt_ke.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_tang.putClientProperty("JComponent.roundRect", true);
+        txt_tang.putClientProperty("JTextField.placeholderText", "Nhập tầng...");
+        txt_tang.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_vitri.putClientProperty("JComponent.roundRect", true);
+        txt_vitri.putClientProperty("JTextField.placeholderText", "Nhập vị trí...");
+        txt_vitri.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_masach.putClientProperty("JComponent.roundRect", true);
+        txt_masach.putClientProperty("JTextField.placeholderText", "Nhập mã sách...");
+        txt_masach.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        txt_soluong.putClientProperty("JComponent.roundRect", true);
+        txt_soluong.putClientProperty("JTextField.placeholderText", "Nhập số lượng...");
+        txt_soluong.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
-        panel.add(new JLabel("Số kệ:"));
-        JTextField txtSoKe = new JTextField();
-        panel.add(txtSoKe);
+        // Cập nhật lại JButton với bo góc
+        btn_them.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
+        btn_sua.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
+        btn_xoa.setIcon(new ImageIcon(getClass().getResource("/image/delete.png")));
 
-        // Panel chứa nút Lưu & Hủy
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        JButton btnLuu = new JButton("Lưu");
-        JButton btnHuy = new JButton("Hủy");
-
-        btnLuu.addActionListener(e -> {
-            JOptionPane.showMessageDialog(formCon, "Lưu thành công!");
-            formCon.dispose();
-        });
-
-        btnHuy.addActionListener(e -> formCon.dispose());
-
-        buttonPanel.add(btnLuu);
-        buttonPanel.add(btnHuy);
-
-        // Thêm vào form con
-        formCon.add(panel, BorderLayout.CENTER);
-        formCon.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Hiển thị form con
-        formCon.setLocationRelativeTo(this);
-        formCon.setVisible(true);
+        // Refresh UI
+        SwingUtilities.updateComponentTreeUI(jScrollPane1);
     }
 
     /**
@@ -88,13 +83,28 @@ public class QL_khuvucsach extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        roundedPanel1 = new swing.RoundedPanel();
         btn_them = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
         btn_sua = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_khuvucsach = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        txt_tenkhuvuc = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txt_tang = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txt_ke = new javax.swing.JTextField();
+        txt_vitri = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txt_masach = new javax.swing.JTextField();
+        txt_soluong = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+
+        setOpaque(false);
 
         btn_them.setText("Thêm");
 
@@ -117,47 +127,119 @@ public class QL_khuvucsach extends javax.swing.JPanel {
 
         jButton2.setText("Tìm kiếm");
 
+        jLabel1.setText("Tên khu vực");
+
+        jLabel2.setText("Tầng");
+
+        jLabel3.setText("Kệ");
+
+        jLabel4.setText("Vị trí");
+
+        jLabel5.setText("Tên sách ");
+
+        jLabel6.setText("Số lượng");
+
+        javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
+        roundedPanel1.setLayout(roundedPanel1Layout);
+        roundedPanel1Layout.setHorizontalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(txt_tenkhuvuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                .addComponent(txt_tang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txt_ke, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(57, 57, 57)
+                                .addComponent(jLabel3)))
+                        .addGap(18, 18, 18)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                .addComponent(txt_vitri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txt_masach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(roundedPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel5)))
+                        .addGap(18, 18, 18)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(txt_soluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_sua)
+                    .addComponent(btn_xoa)
+                    .addComponent(btn_them))
+                .addGap(77, 77, 77))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addContainerGap(42, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
+        );
+        roundedPanel1Layout.setVerticalGroup(
+            roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_tenkhuvuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_tang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_ke, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_vitri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_masach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_soluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2)))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(btn_sua)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btn_xoa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btn_them)))
+                .addGap(32, 32, 32)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btn_xoa)
-                        .addComponent(btn_them))
-                    .addComponent(btn_sua))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addComponent(jButton2)
-                        .addGap(58, 58, 58))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48))))
+                .addGap(65, 65, 65)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(btn_them)
-                        .addGap(28, 28, 28)
-                        .addComponent(btn_xoa)
-                        .addGap(27, 27, 27)
-                        .addComponent(btn_sua))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(48, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(45, Short.MAX_VALUE)
+                .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -167,8 +249,21 @@ public class QL_khuvucsach extends javax.swing.JPanel {
     private javax.swing.JButton btn_them;
     private javax.swing.JButton btn_xoa;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
+    private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tbl_khuvucsach;
+    private javax.swing.JTextField txt_ke;
+    private javax.swing.JTextField txt_masach;
+    private javax.swing.JTextField txt_soluong;
+    private javax.swing.JTextField txt_tang;
+    private javax.swing.JTextField txt_tenkhuvuc;
+    private javax.swing.JTextField txt_vitri;
     // End of variables declaration//GEN-END:variables
 }
