@@ -24,8 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import raven.drawer.TabbedForm;
 import swing.RoundTableDocgia;
-import swing.RoundTabletrasach;
-import util.jdbchelper;
+
 
 /**
  *
@@ -195,7 +194,7 @@ public class QL_docgia extends TabbedForm {
         if (choice == JOptionPane.YES_OPTION) {
             for (int i = selectedRows.length - 1; i >= 0; i--) {
                 int index = selectedRows[i];
-                int maDocGia = (int) tbl_docgia.getValueAt(index, 0);
+                String maDocGia = (String) tbl_docgia.getValueAt(index, 0);
                 boolean isDeleted = DocGiaDAO.delete(maDocGia);
                 if (isDeleted) {
                     docgialist.removeIf(dg -> dg.getMaDocGia().equals(maDocGia));
@@ -351,7 +350,7 @@ public class QL_docgia extends TabbedForm {
         txtsodienthoai = new javax.swing.JTextField();
         txtdiachi = new javax.swing.JTextField();
         txt_timkiem = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        btn_timkiem = new javax.swing.JButton();
         btn_capnhat = new javax.swing.JButton();
         btn_them = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
@@ -386,7 +385,12 @@ public class QL_docgia extends TabbedForm {
 
         jLabel3.setText("Số điện thoại");
 
-        jButton4.setText("Tìm kiếm");
+        btn_timkiem.setText("Tìm kiếm");
+        btn_timkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_timkiemActionPerformed(evt);
+            }
+        });
 
         btn_capnhat.setText("Cập nhật độc giả");
         btn_capnhat.addActionListener(new java.awt.event.ActionListener() {
@@ -424,7 +428,7 @@ public class QL_docgia extends TabbedForm {
                         .addGap(56, 56, 56)
                         .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(roundedPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton4)
+                        .addComponent(btn_timkiem)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -463,7 +467,7 @@ public class QL_docgia extends TabbedForm {
                     .addComponent(txtdiachi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_timkiem, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -509,13 +513,17 @@ public class QL_docgia extends TabbedForm {
         updateDocGia();
     }//GEN-LAST:event_btn_capnhatActionPerformed
 
+    private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
+        
+    }//GEN-LAST:event_btn_timkiemActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_capnhat;
     private javax.swing.JButton btn_them;
+    private javax.swing.JButton btn_timkiem;
     private javax.swing.JButton btn_xoa;
     private javax.swing.JComboBox<String> cbbgioitinh;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

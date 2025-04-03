@@ -23,6 +23,7 @@ import ui.QL_Muon;
 import ui.QL_ThongTinTheDocGia;
 import ui.QL_Tra;
 import ui.QL_chitietphieumuon;
+import ui.QL_chitietphieutra;
 import ui.QL_khuvucsach;
 import ui.QL_mail;
 import ui.QL_sach;
@@ -129,6 +130,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             WindowsTabbed.getInstance().addTab("QL khu vực sách", new QL_khuvucsach());
                         } else if (index == 12) {
                             WindowsTabbed.getInstance().addTab("QL chi tiết phiếu mượn", new QL_chitietphieumuon());
+                        } else if (index == 13) {
+                            WindowsTabbed.getInstance().addTab("QL chi tiết phiếu trả", new QL_chitietphieutra());
                         } else if (index == 14) {
                             WindowsTabbed.getInstance().addTab("QL sendmail", new QL_mail());
                         } else if (index == 15) {

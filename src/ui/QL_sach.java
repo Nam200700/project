@@ -23,6 +23,7 @@ import util.jdbchelper;
 public class QL_sach extends TabbedForm {
 
     List<Sach> dsSach = new ArrayList<Sach>();
+    SachDAO sachdao = new SachDAO();
 
     /**
      * Creates new form QL_sach
@@ -423,6 +424,43 @@ public class QL_sach extends TabbedForm {
         }
     }
 
+    public void showData(List<Sach> sach) {
+        DefaultTableModel model = (DefaultTableModel) tbl_sach.getModel();
+        model.setRowCount(0); // Xóa dữ liệu cũ
+        for (Sach sa : sach) {
+            model.addRow(new Object[]{
+                sa.getMaSach(),
+                sa.getTenSach(),
+                sa.getMaTheLoai(),
+                sa.getMaTacGia(),
+                sa.getMaNhaXuatBan(),
+                sa.getMaDauSach(),
+                sa.getNamXuatBan(),
+                sa.getNgonNgu(),
+                sa.getSoLuong(),
+                sa.getLanTaiBan()
+            });
+        }
+    }
+
+    // tìm kiếm dựa vào mã và tên sách
+    public void search() {
+        String keyword = txt_timkiem.getText().trim(); // Lấy từ khóa và xóa khoảng trắng thừa
+
+        List<Sach> sachs;
+        if (keyword.isEmpty()) {
+            sachs = sachdao.getAll(); // Lấy toàn bộ dữ liệu nếu không nhập từ khóa
+        } else {
+            sachs = sachdao.searchBooks(keyword); // Gọi phương thức tìm kiếm
+        }
+
+        if (sachs.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy sách nào!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            showData(sachs); // Hiển thị dữ liệu lên bảng
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -436,7 +474,7 @@ public class QL_sach extends TabbedForm {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_sach = new javax.swing.JTable();
         txt_timkiem = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        btn_timkiem = new javax.swing.JButton();
         btn_them = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
         btn_capnhat = new javax.swing.JButton();
@@ -476,7 +514,12 @@ public class QL_sach extends TabbedForm {
         });
         jScrollPane1.setViewportView(tbl_sach);
 
-        jButton4.setText("Tìm kiếm");
+        btn_timkiem.setText("Tìm kiếm");
+        btn_timkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_timkiemActionPerformed(evt);
+            }
+        });
 
         btn_them.setText("Thêm");
         btn_them.addActionListener(new java.awt.event.ActionListener() {
@@ -574,7 +617,7 @@ public class QL_sach extends TabbedForm {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
+                        .addComponent(btn_timkiem)
                         .addGap(78, 78, 78))
                     .addGroup(roundedPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
@@ -593,7 +636,7 @@ public class QL_sach extends TabbedForm {
                 .addGap(17, 17, 17)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4)
+                    .addComponent(btn_timkiem)
                     .addComponent(txt_tensach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_madausach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -672,14 +715,18 @@ public class QL_sach extends TabbedForm {
         clean();
     }//GEN-LAST:event_tbl_donMouseClicked
 
+    private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
+        search();
+    }//GEN-LAST:event_btn_timkiemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_capnhat;
     private javax.swing.JButton btn_them;
+    private javax.swing.JButton btn_timkiem;
     private javax.swing.JButton btn_xoa;
     private javax.swing.JComboBox<String> cbb_nhaxuatban;
     private javax.swing.JComboBox<String> cbb_tacgia;
     private javax.swing.JComboBox<String> cbb_theloai;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

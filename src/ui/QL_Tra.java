@@ -62,7 +62,7 @@ public class QL_Tra extends TabbedForm {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải danh sách sinh viên.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải danh sách mã phiếu mượn");
         }
     }
 
@@ -94,11 +94,6 @@ public class QL_Tra extends TabbedForm {
         jScrollPane1.setBorder(BorderFactory.createEmptyBorder()); // Xóa viền
         jScrollPane1.getViewport().setOpaque(false); // Nền trong suốt
 
-        // Bo góc cho JTextField
-        txt_ngaytra.putClientProperty("JComponent.roundRect", true);
-        txt_ngaytra.putClientProperty("JTextField.placeholderText", "Nhập ngày trả...");
-        txt_ngaytra.setFont(new Font("SansSerif", Font.PLAIN, 14));
-
         // Cập nhật lại JButton với bo góc
         btn_taophieu.setIcon(new ImageIcon(getClass().getResource("/image/add.png")));
         btn_chinhsuaphieu.setIcon(new ImageIcon(getClass().getResource("/image/edit.png")));
@@ -111,7 +106,6 @@ public class QL_Tra extends TabbedForm {
     public void addtaophieu() {
         // Kiểm tra các trường nhập liệu
         String maPhieuMuon = cbb_maphieumuon.getSelectedItem().toString().trim();
-        String ngaytra = txt_ngaytra.getText().trim();
 
         // Kiểm tra trạng thái phiếu mượn
         String trangThai = PhieuMuonDAO.getTrangThai(maPhieuMuon);
@@ -125,10 +119,6 @@ public class QL_Tra extends TabbedForm {
             return;
         }
 
-        if (maPhieuMuon.isEmpty() || ngaytra.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mã phiếu mượn và ngày trả không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
 
         // Kiểm tra trùng mã phiếu mượn
         for (PhieuTra pt : dsphieutra) {
@@ -139,15 +129,8 @@ public class QL_Tra extends TabbedForm {
         }
 
         // Chuyển đổi ngày trả từ String sang java.sql.Date
-        Date ngayTra;
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            java.util.Date utilDate = dateFormat.parse(ngaytra);
-            ngayTra = new Date(utilDate.getTime());
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày trả không hợp lệ! Định dạng đúng: dd-MM-yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        
+        java.sql.Date ngayTra = new java.sql.Date(System.currentTimeMillis()); // Ngày mượn là hôm nay
 
         // Tạo đối tượng phiếu trả
         PhieuTra pt = new PhieuTra();
@@ -231,17 +214,15 @@ public class QL_Tra extends TabbedForm {
         PhieuTra phieutra = dsphieutra.get(index);
 
         String maPhieuMuon = cbb_maphieumuon.getSelectedItem().toString().trim();
-        String ngaytra = txt_ngaytra.getText().trim();
+        
 
-        if (maPhieuMuon.isEmpty() || ngaytra.isEmpty()) {
+        if (maPhieuMuon.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Các trường không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            java.util.Date utilDate = dateFormat.parse(ngaytra);
-            Date ngayTra = new Date(utilDate.getTime());
+            java.sql.Date ngayTra = new java.sql.Date(System.currentTimeMillis()); // Ngày mượn là hôm nay
 
             phieutra.setMaPhieuMuon(maPhieuMuon);
             phieutra.setNgayTra(ngayTra);
@@ -249,8 +230,6 @@ public class QL_Tra extends TabbedForm {
             PhieuTraDAO.update(phieutra);
             fillTable();
             JOptionPane.showMessageDialog(this, "Cập nhật phiếu trả thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày trả không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật phiếu trả: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -277,15 +256,12 @@ public class QL_Tra extends TabbedForm {
         }
 
         String maPhieuMuon = (String) tblphieutra.getValueAt(newRowIndex, 1);
-        String ngayTra = (String) tblphieutra.getValueAt(newRowIndex, 2); // Đảm bảo đúng cột
 
         cbb_maphieumuon.setSelectedItem(maPhieuMuon);
-        txt_ngaytra.setText(ngayTra);
     }
 
     public void clean() {
         cbb_maphieumuon.setSelectedIndex(-1); // Đặt lại JComboBox về trạng thái chưa chọn
-        txt_ngaytra.setText("");
     }
 
     public void clickphieutra() {
@@ -302,11 +278,9 @@ public class QL_Tra extends TabbedForm {
         if (row != -1) {
             // Lấy dữ liệu từ bảng và điền vào các trường nhập liệu
             String maphieumuon = tblphieutra.getValueAt(row, 1).toString();
-            String ngaytra = tblphieutra.getValueAt(row, 2).toString();
 
             // Cập nhật các trường nhập liệu
             cbb_maphieumuon.setSelectedItem(maphieumuon);
-            txt_ngaytra.setText(ngaytra);
 
         } else {
             // Nếu không có dòng nào được chọn
@@ -327,8 +301,6 @@ public class QL_Tra extends TabbedForm {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblphieutra = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        txt_ngaytra = new javax.swing.JTextField();
         btn_taophieu = new javax.swing.JButton();
         btn_xoaphieu = new javax.swing.JButton();
         btn_chinhsuaphieu = new javax.swing.JButton();
@@ -357,8 +329,6 @@ public class QL_Tra extends TabbedForm {
         });
         jScrollPane1.setViewportView(tblphieutra);
 
-        jLabel2.setText("Ngày trả");
-
         btn_taophieu.setText("Tạo phiếu trả");
         btn_taophieu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -386,39 +356,35 @@ public class QL_Tra extends TabbedForm {
         roundedPanel1.setLayout(roundedPanel1Layout);
         roundedPanel1Layout.setHorizontalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, roundedPanel1Layout.createSequentialGroup()
+                        .addGap(111, 111, 111)
+                        .addComponent(btn_taophieu, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_xoaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)
+                        .addComponent(btn_chinhsuaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27))
+                    .addGroup(roundedPanel1Layout.createSequentialGroup()
+                        .addContainerGap(75, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 762, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(66, 66, 66))
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(90, 90, 90)
+                .addGap(339, 339, 339)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbb_maphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(118, 118, 118)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(txt_ngaytra)
-                .addGap(178, 178, 178))
-            .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 706, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
-            .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(153, 153, 153)
-                .addComponent(btn_taophieu)
-                .addGap(89, 89, 89)
-                .addComponent(btn_xoaphieu)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_chinhsuaphieu)
-                .addGap(133, 133, 133))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(57, 57, 57)
+                .addGap(45, 45, 45)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(txt_ngaytra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbb_maphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -432,17 +398,17 @@ public class QL_Tra extends TabbedForm {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(89, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(56, 56, 56)
                 .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(41, Short.MAX_VALUE)
                 .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGap(39, 39, 39))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -468,10 +434,8 @@ public class QL_Tra extends TabbedForm {
     private javax.swing.JButton btn_xoaphieu;
     private javax.swing.JComboBox<String> cbb_maphieumuon;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tblphieutra;
-    private javax.swing.JTextField txt_ngaytra;
     // End of variables declaration//GEN-END:variables
 }

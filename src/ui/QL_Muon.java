@@ -4,6 +4,7 @@
  */
 package ui;
 
+import DAO.ChiTietPhieuMuonDAO;
 import DAO.PhieuMuonDAO;
 import DAO.PhieuTraDAO;
 import Entity.PhieuMuon;
@@ -135,11 +136,11 @@ public class QL_Muon extends TabbedForm {
         int[] selectedRows = tbl_phieumuon.getSelectedRows();
 
         if (selectedRows.length == 0) {
-            JOptionPane.showMessageDialog(this, "Chưa chọn phiếu trả nào để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Chưa chọn phiếu mượn nào để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu trả đã chọn?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu mượn đã chọn?", "Xác nhận", JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             try {
@@ -147,18 +148,27 @@ public class QL_Muon extends TabbedForm {
                     int index = selectedRows[i];
                     String maPhieuMuon = (String) tbl_phieumuon.getValueAt(index, 0);
 
-                    boolean isDeleted = PhieuTraDAO.delete(maPhieuMuon);
+                    // Kiểm tra xem phiếu mượn có chi tiết phiếu mượn không
+                    boolean hasDetails = ChiTietPhieuMuonDAO.hasDetails(maPhieuMuon);
+
+                    if (hasDetails) {
+                        JOptionPane.showMessageDialog(this, "Không thể xóa phiếu mượn " + maPhieuMuon + " do có dữ liệu liên quan trong bảng Chi Tiết Phiếu Mượn.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Thực hiện xóa nếu không có dữ liệu ràng buộc
+                    boolean isDeleted = PhieuMuonDAO.delete(maPhieuMuon);
 
                     if (isDeleted) {
                         dsPhieuMuon.removeIf(pmuon -> pmuon.getMaPhieuMuon().equals(maPhieuMuon));
                     } else {
-                        JOptionPane.showMessageDialog(this, "Không thể xóa phiếu trả " + maPhieuMuon + " do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Không thể xóa phiếu mượn " + maPhieuMuon + " do ràng buộc dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }
 
                 fillTable();
-                JOptionPane.showMessageDialog(this, "Xóa phiếu trả thành công!");
+                JOptionPane.showMessageDialog(this, "Xóa phiếu mượn thành công!");
 
                 if (tbl_phieumuon.getRowCount() > 0) {
                     int newIndex = Math.min(selectedRows[0], tbl_phieumuon.getRowCount() - 1);

@@ -23,10 +23,7 @@ import util.jdbchelper;
  * @author ACER
  */
 public class newpassword extends javax.swing.JFrame {
-
-    /**
-     * Creates new form newpassword
-     */
+    
     public newpassword() {
         initComponents();
         this.setLocationRelativeTo(this);
@@ -36,7 +33,7 @@ public class newpassword extends javax.swing.JFrame {
 
     private static boolean updatePasswordInDB(String email, String newPassword) {
         // Câu lệnh SQL để cập nhật mật khẩu theo email
-        String query = "UPDATE user SET password = ? WHERE email = ?";
+        String query = "UPDATE taikhoan SET MatKhau = ? WHERE Email = ?";
 
         try {
             // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu

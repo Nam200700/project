@@ -80,4 +80,24 @@ public class SachDAO {
 
         return dsSach;
     }
+
+    public List<Sach> searchBooks(String keyword) {
+        String query = "SELECT MaSach, TenSach, MaTheLoai, MaTacGia, MaNhaXuatBan, MaDauSach, NamXuatBan, LanTaiBan, NgonNgu, SoLuong "
+                + "FROM sach "
+                + "WHERE MaSach LIKE ? OR TenSach LIKE ? OR NamXuatBan LIKE ?";
+
+        return jdbchelper.executeQuery(query, rs -> new Sach(
+                rs.getInt("MaSach"),
+                rs.getString("TenSach"),
+                rs.getInt("MaTheLoai"),
+                rs.getInt("MaTacGia"),
+                rs.getInt("MaNhaXuatBan"),
+                rs.getString("MaDauSach"),
+                rs.getInt("NamXuatBan"),
+                rs.getInt("LanTaiBan"),
+                rs.getString("NgonNgu"),
+                rs.getInt("SoLuong")
+        ), keyword, keyword, keyword);
+    }
+
 }

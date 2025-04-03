@@ -38,7 +38,7 @@ public class PhieuMuonDAO {
     }
 
     // Xóa phiếu mượn
-    public static boolean delete(int maPhieuMuon) {
+    public static boolean delete(String maPhieuMuon) {
         String sql = "DELETE FROM phieumuon WHERE MaPhieuMuon = ?";
         int result = jdbchelper.executeUpdate(sql, maPhieuMuon);
 

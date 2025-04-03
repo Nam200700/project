@@ -61,7 +61,7 @@ public class forgot extends javax.swing.JFrame {
 
     // Kiểm tra xem email và tên người dùng có tồn tại trong cơ sở dữ liệu hay không.
     private static boolean verifyUser(String email, String username) {
-        String query = "SELECT COUNT(*) FROM users WHERE email = ? AND full_name = ?";
+        String query = "SELECT COUNT(*) FROM taikhoan WHERE Email = ? AND TenDangNhap = ?";
         try (ResultSet rs = jdbchelper.executeQuery(query, email, username)) {
             return rs.next() && rs.getInt(1) > 0;
         } catch (SQLException e) {

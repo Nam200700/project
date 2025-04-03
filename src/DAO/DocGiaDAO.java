@@ -70,7 +70,7 @@ public class DocGiaDAO {
         }
     }
 
-    public static boolean delete(int maDocGia) {
+    public static boolean delete(String maDocGia) {
         String sql = "DELETE FROM docgia WHERE MaDocGia = ?";
         int result = jdbchelper.executeUpdate(sql, maDocGia);
 

@@ -4,45 +4,41 @@
  */
 package Entity;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author Acer
  */
 public class ChiTietPhieuMuon {
-    private int maChiTiet;
-    private PhieuMuon phieuMuon;
-    private Sach sach;
+
+    private String maphieuMuon;
+    private String maSach;
     private int soLuong;
 
-    public ChiTietPhieuMuon(int maChiTiet, PhieuMuon phieuMuon, Sach sach, int soLuong) {
-        this.maChiTiet = maChiTiet;
-        this.phieuMuon = phieuMuon;
-        this.sach = sach;
+    public ChiTietPhieuMuon() {
+    }
+
+    public ChiTietPhieuMuon(String maphieuMuon, String maSach, int soLuong) {
+        this.maphieuMuon = maphieuMuon;
+        this.maSach = maSach;
         this.soLuong = soLuong;
     }
 
-    public int getMaChiTiet() {
-        return maChiTiet;
+    public String getMaphieuMuon() {
+        return maphieuMuon;
     }
 
-    public void setMaChiTiet(int maChiTiet) {
-        this.maChiTiet = maChiTiet;
+    public void setMaphieuMuon(String maphieuMuon) {
+        this.maphieuMuon = maphieuMuon;
     }
 
-    public PhieuMuon getPhieuMuon() {
-        return phieuMuon;
+    public String getMaSach() {
+        return maSach;
     }
 
-    public void setPhieuMuon(PhieuMuon phieuMuon) {
-        this.phieuMuon = phieuMuon;
-    }
-
-    public Sach getSach() {
-        return sach;
-    }
-
-    public void setSach(Sach sach) {
-        this.sach = sach;
+    public void setMaSach(String maSach) {
+        this.maSach = maSach;
     }
 
     public int getSoLuong() {
@@ -52,4 +48,5 @@ public class ChiTietPhieuMuon {
     public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
     }
+
 }
