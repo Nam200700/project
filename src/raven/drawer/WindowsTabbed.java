@@ -1,5 +1,6 @@
 package raven.drawer;
 
+import DAO.ThongBaoDAO;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
@@ -11,18 +12,25 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import raven.drawer.Drawer;
+import javax.swing.JWindow;
+import javax.swing.Timer;
 
 /**
  *
@@ -30,6 +38,7 @@ import raven.drawer.Drawer;
  */
 public class WindowsTabbed {
 
+    private JWindow notificationWindow = null; // Đảm bảo có một biến global để quản lý cửa sổ thông báo
     private static WindowsTabbed instance;
     private JMenuBar menuBar;
     private PanelTabbed panelTabbed;
@@ -37,6 +46,16 @@ public class WindowsTabbed {
     private TabbedForm temp;
     private final int LIMIT = 5; // -1 for unlimit
     private final boolean REMOVE_WHEN_LIMIT = false;
+    private static int maTaiKhoan;
+    private JLabel notificationCountLabel; // Thêm nhãn để hiển thị số lượng thông báo chưa đọc
+
+    public static int getMaTaiKhoan() {
+        return maTaiKhoan;
+    }
+
+    public static void setMaTaiKhoan(int maTaiKhoan) {
+        WindowsTabbed.maTaiKhoan = maTaiKhoan;
+    }
 
     public JPanel getBody() {
         return body;
@@ -62,6 +81,7 @@ public class WindowsTabbed {
         menuBar.add(createScroll(panelTabbed));
         // Thêm khoảng trống để đẩy nút sang phải
         menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(createBellIcon());
 
         // Thêm Dark/Light Toggle Button
         menuBar.add(createDarkLightSwitch());
@@ -114,6 +134,136 @@ public class WindowsTabbed {
         });
 
         return toggle;
+    }
+
+    private JButton createBellIcon() {
+        JButton bellButton = new JButton(new FlatSVGIcon("drawer/svg/bell.svg", 0.9f));
+        bellButton.putClientProperty(FlatClientProperties.STYLE, ""
+                + "borderWidth:0;"
+                + "focusWidth:0;"
+                + "innerFocusWidth:0;"
+                + "background:null;"
+                + "arc:5");
+
+        // Tạo nhãn để hiển thị số lượng thông báo chưa đọc
+        notificationCountLabel = new JLabel("0");
+        notificationCountLabel.setForeground(Color.RED);
+        notificationCountLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        notificationCountLabel.setPreferredSize(new Dimension(30, 35));
+        bellButton.add(notificationCountLabel, BorderLayout.NORTH);  // Đặt nhãn vào nút chuông
+
+        // Thêm ActionListener để lấy thông báo khi nhấn chuông
+        bellButton.addActionListener(e -> {
+            // Lấy danh sách thông báo
+            ThongBaoDAO thongBaoDAO = new ThongBaoDAO();
+            List<String> notifications = thongBaoDAO.getNotifications(WindowsTabbed.getMaTaiKhoan()); // Giả sử maTaiKhoan là ID tài khoản người dùng
+
+            // Nếu có thông báo, cập nhật số lượng thông báo
+            if (!notifications.isEmpty()) {
+                // Cập nhật số lượng thông báo chưa đọc
+                updateNotificationCount(notifications.size());
+
+                // Hiển thị hoặc ẩn thông báo
+                if (notificationWindow != null && notificationWindow.isVisible()) {
+                    notificationWindow.setVisible(false);
+                } else {
+                    showNotification(bellButton, notifications);
+                }
+            } else {
+                // Nếu không có thông báo, cập nhật lại số lượng về 0
+                updateNotificationCount(0);
+            }
+        });
+
+        return bellButton;
+    }
+
+    private void updateNotificationCount(int count) {
+        if (count > 99) {
+            notificationCountLabel.setText("99+");
+        } else {
+            notificationCountLabel.setText(String.valueOf(count));
+        }
+    }
+
+    private void showNotification(JButton bellButton, List<String> messages) {
+        // Tạo JWindow để hiển thị thông báo
+        notificationWindow = new JWindow();
+        notificationWindow.setLayout(new BorderLayout());
+
+        // Tạo panel để chứa danh sách thông báo
+        JPanel notificationPanel = new JPanel();
+        notificationPanel.setLayout(new BoxLayout(notificationPanel, BoxLayout.Y_AXIS));
+
+        // Thêm các thông báo vào panel
+        for (String message : messages) {
+            JLabel notificationLabel = new JLabel(message);
+            notificationLabel.setBackground(new Color(0, 0, 0, 150)); // Màu nền đen với độ mờ
+            notificationLabel.setForeground(Color.WHITE);
+            notificationLabel.setOpaque(true);
+            notificationLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            notificationLabel.setPreferredSize(new Dimension(300, 50));
+            notificationPanel.add(notificationLabel);
+        }
+
+        // Đặt thanh cuộn nếu có quá nhiều thông báo
+        JScrollPane scrollPane = new JScrollPane(notificationPanel);
+        scrollPane.setPreferredSize(new Dimension(300, 150)); // Kích thước cố định cho cửa sổ thông báo
+        notificationWindow.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // Tạo nút "Xóa tất cả"
+        JButton clearAllButton = new JButton("Xóa tất cả");
+        clearAllButton.addActionListener(e -> {
+            // Xóa tất cả thông báo
+            ThongBaoDAO thongBaoDAO = new ThongBaoDAO();
+            thongBaoDAO.deleteAllNotifications(WindowsTabbed.getMaTaiKhoan());  // Xóa thông báo trong cơ sở dữ liệu
+            notificationWindow.setVisible(false); // Ẩn cửa sổ thông báo
+
+            // Cập nhật số lượng thông báo còn lại
+            updateNotificationCount(0); // Sau khi xem hết thông báo, cập nhật lại về 0
+        });
+
+        // Đặt nút "Xóa tất cả" vào dưới cùng của cửa sổ thông báo
+        notificationWindow.getContentPane().add(clearAllButton, BorderLayout.SOUTH);
+
+        // Lấy vị trí của nút chuông và đặt thông báo ngay dưới nó
+        Point bellButtonLocation = bellButton.getLocationOnScreen();
+        int bellButtonY = bellButtonLocation.y + bellButton.getHeight(); // Vị trí ngay dưới chuông
+
+        // Đặt kích thước và vị trí của thông báo
+        notificationWindow.setSize(625, 300);  // Kích thước cửa sổ lớn hơn để chứa nhiều thông báo
+        notificationWindow.setLocation(bellButtonLocation.x - 610, bellButtonY); // Đặt thông báo ngay dưới chuông
+
+        // Hiển thị thông báo
+        notificationWindow.setVisible(true);
+
+        // Cập nhật số lượng thông báo còn lại về 0
+        updateNotificationCount(0); // Khi hiển thị thông báo, bạn cũng có thể đặt lại số lượng thông báo
+    }
+
+    private void shakeButton(JButton button) {
+        int delay = 30; // Thời gian mỗi bước rung
+        int maxShake = 5; // Biên độ rung lớn hơn để giống YouTube
+        Timer shakeTimer = new Timer(delay, null);
+
+        shakeTimer.addActionListener(new ActionListener() {
+            int count = 0;
+            boolean right = true;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (count >= 20) { // Sau 20 bước thì dừng
+                    button.setLocation(button.getX(), button.getY()); // Đưa về vị trí cũ
+                    shakeTimer.stop();
+                } else {
+                    button.setLocation(button.getX() + (right ? maxShake : -maxShake), button.getY());
+                    right = !right;
+                    count++;
+                }
+            }
+        });
+
+        shakeTimer.start();
     }
 
     private void changeThemes(boolean dark) {

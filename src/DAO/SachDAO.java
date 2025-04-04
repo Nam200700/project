@@ -80,6 +80,41 @@ public class SachDAO {
 
         return dsSach;
     }
+    
+    public static List<Sach> QRScangetall() {
+        List<Sach> dsSach = new ArrayList<>();
+        String sql = "SELECT s.MaSach, s.TenSach, s.MaTheLoai, t.TenTheLoai, s.MaTacGia, tg.TenTacGia, "
+                + "s.MaNhaXuatBan, nxb.TenNhaXuatBan, s.MaDauSach, s.NamXuatBan, s.LanTaiBan, s.NgonNgu, s.SoLuong "
+                + "FROM sach s "
+                + "JOIN theloai t ON s.MaTheLoai = t.MaTheLoai "
+                + "JOIN tacgia tg ON s.MaTacGia = tg.MaTacGia "
+                + "JOIN nhaxuatban nxb ON s.MaNhaXuatBan = nxb.MaNhaXuatBan";
+
+        try (ResultSet rs = jdbchelper.executeQuery(sql)) {
+            while (rs.next()) {
+                Sach sc = new Sach();
+                sc.setMaSach(rs.getInt("MaSach"));
+                sc.setTenSach(rs.getString("TenSach"));
+                sc.setMaTheLoai(rs.getInt("MaTheLoai"));
+                sc.setTenTheLoai(rs.getString("TenTheLoai"));  // Lấy tên thể loại
+                sc.setMaTacGia(rs.getInt("MaTacGia"));
+                sc.setTenTacGia(rs.getString("TenTacGia"));    // Lấy tên tác giả
+                sc.setMaNhaXuatBan(rs.getInt("MaNhaXuatBan"));
+                sc.setTenNhaXuatBan(rs.getString("TenNhaXuatBan")); // Lấy tên nhà xuất bản
+                sc.setMaDauSach(rs.getString("MaDauSach"));
+                sc.setNamXuatBan(rs.getInt("NamXuatBan"));
+                sc.setLanTaiBan(rs.getInt("LanTaiBan"));
+                sc.setNgonNgu(rs.getString("NgonNgu"));
+                sc.setSoLuong(rs.getInt("SoLuong"));
+                dsSach.add(sc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dsSach;
+    }
+    
 
     public List<Sach> searchBooks(String keyword) {
         String query = "SELECT MaSach, TenSach, MaTheLoai, MaTacGia, MaNhaXuatBan, MaDauSach, NamXuatBan, LanTaiBan, NgonNgu, SoLuong "
@@ -100,4 +135,17 @@ public class SachDAO {
         ), keyword, keyword, keyword);
     }
 
+     public static String getMaSachMoiNhat() {
+        String sql = "SELECT MaSach FROM sach ORDER BY MaSach DESC LIMIT 1"; // Lấy mã sách mới nhất
+        ResultSet rs = jdbchelper.executeQuery(sql);
+        try {
+            if (rs.next()) {
+                return rs.getString("MaSach");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }

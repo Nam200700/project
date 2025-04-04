@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entity;
 
-/**
- *
- * @author Acer
- */
 public class Sach {
 
     private int maSach;
@@ -20,11 +12,14 @@ public class Sach {
     private int lanTaiBan;
     private String ngonNgu;
     private int soLuong;
+    private String TenTheLoai;
+    private String TenTacGia;
+    private String TenNhaXuatBan;
 
     public Sach() {
     }
 
-    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan,String maDauSach, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
+    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan, String maDauSach, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
         this.maSach = maSach;
         this.tenSach = tenSach;
         this.maTheLoai = maTheLoai;
@@ -115,6 +110,30 @@ public class Sach {
 
     public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
+    }
+
+    public String getTenTheLoai() {
+        return TenTheLoai;
+    }
+
+    public void setTenTheLoai(String TenTheLoai) {
+        this.TenTheLoai = TenTheLoai;
+    }
+
+    public String getTenTacGia() {
+        return TenTacGia;
+    }
+
+    public void setTenTacGia(String TenTacGia) {
+        this.TenTacGia = TenTacGia;
+    }
+
+    public String getTenNhaXuatBan() {
+        return TenNhaXuatBan;
+    }
+
+    public void setTenNhaXuatBan(String TenNhaXuatBan) {
+        this.TenNhaXuatBan = TenNhaXuatBan;
     }
 
 }

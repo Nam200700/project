@@ -27,6 +27,7 @@ import ui.QL_chitietphieutra;
 import ui.QL_khuvucsach;
 import ui.QL_mail;
 import ui.QL_sach;
+import ui.QRScan;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -112,7 +113,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         } else if (index == 1) {
                             WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
                         } else if (index == 2) {
-                            WindowsTabbed.getInstance().addTab("Thẻ thành viên", new QL_ThongTinTheDocGia());
+                            WindowsTabbed.getInstance().addTab("Scan QR mã sách", new QRScan());
                         } else if (index == 3) {
                             WindowsTabbed.getInstance().addTab("Quản lý mượn sách", new QL_Muon());
                         } else if (index == 4) {
