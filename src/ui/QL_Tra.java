@@ -4,6 +4,7 @@
  */
 package ui;
 
+import DAO.ChiTietPhieuMuonDAO;
 import DAO.PhieuMuonDAO;
 import DAO.PhieuTraDAO;
 import Entity.PhieuTra;
@@ -79,7 +80,7 @@ public class QL_Tra extends TabbedForm {
         if (tblphieutra == null) {
             DefaultTableModel model = new DefaultTableModel(
                     new Object[][]{},
-                    new String[]{"Mã The loai", "Tên The loai"}
+                    new String[]{}
             );
             tblphieutra = new RoundTabletrasach(model);
         } else {
@@ -119,7 +120,6 @@ public class QL_Tra extends TabbedForm {
             return;
         }
 
-
         // Kiểm tra trùng mã phiếu mượn
         for (PhieuTra pt : dsphieutra) {
             if (pt.getMaPhieuMuon().equals(maPhieuMuon)) {
@@ -129,7 +129,6 @@ public class QL_Tra extends TabbedForm {
         }
 
         // Chuyển đổi ngày trả từ String sang java.sql.Date
-        
         java.sql.Date ngayTra = new java.sql.Date(System.currentTimeMillis()); // Ngày mượn là hôm nay
 
         // Tạo đối tượng phiếu trả
@@ -172,6 +171,15 @@ public class QL_Tra extends TabbedForm {
                     int index = selectedRows[i];
                     String maPhieuTra = (String) tblphieutra.getValueAt(index, 0);
                     String maPhieuMuon = (String) tblphieutra.getValueAt(index, 1);
+
+                    // Kiểm tra xem phiếu mượn có chi tiết phiếu mượn không
+                    boolean hasDetails = ChiTietPhieuMuonDAO.hasDetails(maPhieuTra);
+
+                    if (hasDetails) {
+                        JOptionPane.showMessageDialog(this, "Không thể xóa phiếu trả " + maPhieuMuon + " do có dữ liệu liên quan trong bảng Chi Tiết Phiếu Trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
                     boolean isDeleted = PhieuTraDAO.delete(maPhieuTra);
                     boolean isUpdated = PhieuMuonDAO.updateTrangThai(maPhieuMuon, "Đang Mượn");
 
@@ -214,7 +222,6 @@ public class QL_Tra extends TabbedForm {
         PhieuTra phieutra = dsphieutra.get(index);
 
         String maPhieuMuon = cbb_maphieumuon.getSelectedItem().toString().trim();
-        
 
         if (maPhieuMuon.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Các trường không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);

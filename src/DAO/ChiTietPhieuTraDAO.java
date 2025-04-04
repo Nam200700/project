@@ -81,7 +81,6 @@ public class ChiTietPhieuTraDAO {
 //
 //        return tongSoLuong;
 //    }
-
 //    public static int checkSoLuongSach(String maSach) {
 //        int soLuongConLai = 0;
 //        String sql = "SELECT SoLuong FROM Sach WHERE MaSach = ?";
@@ -96,7 +95,6 @@ public class ChiTietPhieuTraDAO {
 //
 //        return soLuongConLai;
 //    }
-
     public static boolean tangsoluong(String maSach, int soLuongThem) {
         String sql = "UPDATE Sach SET SoLuong = SoLuong + ? WHERE MaSach = ?";
         int result = jdbchelper.executeUpdate(sql, soLuongThem, maSach);
@@ -109,6 +107,20 @@ public class ChiTietPhieuTraDAO {
         int result = jdbchelper.executeUpdate(sql, soLuongMuon, maSach);
 
         return result > 0;
+    }
+
+    public static boolean hasDetails(String maPhieuTra) {
+        String sql = "SELECT COUNT(*) FROM chitiettra WHERE MaPhieuTra = ?";
+
+        try (ResultSet rs = jdbchelper.executeQuery(sql, maPhieuTra)) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Nếu có ít nhất 1 bản ghi, trả về true
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }
