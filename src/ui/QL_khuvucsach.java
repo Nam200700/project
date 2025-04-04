@@ -5,6 +5,7 @@
 package ui;
 
 import DAO.KhuVucSachDao;
+import Entity.KhuVucSach;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,11 +32,12 @@ import javax.swing.JOptionPane;
 public class QL_khuvucsach extends TabbedForm {
 
     public Connection conn;
+    private KhuVucSachDao kvsDAO = new KhuVucSachDao();
 
     /**
      * Creates new form QL_khuvucsach
      */
-    public QL_khuvucsach()  {
+    public QL_khuvucsach() {
         initComponents();
         guimuonsach();
         try {
@@ -43,6 +45,7 @@ public class QL_khuvucsach extends TabbedForm {
         } catch (SQLException ex) {
         }
         loadDataToTable();
+
     }
 
     public void guimuonsach() {
@@ -119,36 +122,91 @@ public class QL_khuvucsach extends TabbedForm {
     }
 
     private void loadDataToTable() {
-        // Tạo mô hình bảng
-        DefaultTableModel model = (DefaultTableModel) tbl_khuvucsach.getModel();
+    // Tạo mô hình bảng
+    DefaultTableModel model = (DefaultTableModel) tbl_khuvucsach.getModel();
 
-        // Làm sạch bảng trước khi thêm dữ liệu mới
-        model.setRowCount(0);
+    // Làm sạch bảng trước khi thêm dữ liệu mới
+    model.setRowCount(0);
 
-        // Kết nối cơ sở dữ liệu và truy vấn dữ liệu
+    // Kết nối cơ sở dữ liệu và truy vấn dữ liệu
+    try (Connection conn = jdbchelper.getconnection()) {
+        String sql = "SELECT * FROM KhuVucSach"; // Truy vấn tất cả dữ liệu từ bảng KhuVucSach
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        // Kiểm tra nếu ResultSet có dữ liệu
+        if (!rs.isBeforeFirst()) {
+            JOptionPane.showMessageDialog(null, "Không có dữ liệu để hiển thị.");
+            return; // Không có dữ liệu, thoát phương thức
+        }
+
+        // Duyệt qua các dòng dữ liệu từ ResultSet và thêm vào JTable
+        while (rs.next()) {
+            // Đảm bảo chuyển đổi đúng kiểu dữ liệu
+            int maKhuVuc = rs.getInt("MaKhuVuc");
+            String tenKhuVuc = rs.getString("TenKhuVuc");
+            int tang = rs.getInt("Tang");
+            int ke = rs.getInt("Ke");
+            int vitri = rs.getInt("Vitri");
+            int maSach = rs.getInt("MaSach");
+            int soLuong = rs.getInt("SoLuong");
+
+            // Thêm dòng vào model bảng
+            model.addRow(new Object[]{maKhuVuc, tenKhuVuc, tang, ke, vitri, maSach, soLuong});
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu.");
+    }
+}
+    
+    public void TimKiem(){
+           // TODO add your handling code here:
+        String keyword = txt_TìmKiem.getText().trim(); // Lấy từ khóa tìm kiếm từ JTextField
+
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập từ khóa tìm kiếm!");
+            return;
+        }
+
+        // Thực hiện tìm kiếm trong cơ sở dữ liệu
         try (Connection conn = jdbchelper.getconnection()) {
-            String sql = "SELECT * FROM KhuVucSach"; // Truy vấn tất cả dữ liệu từ bảng KhuVucSach
+            String sql = "SELECT * FROM KhuVucSach WHERE TenKhuVuc LIKE ? OR Tang LIKE ? OR Ke LIKE ? OR Vitri LIKE ? OR MaSach LIKE ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
+
+            // Dùng dấu "%" để tìm kiếm một phần của chuỗi
+            String searchTerm = "%" + keyword + "%";
+            stmt.setString(1, searchTerm);
+            stmt.setString(2, searchTerm);
+            stmt.setString(3, searchTerm);
+            stmt.setString(4, searchTerm);
+            stmt.setString(5, searchTerm);
+
             ResultSet rs = stmt.executeQuery();
+            DefaultTableModel model = (DefaultTableModel) tbl_khuvucsach.getModel();
+            model.setRowCount(0); // Xóa các dòng hiện tại trong bảng
 
-            // Duyệt qua các dòng dữ liệu từ ResultSet và thêm vào JTable
             while (rs.next()) {
-                String maKhuVuc = rs.getString("MaKhuVuc");
-                String tenKhuVuc = rs.getString("TenKhuVuc");
-                String tang = rs.getString("Tang");
-                String ke = rs.getString("Ke");
-                String vitri = rs.getString("Vitri");
-                String maSach = rs.getString("MaSach");
-                String soLuong = rs.getString("SoLuong");
+                Object[] row = new Object[7];
+                row[0] = rs.getString("MaKhuVuc");
+                row[1] = rs.getString("TenKhuVuc");
+                row[2] = rs.getString("Tang");
+                row[3] = rs.getString("Ke");
+                row[4] = rs.getString("Vitri");
+                row[5] = rs.getString("MaSach");
+                row[6] = rs.getString("SoLuong");
+                model.addRow(row); // Thêm dòng vào bảng
+            }
 
-                // Thêm dòng vào model bảng
-                model.addRow(new Object[]{maKhuVuc, tenKhuVuc, tang, ke, vitri, maSach, soLuong});
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu.");
+            JOptionPane.showMessageDialog(null, "Lỗi khi tìm kiếm!");
         }
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -356,184 +414,109 @@ public class QL_khuvucsach extends TabbedForm {
     }//GEN-LAST:event_cbo_MaSachActionPerformed
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-        // Lấy giá trị từ các trường nhập liệu
-        String tenKhuVuc = txt_tenkhuvuc.getText().trim();
-        String tang = txt_tang.getText().trim();
-        String ke = txt_ke.getText().trim();
-        String vitri = txt_vitri.getText().trim();
-        String maSach = cbo_MaSach.getSelectedItem().toString();
-        String soLuong = txt_soluong.getText().trim();
-
-        // Kiểm tra nếu có trường nào rỗng
-        if (tenKhuVuc.isEmpty() || tang.isEmpty() || ke.isEmpty() || vitri.isEmpty() || soLuong.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        // Kiểm tra các ô nhập liệu có rỗng hay không
+        if (txt_tenkhuvuc.getText().trim().isEmpty() || txt_tang.getText().trim().isEmpty()
+                || txt_ke.getText().trim().isEmpty() || txt_vitri.getText().trim().isEmpty()
+                || txt_soluong.getText().trim().isEmpty() || cbo_MaSach.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Câu lệnh SQL để thêm dữ liệu vào bảng KhuVucSach
-        String sql = "INSERT INTO KhuVucSach (TenKhuVuc, Tang, Ke, ViTri, MaSach, SoLuong) VALUES (?, ?, ?, ?, ?, ?)";
+// Lấy dữ liệu từ form
+        String tenKhuVuc = txt_tenkhuvuc.getText();
+        int tang = Integer.parseInt(txt_tang.getText());
+        int ke = Integer.parseInt(txt_ke.getText());
+        int viTri = Integer.parseInt(txt_vitri.getText());
+        int maSach = Integer.parseInt((String) cbo_MaSach.getSelectedItem());
+        int soLuong = Integer.parseInt(txt_soluong.getText());
 
-        try (Connection con = jdbchelper.getconnection(); PreparedStatement pst = con.prepareStatement(sql)) {
+// Tạo đối tượng khu vực sách
+        KhuVucSach kvs = new KhuVucSach(tenKhuVuc, tang, ke, viTri, maSach, soLuong);
 
-            // Thiết lập các tham số cho câu lệnh SQL
-            pst.setString(1, tenKhuVuc);
-            pst.setString(2, tang);
-            pst.setString(3, ke);
-            pst.setString(4, vitri);
-            pst.setString(5, maSach);
-            pst.setString(6, soLuong);
-
-            // Thực thi câu lệnh
-            int rowsAffected = pst.executeUpdate();
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Thêm khu vực sách thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                loadDataToTable();  // Cập nhật bảng sau khi thêm
-            } else {
-                JOptionPane.showMessageDialog(this, "Thêm khu vực sách thất bại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm khu vực sách.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+// Gọi phương thức DAO để thêm
+        if (kvsDAO.themKhuVuc(tenKhuVuc, tang, ke, viTri, maSach, soLuong)) {
+            loadDataToTable();
+            JOptionPane.showMessageDialog(this, "Thêm thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+
 
     }//GEN-LAST:event_btn_themActionPerformed
 
     private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
-        // TODO add your handling code here:
-         int row = tbl_khuvucsach.getSelectedRow(); // Lấy dòng được chọn từ bảng
-    if (row != -1) {  // Kiểm tra nếu có dòng được chọn
-        String maKhuVuc = tbl_khuvucsach.getValueAt(row, 0).toString(); // Lấy mã khu vực từ dòng được chọn
+        // Lấy dòng được chọn từ JTable
+        int selectedRow = tbl_khuvucsach.getSelectedRow();
+        if (selectedRow >= 0) {
+            // Lấy mã khu vực từ cột "Mã khu vực" (giả sử cột mã khu vực ở chỉ mục 0)
+            int maKhuVuc = Integer.parseInt(tbl_khuvucsach.getValueAt(selectedRow, 0).toString());
 
-        // Xóa dữ liệu trong cơ sở dữ liệu
-        try (Connection conn = jdbchelper.getconnection()) {
-            String sql = "DELETE FROM KhuVucSach WHERE MaKhuVuc = ?"; // Truy vấn xóa
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, maKhuVuc);
-            int rowsDeleted = stmt.executeUpdate(); // Thực hiện xóa
-            if (rowsDeleted > 0) {
-                JOptionPane.showMessageDialog(null, "Xóa thành công!");
-                loadDataToTable(); // Làm mới bảng
-            } else {
-                JOptionPane.showMessageDialog(null, "Không tìm thấy khu vực để xóa!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi xóa khu vực!");
+            // Gọi phương thức xóa khu vực sách từ KhuVucSachDao
+            kvsDAO.xoaKhuVuc(maKhuVuc);
+
+            // Cập nhật lại bảng sau khi xóa
+            loadDataToTable();
+
+            // Thông báo cho người dùng
+            JOptionPane.showMessageDialog(this, "Xóa thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn khu vực sách để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Vui lòng chọn khu vực để xóa!");
-    }
     }//GEN-LAST:event_btn_xoaActionPerformed
 
     private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
-        // TODO add your handling code here:
-        // Lấy dữ liệu từ các trường nhập liệu
-    String tenKhuVuc = txt_tenkhuvuc.getText();
-    String tang = txt_tang.getText();
-    String ke = txt_ke.getText();
-    String vitri = txt_vitri.getText();
-    String maSach = cbo_MaSach.getSelectedItem().toString();
-    String soLuong = txt_soluong.getText();
-
-    // Kiểm tra nếu có trường nào chưa điền thông tin
-    if (tenKhuVuc.isEmpty() || tang.isEmpty() || ke.isEmpty() || vitri.isEmpty() || soLuong.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
+      // Kiểm tra xem có dòng nào được chọn trong JTable không
+    int selectedRow = tbl_khuvucsach.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Chưa chọn hàng nào để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
         return;
     }
 
-    // Lấy mã khu vực từ bảng để cập nhật
-    int row = tbl_khuvucsach.getSelectedRow();
-    if (row != -1) {
-        String maKhuVuc = tbl_khuvucsach.getValueAt(row, 0).toString();
+    // Lấy thông tin từ các cột trong JTable
+    String tenKhuVuc = tbl_khuvucsach.getValueAt(selectedRow, 1).toString().trim();
+    String tang = tbl_khuvucsach.getValueAt(selectedRow, 2).toString().trim();
+    String ke = tbl_khuvucsach.getValueAt(selectedRow, 3).toString().trim();
+    String vitri = tbl_khuvucsach.getValueAt(selectedRow, 4).toString().trim();
+    String soLuong = tbl_khuvucsach.getValueAt(selectedRow, 6).toString().trim();
+    int maSach = Integer.parseInt(cbo_MaSach.getSelectedItem().toString().trim()); // Mã sách từ ComboBox
 
-        // Cập nhật dữ liệu trong cơ sở dữ liệu
-        try (Connection conn = jdbchelper.getconnection()) {
-            String sql = "UPDATE KhuVucSach SET TenKhuVuc = ?, Tang = ?, Ke = ?, Vitri = ?, MaSach = ?, SoLuong = ? WHERE MaKhuVuc = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, tenKhuVuc);
-            stmt.setString(2, tang);
-            stmt.setString(3, ke);
-            stmt.setString(4, vitri);
-            stmt.setString(5, maSach);
-            stmt.setString(6, soLuong);
-            stmt.setString(7, maKhuVuc);
-            
-            int rowsUpdated = stmt.executeUpdate(); // Thực hiện cập nhật
-            if (rowsUpdated > 0) {
-                JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
-                loadDataToTable(); // Làm mới bảng
-            } else {
-                JOptionPane.showMessageDialog(null, "Cập nhật không thành công!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật khu vực!");
+    // Kiểm tra các trường có hợp lệ không (ví dụ, tên khu vực không được rỗng)
+    if (tenKhuVuc.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Tên khu vực không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Lấy mã khu vực từ cột đầu tiên trong JTable (đây là điều kiện để sửa)
+    int maKhuVuc = Integer.parseInt(tbl_khuvucsach.getValueAt(selectedRow, 0).toString().trim());
+
+    // Kiểm tra dữ liệu trước khi cập nhật
+    if (tang.isEmpty() || ke.isEmpty() || vitri.isEmpty() || soLuong.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại các trường thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        // Cập nhật dữ liệu vào cơ sở dữ liệu thông qua DAO
+        boolean result = kvsDAO.suaKhuVuc(tenKhuVuc, Integer.parseInt(tang), Integer.parseInt(ke), Integer.parseInt(vitri), maSach, Integer.parseInt(soLuong), maKhuVuc);
+
+        if (result) {
+            // Nếu cập nhật thành công, làm mới bảng và hiển thị thông báo thành công
+            loadDataToTable(); // Hàm này sẽ load lại dữ liệu vào JTable
+            JOptionPane.showMessageDialog(this, "Cập nhật khu vực sách thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật khu vực sách thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Vui lòng chọn khu vực để sửa!");
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật khu vực sách: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
     }//GEN-LAST:event_btn_suaActionPerformed
 
     private void tbl_khuvucsachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_khuvucsachMouseClicked
-        // TODO add your handling code here:
-          // Lấy dòng được chọn trong bảng
-    int row = tbl_khuvucsach.getSelectedRow();
-    if (row != -1) {
-        // Điền dữ liệu vào các trường nhập liệu
-        txt_tenkhuvuc.setText(tbl_khuvucsach.getValueAt(row, 1).toString());
-        txt_tang.setText(tbl_khuvucsach.getValueAt(row, 2).toString());
-        txt_ke.setText(tbl_khuvucsach.getValueAt(row, 3).toString());
-        txt_vitri.setText(tbl_khuvucsach.getValueAt(row, 4).toString());
-        cbo_MaSach.setSelectedItem(tbl_khuvucsach.getValueAt(row, 5).toString());
-        txt_soluong.setText(tbl_khuvucsach.getValueAt(row, 6).toString());
-    }
     }//GEN-LAST:event_tbl_khuvucsachMouseClicked
 
     private void btn_TimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_TimKiemActionPerformed
-        // TODO add your handling code here:
-         String keyword = txt_TìmKiem.getText().trim(); // Lấy từ khóa tìm kiếm từ JTextField
-    
-    if (keyword.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Vui lòng nhập từ khóa tìm kiếm!");
-        return;
-    }
-
-    // Thực hiện tìm kiếm trong cơ sở dữ liệu
-    try (Connection conn = jdbchelper.getconnection()) {
-        String sql = "SELECT * FROM KhuVucSach WHERE TenKhuVuc LIKE ? OR Tang LIKE ? OR Ke LIKE ? OR Vitri LIKE ? OR MaSach LIKE ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        // Dùng dấu "%" để tìm kiếm một phần của chuỗi
-        String searchTerm = "%" + keyword + "%";
-        stmt.setString(1, searchTerm);
-        stmt.setString(2, searchTerm);
-        stmt.setString(3, searchTerm);
-        stmt.setString(4, searchTerm);
-        stmt.setString(5, searchTerm);
-        
-        ResultSet rs = stmt.executeQuery();
-        DefaultTableModel model = (DefaultTableModel) tbl_khuvucsach.getModel();
-        model.setRowCount(0); // Xóa các dòng hiện tại trong bảng
-
-        while (rs.next()) {
-            Object[] row = new Object[7];
-            row[0] = rs.getString("MaKhuVuc");
-            row[1] = rs.getString("TenKhuVuc");
-            row[2] = rs.getString("Tang");
-            row[3] = rs.getString("Ke");
-            row[4] = rs.getString("Vitri");
-            row[5] = rs.getString("MaSach");
-            row[6] = rs.getString("SoLuong");
-            model.addRow(row); // Thêm dòng vào bảng
-        }
-
-        if (model.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Lỗi khi tìm kiếm!");
-    }
+      TimKiem();
     }//GEN-LAST:event_btn_TimKiemActionPerformed
 
 

@@ -64,14 +64,14 @@ public class RoundTablekhuvucsach extends JTable {
             if (columnCount > 3) {
                 columnModel.getColumn(3).setHeaderRenderer(new ImageHeaderRenderer("image/write.png", "Dẫy kệ"));
             }
+            if (columnCount > 4) {
+                columnModel.getColumn(4).setHeaderRenderer(new ImageHeaderRenderer("image/location.png", "Vị trí"));
+            }
             if (columnCount > 5) {
-                columnModel.getColumn(5).setHeaderRenderer(new ImageHeaderRenderer("image/location.png", "Vị trí"));
+                columnModel.getColumn(5).setHeaderRenderer(new ImageHeaderRenderer("image/fullname.png", "Mã sách"));
             }
             if (columnCount > 6) {
-                columnModel.getColumn(6).setHeaderRenderer(new ImageHeaderRenderer("image/fullname.png", "Tên sách"));
-            }
-            if (columnCount > 7) {
-                columnModel.getColumn(7).setHeaderRenderer(new ImageHeaderRenderer("image/internship.png", "Số lượng"));
+                columnModel.getColumn(6).setHeaderRenderer(new ImageHeaderRenderer("image/internship.png", "Số lượng"));
             }
         }
 

@@ -10,7 +10,6 @@ package Entity;
  */
 public class KhuVucSach {
 
-    public int maKhuVuc;
     public String tenKhuVuc;
     public int tang;
     public int ke;
@@ -18,8 +17,7 @@ public class KhuVucSach {
     public int maSach;
     public int soLuong;
 
-    public KhuVucSach(int maKhuVuc, String tenKhuVuc, int tang, int ke, int viTri, int maSach, int soLuong) {
-        this.maKhuVuc = maKhuVuc;
+    public KhuVucSach( String tenKhuVuc, int tang, int ke, int viTri, int maSach, int soLuong) {
         this.tenKhuVuc = tenKhuVuc;
         this.tang = tang;
         this.ke = ke;
@@ -32,13 +30,7 @@ public class KhuVucSach {
         
     }
 
-    public int getMaKhuVuc() {
-        return maKhuVuc;
-    }
-
-    public void setMaKhuVuc(int maKhuVuc) {
-        this.maKhuVuc = maKhuVuc;
-    }
+  
 
     public String getTenKhuVuc() {
         return tenKhuVuc;
