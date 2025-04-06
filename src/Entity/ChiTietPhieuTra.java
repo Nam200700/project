@@ -14,15 +14,25 @@ public class ChiTietPhieuTra {
     private String maSach;
     private int soluong;
     private String tinhTrangSach;
+    private String tenSach;
 
-    public ChiTietPhieuTra() {
-    }
-
-    public ChiTietPhieuTra(String maPhieuTra, String maSach, int soluong, String tinhTrangSach) {
+    public ChiTietPhieuTra(String maPhieuTra, String maSach, int soluong, String tinhTrangSach, String tenSach) {
         this.maPhieuTra = maPhieuTra;
         this.maSach = maSach;
         this.soluong = soluong;
         this.tinhTrangSach = tinhTrangSach;
+        this.tenSach = tenSach;
+    }
+
+    public String getTenSach() {
+        return tenSach;
+    }
+
+    public void setTenSach(String tenSach) {
+        this.tenSach = tenSach;
+    }
+
+    public ChiTietPhieuTra() {
     }
 
     public String getMaPhieuTra() {
@@ -56,4 +66,5 @@ public class ChiTietPhieuTra {
     public void setTinhTrangSach(String tinhTrangSach) {
         this.tinhTrangSach = tinhTrangSach;
     }
+
 }

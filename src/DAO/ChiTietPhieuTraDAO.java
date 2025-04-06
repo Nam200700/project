@@ -20,8 +20,8 @@ public class ChiTietPhieuTraDAO {
 
     // Thêm mới phiếu mượn
     public static boolean insert(ChiTietPhieuTra ctpt) {
-        String sql = "INSERT INTO chitiettra (MaPhieuTra,MaSach,SoLuong,TinhTrangSach) VALUES (?,?,?,?)";
-        int result = jdbchelper.executeUpdate(sql, ctpt.getMaPhieuTra(), ctpt.getMaSach(), ctpt.getSoluong(), ctpt.getTinhTrangSach());
+        String sql = "INSERT INTO chitiettra (MaPhieuTra,MaSach,SoLuong,TinhTrangSach,TenSach) VALUES (?,?,?,?,?)";
+        int result = jdbchelper.executeUpdate(sql, ctpt.getMaPhieuTra(), ctpt.getMaSach(), ctpt.getSoluong(), ctpt.getTinhTrangSach(),ctpt.getTenSach());
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Thêm chi tiết phiếu trả thành công!");
@@ -33,9 +33,9 @@ public class ChiTietPhieuTraDAO {
     }
 
     // Xóa phiếu mượn
-    public static boolean delete(String maPhieuTra, String maSach) {
-        String sql = "DELETE FROM chitiettra WHERE MaPhieuTra = ? AND MaSach = ?";
-        int result = jdbchelper.executeUpdate(sql, maPhieuTra, maSach);
+    public static boolean delete(String maPhieuTra, String tenSach) {
+        String sql = "DELETE FROM chitiettra WHERE MaPhieuTra = ? AND TenSach = ?";
+        int result = jdbchelper.executeUpdate(sql, maPhieuTra, tenSach);
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Xóa chi tiết phiếu trả thành công!");
@@ -49,13 +49,13 @@ public class ChiTietPhieuTraDAO {
     // Lấy danh sách tất cả phiếu mượn
     public static List<ChiTietPhieuTra> getAll() {
         List<ChiTietPhieuTra> dschitietPhieuTra = new ArrayList<>();
-        String sql = "SELECT MaPhieuTra, MaSach, SoLuong, TinhTrangSach FROM chitiettra";
+        String sql = "SELECT MaPhieuTra, TenSach, SoLuong, TinhTrangSach FROM chitiettra";
 
         try (ResultSet rs = jdbchelper.executeQuery(sql)) {
             while (rs.next()) {
                 ChiTietPhieuTra ctpt = new ChiTietPhieuTra();
                 ctpt.setMaPhieuTra(rs.getString("MaPhieuTra"));
-                ctpt.setMaSach(rs.getString("MaSach"));
+                ctpt.setTenSach(rs.getString("TenSach"));
                 ctpt.setSoluong(rs.getInt("SoLuong"));
                 ctpt.setTinhTrangSach(rs.getString("TinhTrangSach"));
                 dschitietPhieuTra.add(ctpt);
@@ -95,20 +95,20 @@ public class ChiTietPhieuTraDAO {
 //
 //        return soLuongConLai;
 //    }
-    public static boolean tangsoluong(String maSach, int soLuongThem) {
-        String sql = "UPDATE Sach SET SoLuong = SoLuong + ? WHERE MaSach = ?";
-        int result = jdbchelper.executeUpdate(sql, soLuongThem, maSach);
+    public static boolean tangsoluong(String tenSach, int soLuongThem) {
+        String sql = "UPDATE Sach SET SoLuong = SoLuong + ? WHERE TenSach = ?";
+        int result = jdbchelper.executeUpdate(sql, soLuongThem, tenSach);
 
         return result > 0;
     }
 
-    public static boolean giamsoluong(String maSach, int soLuongMuon) {
-        String sql = "UPDATE Sach SET SoLuong = SoLuong - ? WHERE MaSach = ?";
-        int result = jdbchelper.executeUpdate(sql, soLuongMuon, maSach);
+    public static boolean giamsoluong(String tenSach, int soLuongTra) {
+        String sql = "UPDATE Sach SET SoLuong = SoLuong - ? WHERE TenSach = ?";
+        int result = jdbchelper.executeUpdate(sql, soLuongTra, tenSach);
 
         return result > 0;
     }
-
+    // có chi tiết phiếu không để chạy điều kiện xóa của phiếu trả
     public static boolean hasDetails(String maPhieuTra) {
         String sql = "SELECT COUNT(*) FROM chitiettra WHERE MaPhieuTra = ?";
 

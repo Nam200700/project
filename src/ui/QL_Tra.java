@@ -4,7 +4,7 @@
  */
 package ui;
 
-import DAO.ChiTietPhieuMuonDAO;
+import DAO.ChiTietPhieuTraDAO;
 import DAO.PhieuMuonDAO;
 import DAO.PhieuTraDAO;
 import Entity.PhieuTra;
@@ -114,7 +114,7 @@ public class QL_Tra extends TabbedForm {
             JOptionPane.showMessageDialog(this, "Không tìm thấy phiếu mượn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        // kiểm tra coi phiều mượn đã đc trả chưa nếu rồi thì không cho tạo
         if (trangThai.equals("Đã trả")) {
             JOptionPane.showMessageDialog(this, "Mã phiếu mượn này đã được trả, không thể tạo phiếu trả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -173,7 +173,7 @@ public class QL_Tra extends TabbedForm {
                     String maPhieuMuon = (String) tblphieutra.getValueAt(index, 1);
 
                     // Kiểm tra xem phiếu mượn có chi tiết phiếu mượn không
-                    boolean hasDetails = ChiTietPhieuMuonDAO.hasDetails(maPhieuTra);
+                    boolean hasDetails = ChiTietPhieuTraDAO.hasDetails(maPhieuTra);
 
                     if (hasDetails) {
                         JOptionPane.showMessageDialog(this, "Không thể xóa phiếu trả " + maPhieuMuon + " do có dữ liệu liên quan trong bảng Chi Tiết Phiếu Trả.", "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -15,15 +15,27 @@ public class ChiTietPhieuMuon {
     private String maphieuMuon;
     private String maSach;
     private int soLuong;
+    private String tenSach;
 
     public ChiTietPhieuMuon() {
     }
 
-    public ChiTietPhieuMuon(String maphieuMuon, String maSach, int soLuong) {
+    public ChiTietPhieuMuon(String maphieuMuon, String maSach, int soLuong, String tenSach) {
         this.maphieuMuon = maphieuMuon;
         this.maSach = maSach;
         this.soLuong = soLuong;
+        this.tenSach = tenSach;
     }
+
+    public String getTenSach() {
+        return tenSach;
+    }
+
+    public void setTenSach(String tenSach) {
+        this.tenSach = tenSach;
+    }
+
+    
 
     public String getMaphieuMuon() {
         return maphieuMuon;

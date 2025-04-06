@@ -80,7 +80,7 @@ public class PhieuMuonDAO {
         int result = jdbchelper.executeUpdate(sql, trangThai, maPhieuMuon);
 
         if (result > 0) {
-            JOptionPane.showMessageDialog(null, "Cập nhật trạng thái thành công!");
+//            JOptionPane.showMessageDialog(null, "Cập nhật trạng thái thành công!");
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "Không tìm thấy phiếu mượn để cập nhật trạng thái!", "Lỗi", JOptionPane.WARNING_MESSAGE);

@@ -23,7 +23,7 @@ public class PhieuTraDAO {
         int result = jdbchelper.executeUpdate(sql, pt.getMaPhieuMuon(), pt.getNgayTra());
 
         if (result > 0) {
-            JOptionPane.showMessageDialog(null, "Thêm phiếu trả thành công!");
+//            JOptionPane.showMessageDialog(null, "Thêm phiếu trả thành công!");
             return true;
         } else {
             JOptionPane.showMessageDialog(null, "Lỗi khi thêm phiếu trả!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -36,7 +36,7 @@ public class PhieuTraDAO {
         int result = jdbchelper.executeUpdate(sql, pt.getMaPhieuMuon(), pt.getNgayTra(), pt.getMaPhieuTra());
 
         if (result > 0) {
-            JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+//            JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
         } else {
             JOptionPane.showMessageDialog(null, "Không tìm thấy phiếu trả!", "Lỗi", JOptionPane.WARNING_MESSAGE);
         }
