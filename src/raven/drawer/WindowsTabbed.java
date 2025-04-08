@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.Timer;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -388,20 +389,22 @@ public class WindowsTabbed {
     }
 
     public void showForm(TabbedForm component) {
-        body.removeAll();
-        body.setLayout(new BorderLayout()); // Đảm bảo layout phù hợp
-        body.add(component, BorderLayout.CENTER); // Thêm vào center để tự động co giãn
-        body.revalidate();
-        body.repaint();
-        panelTabbed.revalidate();
-        panelTabbed.repaint();
-        component.formOpen();
+        body.removeAll();  // Xóa tất cả component cũ
+        body.setLayout(new MigLayout("wrap, fill, gap 10", "fill"));
+        body.add(component, "grow");  // Đảm bảo component này co giãn theo cả chiều ngang và chiều dọc
+
+        body.revalidate();  // Đảm bảo layout được cập nhật
+        body.repaint();  // Cập nhật giao diện
+        panelTabbed.revalidate();  // Cập nhật lại panelTabbed nếu cần
+        panelTabbed.repaint();  // Cập nhật lại panelTabbed
+
+        component.formOpen();  // Mở form nếu cần
         temp = component;
+
         System.out.println("Component count trong body: " + body.getComponentCount());
         for (Component c : body.getComponents()) {
             System.out.println("Component: " + c.getClass().getName());
         }
-
     }
 
 }

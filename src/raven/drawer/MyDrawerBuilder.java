@@ -17,17 +17,14 @@ import ui.QL_docgia;
 import ui.QL_nhaxuatban;
 import ui.QL_tacgia;
 import ui.QL_theloaisach;
-import ui.Test;
 import java.util.Set;
+import ui.DashboardForm;
 import ui.QL_Muon;
-import ui.QL_ThongTinTheDocGia;
 import ui.QL_Tra;
 import ui.QL_chitietphieumuon;
 import ui.QL_chitietphieutra;
 import ui.QL_khuvucsach;
-import ui.QL_mail;
 import ui.QL_sach;
-import ui.QRScan;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -64,18 +61,9 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         String menus[][] = {
             {"Dashboard"},
             {"Quản lý độc giả"},
-            {"Đăng ký thẻ"},
-            {"Mượn sách"},
-            {"Trả sách"},
-            {"Sách"},
-            {"Thể loại"},
-            {"Tác giả"},
-            {"Nhà xuất bản"},
-            {"Khu vực sách"},
-            {"Lưu trữ sách cũ"},
-            {"Duyệt yêu cầu"},
-            {"Phiếu mượn"},
-            {"Phiếu trả"},
+            {"Quản lý sách", "Tác giả", "Thể loại", "Nhà xuất bản", "Khu vực sách", "Sách"},
+            {"Quản lý phiếu mượn", "Phiếu mượn", "Chi tiết phiếu mượn"},
+            {"Quản lý phiếu trả", "Phiếu trả", "Chi tiết phiếu trả"},
             {"Send mail"},
             {"Logout"}
         };
@@ -83,18 +71,9 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         String icons[] = {
             "chart.svg",
             "reader.svg",
-            "membership.svg",
             "book.svg",
-            "book_return.svg",
             "book1.svg",
-            "bookmark.svg",
-            "author.svg",
-            "publisher.svg",
-            "area_book.svg",
-            "old_book.svg",
-            "approve.svg",
-            "slip.svg",
-            "return_slip.svg",
+            "book_return.svg",
             "sendmail.svg",
             "logout.svg"
         };
@@ -109,33 +88,44 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                     public void selected(MenuAction action, int index, int subIndex) {
                         // Xử lý khi người dùng chọn một menu hợp lệ
                         if (index == 0) {
-                            WindowsTabbed.getInstance().addTab("Test Form", new Test());
+                            WindowsTabbed.getInstance().addTab("Dashboard", new DashboardForm());
                         } else if (index == 1) {
-                            WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
-                        } else if (index == 2) {
-                            WindowsTabbed.getInstance().addTab("Scan QR mã sách", new QRScan());
-                        } else if (index == 3) {
-                            WindowsTabbed.getInstance().addTab("Quản lý mượn sách", new QL_Muon());
-                        } else if (index == 4) {
-                            WindowsTabbed.getInstance().addTab("QL trả sách", new QL_Tra());
-                        } else if (index == 5) {
-                            WindowsTabbed.getInstance().addTab("QL sách", new QL_sach());
-
-                        } else if (index == 6) {
-                            WindowsTabbed.getInstance().addTab("QL theloai", new QL_theloaisach());
-                        } else if (index == 7) {
-                            WindowsTabbed.getInstance().addTab("QL tg", new QL_tacgia());
-                        } else if (index == 8) {
-                            WindowsTabbed.getInstance().addTab("QL nhaxuatban", new QL_nhaxuatban());
-                        } else if (index == 9) {
-                            WindowsTabbed.getInstance().addTab("QL khu vực sách", new QL_khuvucsach());
-                        } else if (index == 12) {
-                            WindowsTabbed.getInstance().addTab("QL chi tiết phiếu mượn", new QL_chitietphieumuon());
-                        } else if (index == 13) {
-                            WindowsTabbed.getInstance().addTab("QL chi tiết phiếu trả", new QL_chitietphieutra());
-                        } else if (index == 14) {
-                            WindowsTabbed.getInstance().addTab("QL sendmail", new QL_mail());
-                        } else if (index == 15) {
+                            WindowsTabbed.getInstance().addTab("Quản lý độc giả", new QL_docgia());
+                        }else if(index == 2){
+                            if(subIndex == 1){
+                                
+                            WindowsTabbed.getInstance().addTab("Tác giả", new QL_tacgia());
+                            }
+                            else if(subIndex == 2){
+                            WindowsTabbed.getInstance().addTab("Thể loại", new QL_theloaisach());
+                            }
+                             else if(subIndex == 3){
+                            WindowsTabbed.getInstance().addTab("Nhà xuất bản", new QL_nhaxuatban());
+                            }
+                             else if(subIndex == 4){
+                            WindowsTabbed.getInstance().addTab("Khu vực sách", new QL_khuvucsach());
+                            }
+                             else if(subIndex == 5){
+                            WindowsTabbed.getInstance().addTab("Sách", new QL_sach());
+                            }
+                        }
+                        else if (index == 3){
+                             if(subIndex == 1){
+                            WindowsTabbed.getInstance().addTab("Phiếu mượn", new QL_Muon());
+                            }
+                            else if(subIndex == 2){
+                            WindowsTabbed.getInstance().addTab("Chi tiết phiếu mượn", new QL_chitietphieumuon());
+                            }
+                        }
+                        else if (index == 4){
+                             if(subIndex == 1){
+                            WindowsTabbed.getInstance().addTab("Phiếu trả", new QL_Tra());
+                            }
+                            else if(subIndex == 2){
+                            WindowsTabbed.getInstance().addTab("Chi tiết phiếu trả", new QL_chitietphieutra());
+                            }
+                        }
+                        else if (index == 6) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

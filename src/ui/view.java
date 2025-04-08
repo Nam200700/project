@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ui;
 
 import com.formdev.flatlaf.FlatLaf;
@@ -9,27 +5,22 @@ import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Font;
 import javax.swing.UIManager;
+import net.miginfocom.swing.MigLayout;
 import raven.drawer.Drawer;
 import raven.drawer.MyDrawerBuilder;
 import raven.drawer.WindowsTabbed;
 import raven.popup.GlassPanePopup;
+import main.main;
 
-/**
- *
- * @author ACER
- */
 public class view extends javax.swing.JFrame {
 
-    public static view View;
+    public static main Login;
 
-    /**
-     * Creates new form view
-     */
     public view() {
         initComponents();
         init();
         this.setLocationRelativeTo(null);
-        
+
         setSize(1100, 700);
     }
 
@@ -39,7 +30,7 @@ public class view extends javax.swing.JFrame {
         Drawer.getInstance().setDrawerBuilder(myDrawerBuilder);
         WindowsTabbed.getInstance().install(this, body);
         // applyComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
+        body.setLayout(new MigLayout("wrap, fill, gap 10", "[grow, fill]"));
     }
 
     @SuppressWarnings("unchecked")
@@ -110,8 +101,8 @@ public class view extends javax.swing.JFrame {
         UIManager.put("Button.arc", 20); // Bo góc 20px cho tất cả các JButton
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                View = new view();
-                View.setVisible(true);
+                Login = new main();
+                Login.setVisible(true);
 
             }
         });

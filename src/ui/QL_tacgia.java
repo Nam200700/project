@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import net.miginfocom.swing.MigLayout;
 import raven.drawer.TabbedForm;
 import swing.RoundButton;
 import swing.ImageHeaderRenderer;
@@ -52,7 +53,6 @@ public class QL_tacgia extends TabbedForm {
         // Áp dụng FlatLaf
         FlatLightLaf.setup();
         UIManager.put("Component.arc", 20); // Bo góc toàn bộ UI
-
         // Kiểm tra nếu `tbltacgia` chưa khởi tạo
         if (tbltacgia == null) {
             DefaultTableModel model = new DefaultTableModel(
@@ -289,7 +289,7 @@ public class QL_tacgia extends TabbedForm {
         btnCapNhat = new javax.swing.JButton();
 
         setOpaque(false);
-        setPreferredSize(new java.awt.Dimension(939, 570));
+        setPreferredSize(new java.awt.Dimension(1011, 573));
 
         roundPanel1.setBackground(new java.awt.Color(255, 255, 255));
         roundPanel1.setPreferredSize(new java.awt.Dimension(831, 483));
@@ -376,17 +376,17 @@ public class QL_tacgia extends TabbedForm {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(59, 59, 59)
                 .addComponent(roundPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(43, Short.MAX_VALUE)
+                .addContainerGap(47, Short.MAX_VALUE)
                 .addComponent(roundPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
 
