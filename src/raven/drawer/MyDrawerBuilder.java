@@ -28,6 +28,7 @@ import ui.QL_khuvucsach;
 import ui.QL_mail;
 import ui.QL_sach;
 import ui.QRScan;
+import ui.XepHangRank;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -136,6 +137,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         } else if (index == 14) {
                             WindowsTabbed.getInstance().addTab("QL sendmail", new QL_mail());
                         } else if (index == 15) {
+                            WindowsTabbed.getInstance().addTab("QL thongke", new XepHangRank());
+                        }else if (index == 16) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

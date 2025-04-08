@@ -295,7 +295,7 @@ public class register extends javax.swing.JFrame {
             }
 
             // Lấy MaQuyen của "Độc giả"
-            String getRoleIdSql = "SELECT MaQuyen FROM PHANQUYEN WHERE TenQuyen = 'Độc giả'";
+            String getRoleIdSql = "SELECT MaQuyen FROM PHANQUYEN WHERE TenQuyen = 'Thủ Thư'";
             int maQuyen = -1;
 
             try (ResultSet rs = jdbchelper.executeQuery(getRoleIdSql)) {
