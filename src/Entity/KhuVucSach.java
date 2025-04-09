@@ -9,19 +9,32 @@ package Entity;
  * @author Acer
  */
 public class KhuVucSach {
-    private String maKhuVuc;
+    private int maKhuVuc;
     private String tenKhuVuc;
+    private int tang;
+    private int ke;
+    private int viTri;
+    private int soLuong; // không cần lưu vào DB
 
-    public KhuVucSach(String maKhuVuc, String tenKhuVuc) {
+
+    public KhuVucSach(int maKhuVuc, String tenKhuVuc, int tang, int ke, int viTri) {
         this.maKhuVuc = maKhuVuc;
         this.tenKhuVuc = tenKhuVuc;
+        this.tang = tang;
+        this.ke = ke;
+        this.viTri = viTri;
+        this.soLuong = soLuong;
+    }
+    
+    public KhuVucSach(){
+        
     }
 
-    public String getMaKhuVuc() {
+    public int getMaKhuVuc() {
         return maKhuVuc;
     }
 
-    public void setMaKhuVuc(String maKhuVuc) {
+    public void setMaKhuVuc(int maKhuVuc) {
         this.maKhuVuc = maKhuVuc;
     }
 
@@ -32,4 +45,38 @@ public class KhuVucSach {
     public void setTenKhuVuc(String tenKhuVuc) {
         this.tenKhuVuc = tenKhuVuc;
     }
+
+    public int getTang() {
+        return tang;
+    }
+
+    public void setTang(int tang) {
+        this.tang = tang;
+    }
+
+    public int getKe() {
+        return ke;
+    }
+
+    public void setKe(int ke) {
+        this.ke = ke;
+    }
+
+    public int getViTri() {
+        return viTri;
+    }
+
+    public void setViTri(int viTri) {
+        this.viTri = viTri;
+    }
+    
+    public int getSoLuong() {
+    return soLuong;
+}
+
+public void setSoLuong(int soLuong) {
+    this.soLuong = soLuong;
+}
+    
+    
 }

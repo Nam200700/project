@@ -15,10 +15,10 @@ import util.jdbchelper;
 public class SachDAO {
 
     public static boolean insert(Sach sach) {
-        String sql = "INSERT INTO sach (TenSach,MaTheLoai,MaTacGia,MaNhaXuatBan,MaDauSach,NamXuatBan,LanTaiBan,NgonNgu,SoLuong) VALUES (?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO sach (TenSach,MaTheLoai,MaTacGia,MaNhaXuatBan,MaDauSach,NamXuatBan,LanTaiBan,NgonNgu,SoLuong,MaKhuVuc) VALUES (?,?,?,?,?,?,?,?,?,?)";
         int result = jdbchelper.executeUpdate(sql, sach.getTenSach(), sach.getMaTheLoai(),
                 sach.getMaTacGia(), sach.getMaNhaXuatBan(), sach.getMaDauSach(), sach.getNamXuatBan(),
-                sach.getLanTaiBan(), sach.getNgonNgu(), sach.getSoLuong());
+                sach.getLanTaiBan(), sach.getNgonNgu(), sach.getSoLuong(), sach.getMaKhuVuc());
 
         if (result > 0) {
             JOptionPane.showMessageDialog(null, "Thêm sách thành công!");
@@ -29,18 +29,28 @@ public class SachDAO {
         }
     }
 
-    public static void update(Sach sach) {
-        String sql = "UPDATE sach SET TenSach = ?,MaTheLoai = ?,MaTacGia = ?,MaNhaXuatBan = ?,MaDauSach = ?,NamXuatBan = ?,LanTaiBan = ?,NgonNgu = ?,SoLuong = ? WHERE MaSach = ?";
-        int result = jdbchelper.executeUpdate(sql, sach.getTenSach(), sach.getMaTheLoai(),
-                sach.getMaTacGia(), sach.getMaNhaXuatBan(), sach.getMaDauSach(), sach.getNamXuatBan(),
-                sach.getLanTaiBan(), sach.getNgonNgu(), sach.getSoLuong(), sach.getMaSach());
-
-        if (result > 0) {
-            JOptionPane.showMessageDialog(null, "Cập nhật sách thành công!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Không tìm thấy sách!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-        }
+    public static boolean update(Sach sach) {
+    String sql = "UPDATE Sach SET TenSach=?, NgonNgu=?, MaTheLoai=?, MaTacGia=?, MaNhaXuatBan=?, MaKhuVuc=?, NamXuatBan=?, SoLuong=?, LanTaiBan=? WHERE MaDauSach=?";
+    try {
+        int rows = jdbchelper.executeUpdate(sql,
+                sach.getTenSach(),
+                sach.getNgonNgu(),
+                sach.getMaTheLoai(),
+                sach.getMaTacGia(),
+                sach.getMaNhaXuatBan(),
+                sach.getMaKhuVuc(),
+                sach.getNamXuatBan(),
+                sach.getSoLuong(),
+                sach.getLanTaiBan(),
+                sach.getMaDauSach()
+        );
+        return rows > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     public static boolean delete(int maSach) {
         String sql = "DELETE FROM sach WHERE MaSach = ?";
@@ -57,7 +67,7 @@ public class SachDAO {
     public static List<Sach> getAll() {
         List<Sach> dsSach = new ArrayList<>();
         String sql = "SELECT MaSach,TenSach,MaTheLoai,MaTacGia,MaNhaXuatBan"
-                + ",MaDauSach,NamXuatBan,LanTaiBan,NgonNgu,SoLuong FROM sach";
+                + ",MaDauSach,NamXuatBan,LanTaiBan,NgonNgu,SoLuong,MaKhuVuc FROM sach";
 
         try (ResultSet rs = jdbchelper.executeQuery(sql)) {
             while (rs.next()) {
@@ -72,6 +82,7 @@ public class SachDAO {
                 sc.setLanTaiBan(rs.getInt("LanTaiBan"));
                 sc.setNgonNgu(rs.getString("NgonNgu"));
                 sc.setSoLuong(rs.getInt("SoLuong"));
+                sc.setMaKhuVuc(rs.getInt("MaKhuVuc"));
                 dsSach.add(sc);
             }
         } catch (SQLException e) {
@@ -81,71 +92,13 @@ public class SachDAO {
         return dsSach;
     }
     
-    public static List<Sach> QRScangetall() {
-        List<Sach> dsSach = new ArrayList<>();
-        String sql = "SELECT s.MaSach, s.TenSach, s.MaTheLoai, t.TenTheLoai, s.MaTacGia, tg.TenTacGia, "
-                + "s.MaNhaXuatBan, nxb.TenNhaXuatBan, s.MaDauSach, s.NamXuatBan, s.LanTaiBan, s.NgonNgu, s.SoLuong "
-                + "FROM sach s "
-                + "JOIN theloai t ON s.MaTheLoai = t.MaTheLoai "
-                + "JOIN tacgia tg ON s.MaTacGia = tg.MaTacGia "
-                + "JOIN nhaxuatban nxb ON s.MaNhaXuatBan = nxb.MaNhaXuatBan";
-
-        try (ResultSet rs = jdbchelper.executeQuery(sql)) {
-            while (rs.next()) {
-                Sach sc = new Sach();
-                sc.setMaSach(rs.getInt("MaSach"));
-                sc.setTenSach(rs.getString("TenSach"));
-                sc.setMaTheLoai(rs.getInt("MaTheLoai"));
-                sc.setTenTheLoai(rs.getString("TenTheLoai"));  // Lấy tên thể loại
-                sc.setMaTacGia(rs.getInt("MaTacGia"));
-                sc.setTenTacGia(rs.getString("TenTacGia"));    // Lấy tên tác giả
-                sc.setMaNhaXuatBan(rs.getInt("MaNhaXuatBan"));
-                sc.setTenNhaXuatBan(rs.getString("TenNhaXuatBan")); // Lấy tên nhà xuất bản
-                sc.setMaDauSach(rs.getString("MaDauSach"));
-                sc.setNamXuatBan(rs.getInt("NamXuatBan"));
-                sc.setLanTaiBan(rs.getInt("LanTaiBan"));
-                sc.setNgonNgu(rs.getString("NgonNgu"));
-                sc.setSoLuong(rs.getInt("SoLuong"));
-                dsSach.add(sc);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public static List<Sach> getSachByKhuVuc(int maKhuVuc) {
+    List<Sach> dsTheoKhuVuc = new ArrayList<>();
+    for (Sach sach : getAll()) {
+        if (sach.getMaKhuVuc() == maKhuVuc) {
+            dsTheoKhuVuc.add(sach);
         }
-
-        return dsSach;
     }
-    
-
-    public List<Sach> searchBooks(String keyword) {
-        String query = "SELECT MaSach, TenSach, MaTheLoai, MaTacGia, MaNhaXuatBan, MaDauSach, NamXuatBan, LanTaiBan, NgonNgu, SoLuong "
-                + "FROM sach "
-                + "WHERE MaSach LIKE ? OR TenSach LIKE ? OR NamXuatBan LIKE ?";
-
-        return jdbchelper.executeQuery(query, rs -> new Sach(
-                rs.getInt("MaSach"),
-                rs.getString("TenSach"),
-                rs.getInt("MaTheLoai"),
-                rs.getInt("MaTacGia"),
-                rs.getInt("MaNhaXuatBan"),
-                rs.getString("MaDauSach"),
-                rs.getInt("NamXuatBan"),
-                rs.getInt("LanTaiBan"),
-                rs.getString("NgonNgu"),
-                rs.getInt("SoLuong")
-        ), keyword, keyword, keyword);
-    }
-
-     public static String getMaSachMoiNhat() {
-        String sql = "SELECT MaSach FROM sach ORDER BY MaSach DESC LIMIT 1"; // Lấy mã sách mới nhất
-        ResultSet rs = jdbchelper.executeQuery(sql);
-        try {
-            if (rs.next()) {
-                return rs.getString("MaSach");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
+    return dsTheoKhuVuc;
+}
 }

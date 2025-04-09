@@ -12,14 +12,12 @@ public class Sach {
     private int lanTaiBan;
     private String ngonNgu;
     private int soLuong;
-    private String TenTheLoai;
-    private String TenTacGia;
-    private String TenNhaXuatBan;
+    private int maKhuVuc;
 
     public Sach() {
     }
 
-    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan, String maDauSach, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong) {
+    public Sach(int maSach, String tenSach, int maTheLoai, int maTacGia, int maNhaXuatBan, String maDauSach, int namXuatBan, int lanTaiBan, String ngonNgu, int soLuong, int maKhuVuc) {
         this.maSach = maSach;
         this.tenSach = tenSach;
         this.maTheLoai = maTheLoai;
@@ -30,6 +28,7 @@ public class Sach {
         this.lanTaiBan = lanTaiBan;
         this.ngonNgu = ngonNgu;
         this.soLuong = soLuong;
+        this.maKhuVuc = maKhuVuc;
     }
 
     public int getMaSach() {
@@ -112,28 +111,12 @@ public class Sach {
         this.soLuong = soLuong;
     }
 
-    public String getTenTheLoai() {
-        return TenTheLoai;
+    public int getMaKhuVuc() {
+        return maKhuVuc;
     }
 
-    public void setTenTheLoai(String TenTheLoai) {
-        this.TenTheLoai = TenTheLoai;
-    }
-
-    public String getTenTacGia() {
-        return TenTacGia;
-    }
-
-    public void setTenTacGia(String TenTacGia) {
-        this.TenTacGia = TenTacGia;
-    }
-
-    public String getTenNhaXuatBan() {
-        return TenNhaXuatBan;
-    }
-
-    public void setTenNhaXuatBan(String TenNhaXuatBan) {
-        this.TenNhaXuatBan = TenNhaXuatBan;
+    public void setMaKhuVuc(int maKhuVuc) {
+        this.maKhuVuc = maKhuVuc;
     }
 
 }
