@@ -13,6 +13,9 @@ public class Sach {
     private String ngonNgu;
     private int soLuong;
     private int maKhuVuc;
+    private String TenTheLoai;
+    private String TenTacGia;
+    private String TenNhaXuatBan;
 
     public Sach() {
     }
@@ -117,6 +120,30 @@ public class Sach {
 
     public void setMaKhuVuc(int maKhuVuc) {
         this.maKhuVuc = maKhuVuc;
+    }
+
+    public String getTenTheLoai() {
+        return TenTheLoai;
+    }
+
+    public void setTenTheLoai(String TenTheLoai) {
+        this.TenTheLoai = TenTheLoai;
+    }
+
+    public String getTenTacGia() {
+        return TenTacGia;
+    }
+
+    public void setTenTacGia(String TenTacGia) {
+        this.TenTacGia = TenTacGia;
+    }
+
+    public String getTenNhaXuatBan() {
+        return TenNhaXuatBan;
+    }
+
+    public void setTenNhaXuatBan(String TenNhaXuatBan) {
+        this.TenNhaXuatBan = TenNhaXuatBan;
     }
 
 }

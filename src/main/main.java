@@ -307,13 +307,14 @@ public class main extends javax.swing.JFrame {
         String encryptedPassword = AES.encrypt(password);
 
         // Kiểm tra tài khoản trong cơ sở dữ liệu
-        String sql = "SELECT MaTaiKhoan, MaQuyen FROM TAIKHOAN WHERE TenDangNhap = ? AND MatKhau = ?";
+        String sql = "SELECT MaTaiKhoan, MaQuyen, Email FROM TAIKHOAN WHERE TenDangNhap = ? AND MatKhau = ?";
 
         try (ResultSet rs = jdbchelper.executeQuery(sql, username, encryptedPassword)) {
             if (rs.next()) {
                 int maTaiKhoan = rs.getInt("MaTaiKhoan");
                 int maQuyen = rs.getInt("MaQuyen"); // Lấy mã quyền trực tiếp
-
+                String email = rs.getString("Email");
+                
                 QL_ThongTinTheDocGia.setMaTaiKhoan(maTaiKhoan);
 
                 // Lấy tên quyền dựa trên MaQuyen
@@ -323,6 +324,7 @@ public class main extends javax.swing.JFrame {
                         String role = roleRs.getString("TenQuyen");
                         MyDrawerBuilder.setuserName(username);
                         MyDrawerBuilder.setUserRole(role);
+                        MyDrawerBuilder.setUserEmail(email);
 
                         JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công với quyền: " + role, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 

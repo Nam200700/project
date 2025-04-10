@@ -45,7 +45,7 @@ public class WindowsTabbed {
     private PanelTabbed panelTabbed;
     private JPanel body;
     private TabbedForm temp;
-    private final int LIMIT = 5; // -1 for unlimit
+    private final int LIMIT = 6; // -1 for unlimit
     private final boolean REMOVE_WHEN_LIMIT = false;
     private static int maTaiKhoan;
     private JLabel notificationCountLabel; // Thêm nhãn để hiển thị số lượng thông báo chưa đọc

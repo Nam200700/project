@@ -30,27 +30,26 @@ public class SachDAO {
     }
 
     public static boolean update(Sach sach) {
-    String sql = "UPDATE Sach SET TenSach=?, NgonNgu=?, MaTheLoai=?, MaTacGia=?, MaNhaXuatBan=?, MaKhuVuc=?, NamXuatBan=?, SoLuong=?, LanTaiBan=? WHERE MaDauSach=?";
-    try {
-        int rows = jdbchelper.executeUpdate(sql,
-                sach.getTenSach(),
-                sach.getNgonNgu(),
-                sach.getMaTheLoai(),
-                sach.getMaTacGia(),
-                sach.getMaNhaXuatBan(),
-                sach.getMaKhuVuc(),
-                sach.getNamXuatBan(),
-                sach.getSoLuong(),
-                sach.getLanTaiBan(),
-                sach.getMaDauSach()
-        );
-        return rows > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+        String sql = "UPDATE Sach SET TenSach=?, NgonNgu=?, MaTheLoai=?, MaTacGia=?, MaNhaXuatBan=?, MaKhuVuc=?, NamXuatBan=?, SoLuong=?, LanTaiBan=? WHERE MaDauSach=?";
+        try {
+            int rows = jdbchelper.executeUpdate(sql,
+                    sach.getTenSach(),
+                    sach.getNgonNgu(),
+                    sach.getMaTheLoai(),
+                    sach.getMaTacGia(),
+                    sach.getMaNhaXuatBan(),
+                    sach.getMaKhuVuc(),
+                    sach.getNamXuatBan(),
+                    sach.getSoLuong(),
+                    sach.getLanTaiBan(),
+                    sach.getMaDauSach()
+            );
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
-
 
     public static boolean delete(int maSach) {
         String sql = "DELETE FROM sach WHERE MaSach = ?";
@@ -91,14 +90,49 @@ public class SachDAO {
 
         return dsSach;
     }
-    
-    public static List<Sach> getSachByKhuVuc(int maKhuVuc) {
-    List<Sach> dsTheoKhuVuc = new ArrayList<>();
-    for (Sach sach : getAll()) {
-        if (sach.getMaKhuVuc() == maKhuVuc) {
-            dsTheoKhuVuc.add(sach);
+
+    public static List<Sach> QRScangetall() {
+        List<Sach> dsSach = new ArrayList<>();
+        String sql = "SELECT s.MaSach, s.TenSach, s.MaTheLoai, t.TenTheLoai, s.MaTacGia, tg.TenTacGia, "
+                + "s.MaNhaXuatBan, nxb.TenNhaXuatBan, s.MaDauSach, s.NamXuatBan, s.LanTaiBan, s.NgonNgu, s.SoLuong "
+                + "FROM sach s "
+                + "JOIN theloai t ON s.MaTheLoai = t.MaTheLoai "
+                + "JOIN tacgia tg ON s.MaTacGia = tg.MaTacGia "
+                + "JOIN nhaxuatban nxb ON s.MaNhaXuatBan = nxb.MaNhaXuatBan";
+
+        try (ResultSet rs = jdbchelper.executeQuery(sql)) {
+            while (rs.next()) {
+                Sach sc = new Sach();
+                sc.setMaSach(rs.getInt("MaSach"));
+                sc.setTenSach(rs.getString("TenSach"));
+                sc.setMaTheLoai(rs.getInt("MaTheLoai"));
+                sc.setTenTheLoai(rs.getString("TenTheLoai"));  // Lấy tên thể loại
+                sc.setMaTacGia(rs.getInt("MaTacGia"));
+                sc.setTenTacGia(rs.getString("TenTacGia"));    // Lấy tên tác giả
+                sc.setMaNhaXuatBan(rs.getInt("MaNhaXuatBan"));
+                sc.setTenNhaXuatBan(rs.getString("TenNhaXuatBan")); // Lấy tên nhà xuất bản
+                sc.setMaDauSach(rs.getString("MaDauSach"));
+                sc.setNamXuatBan(rs.getInt("NamXuatBan"));
+                sc.setLanTaiBan(rs.getInt("LanTaiBan"));
+                sc.setNgonNgu(rs.getString("NgonNgu"));
+                sc.setSoLuong(rs.getInt("SoLuong"));
+                dsSach.add(sc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return dsSach;
     }
-    return dsTheoKhuVuc;
-}
+
+    public static List<Sach> getSachByKhuVuc(int maKhuVuc) {
+        List<Sach> dsTheoKhuVuc = new ArrayList<>();
+        for (Sach sach : getAll()) {
+            if (sach.getMaKhuVuc() == maKhuVuc) {
+                dsTheoKhuVuc.add(sach);
+            }
+        }
+        return dsTheoKhuVuc;
+    }
+
 }
