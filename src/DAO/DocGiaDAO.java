@@ -15,7 +15,7 @@ public class DocGiaDAO {
     // Kiểm tra tài khoản đã có thẻ độc giả chưa
     public boolean kiemTraTheDocGia(int maTaiKhoan) {
         String sql = "SELECT COUNT(*) FROM DocGia WHERE MaTaiKhoan = ?";
-        try (Connection conn = jdbchelper.getconnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = jdbchelper.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, maTaiKhoan);
             ResultSet rs = stmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
@@ -41,7 +41,7 @@ public class DocGiaDAO {
     // Thêm thẻ độc giả mới
     public static boolean themTheDocGia(DocGia dg) {
         String sql = "INSERT INTO DocGia ( HoTen, GioiTinh, DiaChi, SoDienThoai) VALUES ( ?, ?, ?, ?)";
-        try (Connection conn = jdbchelper.getconnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = jdbchelper.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, dg.getHoTen());
             ps.setString(2, dg.getGioiTinh());

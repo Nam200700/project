@@ -13,7 +13,7 @@ public class jdbchelper {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/qltv";
     private static final String USER = "root";
-    private static final String PASSWORD = "18102007";
+    private static final String PASSWORD = "Tuilaben2007!!";
 
     // Đăng ký driver MySQL khi class được nạp
     static {
@@ -24,12 +24,12 @@ public class jdbchelper {
         }
     }
 
-    public static Connection getconnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
     }
 
     public static int executeUpdate(String sql, Object... args) {
-        try (Connection conn = getconnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Gán các tham số vào PreparedStatement
             setParams(pstmt, args);
@@ -47,7 +47,7 @@ public class jdbchelper {
 
     public static ResultSet executeQuery(String sql, Object... args) {
         try {
-            Connection conn = getconnection(); // Lấy kết nối
+            Connection conn = getConnection(); // Lấy kết nối
             PreparedStatement pstmt = conn.prepareStatement(sql);
             setParams(pstmt, args); // Gán tham số vào SQL
             return pstmt.executeQuery(); // Trả về ResultSet (phải đóng khi sử dụng xong)
@@ -70,7 +70,7 @@ public class jdbchelper {
         }
 
         String sql = "SELECT COUNT(*) AS " + columnName + " FROM " + tableName;
-        try (Connection connection = getconnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
 
             if (resultSet.next()) {
                 return resultSet.getInt(columnName);
@@ -84,7 +84,7 @@ public class jdbchelper {
     // Phương thức thực thi truy vấn SELECT với ResultSetMapper
     public static <T> List<T> executeQuery(String query, ResultSetMapper<T> mapper, String... params) {
         List<T> results = new ArrayList<>();
-        try (Connection conn = getconnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             for (int i = 0; i < params.length; i++) {
                 stmt.setString(i + 1, "%" + params[i] + "%");
             }

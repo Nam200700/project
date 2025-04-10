@@ -9,32 +9,26 @@ package Entity;
  * @author Acer
  */
 public class PhieuPhat {
-    private String maPhieuPhat;
-    private String maDocGia;
+    private int maPhieuPhat;
+    private int maPhieuTra;
     private double soTienPhat;
     private String lyDo;
+    private String trangThaiThanhToan;
 
-    public PhieuPhat(String maPhieuPhat, String maDocGia, double soTienPhat, String lyDo) {
-        this.maPhieuPhat = maPhieuPhat;
-        this.maDocGia = maDocGia;
-        this.soTienPhat = soTienPhat;
-        this.lyDo = lyDo;
-    }
-
-    public String getMaPhieuPhat() {
+    public int getMaPhieuPhat() {
         return maPhieuPhat;
     }
 
-    public void setMaPhieuPhat(String maPhieuPhat) {
+    public void setMaPhieuPhat(int maPhieuPhat) {
         this.maPhieuPhat = maPhieuPhat;
     }
 
-    public String getMaDocGia() {
-        return maDocGia;
+    public int getMaPhieuTra() {
+        return maPhieuTra;
     }
 
-    public void setMaDocGia(String maDocGia) {
-        this.maDocGia = maDocGia;
+    public void setMaPhieuTra(int maPhieuTra) {
+        this.maPhieuTra = maPhieuTra;
     }
 
     public double getSoTienPhat() {
@@ -52,4 +46,26 @@ public class PhieuPhat {
     public void setLyDo(String lyDo) {
         this.lyDo = lyDo;
     }
+
+    public String getTrangThaiThanhToan() {
+        return trangThaiThanhToan;
+    }
+
+    public void setTrangThaiThanhToan(String trangThaiThanhToan) {
+        this.trangThaiThanhToan = trangThaiThanhToan;
+    }
+
+    // Constructor đúng với dữ liệu truy vấn
+    public PhieuPhat(int maPhieuPhat, int maPhieuTra, double soTienPhat, String lyDo, String trangThaiThanhToan) {
+        this.maPhieuPhat = maPhieuPhat;
+        this.maPhieuTra = maPhieuTra;
+        this.soTienPhat = soTienPhat;
+        this.lyDo = lyDo;
+        this.trangThaiThanhToan = trangThaiThanhToan;
+    }
+
+    // Getter và Setter (nếu cần)
+
+
+    
 }

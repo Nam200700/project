@@ -20,6 +20,7 @@ import ui.QL_theloaisach;
 import ui.Test;
 import java.util.Set;
 import ui.QL_Muon;
+import ui.QL_PhieuPhat;
 import ui.QL_ThongTinTheDocGia;
 import ui.QL_Tra;
 import ui.QL_chitietphieumuon;
@@ -112,7 +113,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         } else if (index == 1) {
                             WindowsTabbed.getInstance().addTab("QL docgia", new QL_docgia());
                         } else if (index == 2) {
-                            WindowsTabbed.getInstance().addTab("Thẻ thành viên", new QL_ThongTinTheDocGia());
+                            WindowsTabbed.getInstance().addTab("Phieu phat", new QL_PhieuPhat());
                         } else if (index == 3) {
                             WindowsTabbed.getInstance().addTab("Quản lý mượn sách", new QL_Muon());
                         } else if (index == 4) {

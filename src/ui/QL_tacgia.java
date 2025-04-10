@@ -253,7 +253,7 @@ public class QL_tacgia extends TabbedForm {
         DefaultTableModel model = (DefaultTableModel) tbltacgia.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
 
-        try (Connection conn = jdbchelper.getconnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TacGia"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = jdbchelper.getConnection(); PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TacGia"); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
