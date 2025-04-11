@@ -21,19 +21,21 @@ import java.util.Set;
 import ui.DashboardForm;
 import ui.QL_Muon;
 import ui.QL_PhieuPhat;
+import ui.QL_ThongBao;
 import ui.QL_Tra;
 import ui.QL_chitietphieumuon;
 import ui.QL_chitietphieutra;
 import ui.QL_khuvucsach;
 import ui.QL_mail;
 import ui.QL_sach;
+import ui.QL_taikhoan;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     private static String userRole = "";  // Biến toàn cục để lưu quyền người dùng
     private static String userName = "";
     private static String userEmail = "";
-    
+
     public static void setUserRole(String role) {
         userRole = role;  // Cập nhật quyền người dùng
     }
@@ -57,7 +59,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
     public static void setUserEmail(String userEmail) {
         MyDrawerBuilder.userEmail = userEmail;
     }
-    
+
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
         return new SimpleHeaderData()
@@ -84,6 +86,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             {"Quản lý phiếu mượn", "Phiếu mượn", "Chi tiết phiếu mượn"},
             {"Quản lý phiếu trả", "Phiếu trả", "Chi tiết phiếu trả"},
             {"Phiếu phạt"},
+            {"Quản lý tài khoản"},
+            {"Gửi thông báo"},
             {"Send mail"},
             {"Logout"}
         };
@@ -95,6 +99,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             "book1.svg",
             "book_return.svg",
             "membership.svg",
+            "author.svg",
+            "notification1.svg",
             "sendmail.svg",
             "logout.svg"
         };
@@ -137,15 +143,20 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                             } else if (subIndex == 2) {
                                 WindowsTabbed.getInstance().addTab("Chi tiết phiếu trả", new QL_chitietphieutra());
                             }
-                        }
-                        else if (index == 5) {
+                        } else if (index == 5) {
                             WindowsTabbed.getInstance().addTab("Phiếu phạt", new QL_PhieuPhat());
 
-                        }
-                        else if (index == 6) {
-                            WindowsTabbed.getInstance().addTab("Send mail", new QL_mail());
+                        } else if (index == 6) {
+                            WindowsTabbed.getInstance().addTab("Quản lý tài khoản", new QL_taikhoan());
 
-                        } else if (index == 7) {
+                        }
+                        else if (index == 7) {
+                            WindowsTabbed.getInstance().addTab("Gửi thông báo", new QL_ThongBao());
+                        }
+                        else if (index == 8) {
+                            WindowsTabbed.getInstance().addTab("Send mail", new QL_mail());
+                        }
+                        else if (index == 9) {
                             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(WindowsTabbed.getInstance().getBody());
 
                             if (currentFrame != null) {

@@ -4,7 +4,6 @@ import util.jdbchelper;
 import raven.chart.data.pie.DefaultPieDataset; // Chắc chắn rằng bạn nhập đúng thư viện này
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import raven.chart.data.category.DefaultCategoryDataset;
 
 public class ThongKeDAO {
 

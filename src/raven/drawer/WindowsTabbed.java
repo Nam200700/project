@@ -12,21 +12,31 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
@@ -79,6 +89,7 @@ public class WindowsTabbed {
         panelTabbed.putClientProperty(FlatClientProperties.STYLE, ""
                 + "background:$TitlePane.background");
         menuBar.add(createDrawerButton());
+        menuBar.add(createPDFFile());
         menuBar.add(createScroll(panelTabbed));
         // Thêm khoảng trống để đẩy nút sang phải
         menuBar.add(Box.createHorizontalGlue());
@@ -119,6 +130,49 @@ public class WindowsTabbed {
         return cmd;
     }
 
+    private JButton createPDFFile() {
+        JButton cmd = new JButton(new FlatSVGIcon("drawer/svg/pdf.svg", 0.9f));
+        cmd.putClientProperty(FlatClientProperties.STYLE, ""
+                + "borderWidth:0;"
+                + "focusWidth:0;"
+                + "innerFocusWidth:0;"
+                + "background:null;"
+                + "arc:5");
+
+        cmd.addActionListener(e -> {
+            try (InputStream is = getClass().getResourceAsStream("/pdf/huongdansudung.pdf")) {
+                if (is == null) {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy file hướng dẫn.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Hộp thoại chọn nơi lưu
+                JFileChooser chooser = new JFileChooser();
+                chooser.setDialogTitle("Chọn nơi lưu file PDF");
+                chooser.setSelectedFile(new File("HuongDanSuDung.pdf"));
+
+                int result = chooser.showSaveDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = chooser.getSelectedFile();
+                    Files.copy(is, selectedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                    JOptionPane.showMessageDialog(null, "Đã lưu tại:\n" + selectedFile.getAbsolutePath(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Mở file sau khi lưu
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().open(selectedFile);
+                    }
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Lỗi khi tải file PDF: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        return cmd;
+    }
+
     private FlatToggleButton createDarkLightSwitch() {
         FlatToggleButton toggle = new FlatToggleButton();
         toggle.setSelected(false); // Mặc định Light Mode
@@ -146,33 +200,30 @@ public class WindowsTabbed {
                 + "background:null;"
                 + "arc:5");
 
-        // Tạo nhãn để hiển thị số lượng thông báo chưa đọc
+        // Nhãn hiển thị số lượng thông báo
         notificationCountLabel = new JLabel("0");
         notificationCountLabel.setForeground(Color.RED);
         notificationCountLabel.setFont(new Font("Arial", Font.BOLD, 15));
         notificationCountLabel.setPreferredSize(new Dimension(30, 35));
-        bellButton.add(notificationCountLabel, BorderLayout.NORTH);  // Đặt nhãn vào nút chuông
+        bellButton.add(notificationCountLabel, BorderLayout.NORTH);
 
-        // Thêm ActionListener để lấy thông báo khi nhấn chuông
+        // Khi nhấn chuông
         bellButton.addActionListener(e -> {
-            // Lấy danh sách thông báo
             ThongBaoDAO thongBaoDAO = new ThongBaoDAO();
-            List<String> notifications = thongBaoDAO.getNotifications(WindowsTabbed.getMaTaiKhoan()); // Giả sử maTaiKhoan là ID tài khoản người dùng
+            List<String> notifications = thongBaoDAO.getNotifications(WindowsTabbed.getMaTaiKhoan());
 
-            // Nếu có thông báo, cập nhật số lượng thông báo
-            if (!notifications.isEmpty()) {
-                // Cập nhật số lượng thông báo chưa đọc
-                updateNotificationCount(notifications.size());
+            // Cập nhật số lượng thông báo
+            updateNotificationCount(notifications.size());
 
-                // Hiển thị hoặc ẩn thông báo
-                if (notificationWindow != null && notificationWindow.isVisible()) {
-                    notificationWindow.setVisible(false);
-                } else {
-                    showNotification(bellButton, notifications);
-                }
+            // Nếu đang hiện rồi thì ẩn
+            if (notificationWindow != null && notificationWindow.isVisible()) {
+                notificationWindow.setVisible(false);
             } else {
-                // Nếu không có thông báo, cập nhật lại số lượng về 0
-                updateNotificationCount(0);
+                // Nếu không có thông báo, thêm thông báo mặc định
+                if (notifications.isEmpty()) {
+                    notifications.add("Không có thông báo nào.");
+                }
+                showNotification(bellButton, notifications);
             }
         });
 
@@ -191,7 +242,6 @@ public class WindowsTabbed {
         // Tạo JWindow để hiển thị thông báo
         notificationWindow = new JWindow();
         notificationWindow.setLayout(new BorderLayout());
-
         // Tạo panel để chứa danh sách thông báo
         JPanel notificationPanel = new JPanel();
         notificationPanel.setLayout(new BoxLayout(notificationPanel, BoxLayout.Y_AXIS));

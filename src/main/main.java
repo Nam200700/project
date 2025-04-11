@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import raven.drawer.MyDrawerBuilder;
+import raven.drawer.WindowsTabbed;
 import ui.QL_ThongTinTheDocGia;
 
 /**
@@ -314,7 +315,7 @@ public class main extends javax.swing.JFrame {
                 int maTaiKhoan = rs.getInt("MaTaiKhoan");
                 int maQuyen = rs.getInt("MaQuyen"); // Lấy mã quyền trực tiếp
                 String email = rs.getString("Email");
-                
+
                 QL_ThongTinTheDocGia.setMaTaiKhoan(maTaiKhoan);
 
                 // Lấy tên quyền dựa trên MaQuyen
@@ -325,6 +326,7 @@ public class main extends javax.swing.JFrame {
                         MyDrawerBuilder.setuserName(username);
                         MyDrawerBuilder.setUserRole(role);
                         MyDrawerBuilder.setUserEmail(email);
+                        WindowsTabbed.setMaTaiKhoan(maTaiKhoan);
 
                         JOptionPane.showMessageDialog(null, "Bạn đã đăng nhập thành công với quyền: " + role, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 

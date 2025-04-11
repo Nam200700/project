@@ -1,17 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entity;
 
-/**
- *
- * @author ACER
- */
 public class user {
+
+    public int maTaiKhoan;
     public String fullname;
     public String Email;
     public String password;
+    public int maQuyen;
+    public String TenQuyen;
+    
+    public user() {
+    }
+
+    public user(int maTaiKhoan, String fullname, String Email, String password, int maQuyen) {
+        this.maTaiKhoan = maTaiKhoan;
+        this.fullname = fullname;
+        this.Email = Email;
+        this.password = password;
+        this.maQuyen = maQuyen;
+    }
+
+    public int getMaTaiKhoan() {
+        return maTaiKhoan;
+    }
+
+    public void setMaTaiKhoan(int maTaiKhoan) {
+        this.maTaiKhoan = maTaiKhoan;
+    }
 
     public String getFullname() {
         return fullname;
@@ -37,12 +52,22 @@ public class user {
         this.password = password;
     }
 
-    public user() {
+    public int getMaQuyen() {
+        return maQuyen;
     }
 
-    public user(String fullname, String Email, String password) {
-        this.fullname = fullname;
-        this.Email = Email;
-        this.password = password;
+    public void setMaQuyen(int maQuyen) {
+        this.maQuyen = maQuyen;
     }
+
+    public String getTenQuyen() {
+        return TenQuyen;
+    }
+
+    public void setTenQuyen(String TenQuyen) {
+        this.TenQuyen = TenQuyen;
+    }
+
+    
+    
 }
