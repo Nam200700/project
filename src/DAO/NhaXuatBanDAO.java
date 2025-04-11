@@ -69,4 +69,18 @@ public class NhaXuatBanDAO {
 
         return dsNhaXuatBan;
     }
+    // truy vấn dữ liệu xem coi có bị trùng nhà xuất bản
+    public static boolean kiemTraTrungTen(String tenNXB) {
+        String query = "SELECT COUNT(*) FROM nhaxuatban WHERE TenNhaXuatBan = ?";
+        try {
+            ResultSet rs = jdbchelper.executeQuery(query, tenNXB);
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

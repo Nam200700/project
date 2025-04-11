@@ -155,7 +155,7 @@ public class QL_chitietphieutra extends TabbedForm {
         }
     }
 
-// Truy vấn số lượng sách từ tên sách
+// Truy vấn số lượng sách từ tên sách để đẩy lên combobox khi click vào cbb_tensach
     private int getSoLuongMuon(String tenSach) {
         int soLuong = 0;
         String query = "SELECT SoLuong FROM chitietmuon WHERE TenSach = ?";
@@ -229,7 +229,11 @@ public class QL_chitietphieutra extends TabbedForm {
 
     public void addChiTietPhieuTra() {
         // Kiểm tra nếu combobox rỗng
-        if (cbb_maphieutra.getSelectedItem() == null || cbb_tensach.getSelectedItem() == null || cbb_soluong.getSelectedItem() == null) {
+        if (cbb_maphieutra.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Mã phiếu trả trống không thể thêm!!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cbb_tensach.getSelectedItem() == null || cbb_soluong.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -682,7 +686,7 @@ public class QL_chitietphieutra extends TabbedForm {
         // Hiển thị số lượng lên combobox hoặc label
         cbb_soluong.removeAllItems(); // Xóa các mục cũ trong combobox số lượng
         cbb_soluong.addItem(String.valueOf(soLuong)); // Thêm số lượng vào combobox số lượng
-
+        // hiển thị thông tin sách từ tên sách
         hienThiThongTin();
     }//GEN-LAST:event_cbb_tensachActionPerformed
 

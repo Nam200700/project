@@ -72,4 +72,17 @@ public class PhieuTraDAO {
 
         return dsPhieuTra;
     }
+    // lấy tên độc giả từ mã độc giả được truy vấn từ mã phiếu mượn bên ui
+    public static String layTenDocGiaTuMa(String maDocGia) {
+        String query = "SELECT HoTen FROM docgia WHERE MaDocGia = ?";
+        try {
+            ResultSet rs = jdbchelper.executeQuery(query, maDocGia);
+            if (rs.next()) {
+                return rs.getString("HoTen");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Không tìm thấy hoặc lỗi
+    }
 }

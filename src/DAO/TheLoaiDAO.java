@@ -69,4 +69,18 @@ public class TheLoaiDAO {
 
         return theloai;
     }
+// 
+    public static boolean kiemTraTrungTen(String tenTheLoai) {
+        String query = "SELECT COUNT(*) FROM theloai WHERE TenTheLoai = ?";
+        try {
+            ResultSet rs = jdbchelper.executeQuery(query, tenTheLoai);
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

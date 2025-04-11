@@ -37,6 +37,7 @@ public class QL_theloaisach extends TabbedForm {
         fillTable();
         guitacgia();
     }
+
     public void guitacgia() {
         // Áp dụng FlatLaf
         FlatLightLaf.setup();
@@ -75,55 +76,63 @@ public class QL_theloaisach extends TabbedForm {
         // Refresh UI
         SwingUtilities.updateComponentTreeUI(jScrollPane1);
     }
+
     public void addtheloai() {
-        // Kiểm tra các trường nhập liệu
-        if (txt_tenloaisach.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Chưa nhập tên thể loại sách", "Error", JOptionPane.WARNING_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error", JOptionPane.WARNING_MESSAGE);
+        String tenTheLoai = txt_tenloaisach.getText().trim();
+
+        // Kiểm tra rỗng
+        if (tenTheLoai.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập tên thể loại sách", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Tạo đối tượng thể loại sách
+        // Kiểm tra trùng tên thể loại
+        if (TheLoaiDAO.kiemTraTrungTen(tenTheLoai)) {
+            JOptionPane.showMessageDialog(this, "Tên thể loại sách đã tồn tại!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Tạo đối tượng thể loại mới
         TheLoai tl = new TheLoai();
+        tl.setTentheloai(tenTheLoai);
 
-        tl.setTentheloai(txt_tenloaisach.getText());
-
-        // Thêm thể loại sách vào danh sách và cập nhật giao diện
+        // Thêm vào danh sách và database
         theloaisach.add(tl);
-        // Lưu thể loại sách vào cơ sở dữ liệu
         TheLoaiDAO.insert(tl);
         fillTable();
         clean();
     }
 
     public void updatetheloaisach() {
-        // Kiểm tra xem có dòng nào được chọn không
         int index = tblloaisach.getSelectedRow();
         if (index == -1) {
             JOptionPane.showMessageDialog(this, "Chưa chọn hàng nào để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Kiểm tra danh sách có dữ liệu hợp lệ không
         if (index >= theloaisach.size()) {
             JOptionPane.showMessageDialog(this, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Lấy thông tin thể loại sách từ danh sách
         TheLoai theloai = theloaisach.get(index);
         String tentheloaisach = txt_tenloaisach.getText().trim();
 
-        // Kiểm tra tên thể loại sách có bị rỗng không
         if (tentheloaisach.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tên nhà xuất bản không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Tên thể loại sách không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Cập nhật thông tin the loai sach
+        // Kiểm tra trùng tên với các bản ghi khác equalsIgnoreCase so sánh ko phân biệt hoa hay thường
+        if (!tentheloaisach.equalsIgnoreCase(theloai.getTentheloai())
+                && TheLoaiDAO.kiemTraTrungTen(tentheloaisach)) {
+            JOptionPane.showMessageDialog(this, "Tên thể loại sách đã tồn tại!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Cập nhật
         theloai.setTentheloai(tentheloaisach);
 
-        // Cập nhật vào cơ sở dữ liệu
         try {
             TheLoaiDAO.update(theloai);
             fillTable();
@@ -323,8 +332,8 @@ public class QL_theloaisach extends TabbedForm {
                         .addGap(59, 59, 59)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(213, 213, 213)
+                        .addComponent(txt_tenloaisach, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(188, 188, 188)
                         .addComponent(btn_them)
                         .addGap(18, 18, 18)
                         .addComponent(btn_xoa)
@@ -345,7 +354,7 @@ public class QL_theloaisach extends TabbedForm {
                     .addComponent(btn_them)
                     .addComponent(btn_xoa)
                     .addComponent(btn_sua))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(roundPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

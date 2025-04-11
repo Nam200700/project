@@ -62,8 +62,8 @@
                           <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="txt_tenloaisach" min="-2" pref="168" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="213" max="-2" attributes="0"/>
+                          <Component id="txt_tenloaisach" min="-2" pref="193" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="188" max="-2" attributes="0"/>
                           <Component id="btn_them" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="btn_xoa" min="-2" max="-2" attributes="0"/>
@@ -90,7 +90,7 @@
                       <Component id="btn_xoa" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_sua" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="32" max="32767" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="332" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">

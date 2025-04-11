@@ -45,6 +45,7 @@ public class QL_Tra extends TabbedForm {
         guitrasach();
         loadPhieuMuonID();
         fillTable();
+        txt_tendocgia.disable();
 
     }
 
@@ -67,8 +68,45 @@ public class QL_Tra extends TabbedForm {
         }
     }
 
+    // câu truy vấn
     private String getSelectPhieuMuonCodeQuery() {
         return "SELECT MaPhieuMuon FROM phieumuon"; // Sửa câu lệnh này tùy thuộc vào cơ sở dữ liệu của bạn
+    }
+
+    
+    // Hàm để hiển thị tên độc giả từ mã phiếu mượn
+    private void hienThiTenDocGia() {
+        String maPhieuMuon = (String) cbb_maphieumuon.getSelectedItem();
+
+        if (maPhieuMuon == null || maPhieuMuon.trim().isEmpty()) {
+            txt_tendocgia.setText("");
+            return;
+        }
+
+        try {
+            // Bước 1: Lấy mã độc giả từ mã phiếu mượn
+            String query1 = "SELECT MaDocGia FROM phieumuon WHERE MaPhieuMuon = ?";
+            ResultSet rs1 = jdbchelper.executeQuery(query1, maPhieuMuon);
+
+            if (rs1.next()) {
+                String maDocGia = rs1.getString("MaDocGia");
+
+                // Bước 2: Lấy tên độc giả từ mã độc giả từ hàm lấy tên độc giả riêng
+                String tenDocGia = PhieuTraDAO.layTenDocGiaTuMa(maDocGia);
+                if (tenDocGia != null) {
+                    txt_tendocgia.setText(tenDocGia);
+                } else {
+                    txt_tendocgia.setText("Không tìm thấy tên độc giả");
+                }
+
+            } else {
+                txt_tendocgia.setText("Không tìm thấy mã phiếu mượn");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi truy vấn tên độc giả");
+        }
     }
 
     public void guitrasach() {
@@ -312,6 +350,8 @@ public class QL_Tra extends TabbedForm {
         btn_xoaphieu = new javax.swing.JButton();
         btn_chinhsuaphieu = new javax.swing.JButton();
         cbb_maphieumuon = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        txt_tendocgia = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
@@ -358,6 +398,13 @@ public class QL_Tra extends TabbedForm {
         });
 
         cbb_maphieumuon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_maphieumuon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbb_maphieumuonActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Tên độc giả");
 
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
@@ -367,21 +414,25 @@ public class QL_Tra extends TabbedForm {
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, roundedPanel1Layout.createSequentialGroup()
                         .addGap(111, 111, 111)
-                        .addComponent(btn_taophieu, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_taophieu, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(61, 61, 61)
+                        .addComponent(btn_xoaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_xoaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)
                         .addComponent(btn_chinhsuaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27))
                     .addGroup(roundedPanel1Layout.createSequentialGroup()
-                        .addContainerGap(75, Short.MAX_VALUE)
+                        .addContainerGap(78, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 762, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(66, 66, 66))
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(339, 339, 339)
+                .addGap(248, 248, 248)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbb_maphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txt_tendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         roundedPanel1Layout.setVerticalGroup(
@@ -390,7 +441,9 @@ public class QL_Tra extends TabbedForm {
                 .addGap(45, 45, 45)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(cbb_maphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbb_maphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txt_tendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
@@ -408,7 +461,7 @@ public class QL_Tra extends TabbedForm {
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
                 .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -435,14 +488,20 @@ public class QL_Tra extends TabbedForm {
         clickphieutra();
     }//GEN-LAST:event_tblphieutraMouseClicked
 
+    private void cbb_maphieumuonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_maphieumuonActionPerformed
+        hienThiTenDocGia();
+    }//GEN-LAST:event_cbb_maphieumuonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_chinhsuaphieu;
     private javax.swing.JButton btn_taophieu;
     private javax.swing.JButton btn_xoaphieu;
     private javax.swing.JComboBox<String> cbb_maphieumuon;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tblphieutra;
+    private javax.swing.JTextField txt_tendocgia;
     // End of variables declaration//GEN-END:variables
 }

@@ -135,4 +135,36 @@ public class SachDAO {
         return dsTheoKhuVuc;
     }
 
+//    public List<Sach> searchBooks(String keyword) {
+//        String query = "SELECT s.MaSach, s.TenSach, s.MaTheLoai, t.TenTheLoai, "
+//                + "s.MaTacGia, tg.TenTacGia, s.MaNhaXuatBan, nxb.TenNhaXuatBan, "
+//                + "s.MaDauSach, s.NamXuatBan, s.LanTaiBan, s.NgonNgu, s.SoLuong, s.MaKhuVuc "
+//                + "FROM sach s "
+//                + "JOIN theloai t ON s.MaTheLoai = t.MaTheLoai "
+//                + "JOIN tacgia tg ON s.MaTacGia = tg.MaTacGia "
+//                + "JOIN nhaxuatban nxb ON s.MaNhaXuatBan = nxb.MaNhaXuatBan "
+//                + "WHERE s.MaSach LIKE ? OR s.TenSach LIKE ?";
+//
+//        String likeKeyword = "%" + keyword + "%";
+//
+//        return jdbchelper.executeQuery(query, rs -> {
+//            Sach sc = new Sach();
+//            sc.setMaSach(rs.getInt("MaSach"));
+//            sc.setTenSach(rs.getString("TenSach"));
+//            sc.setMaTheLoai(rs.getInt("MaTheLoai"));
+//            sc.setTenTheLoai(rs.getString("TenTheLoai"));
+//            sc.setMaTacGia(rs.getInt("MaTacGia"));
+//            sc.setTenTacGia(rs.getString("TenTacGia"));
+//            sc.setMaNhaXuatBan(rs.getInt("MaNhaXuatBan"));
+//            sc.setTenNhaXuatBan(rs.getString("TenNhaXuatBan"));
+//            sc.setMaDauSach(rs.getString("MaDauSach"));
+//            sc.setNamXuatBan(rs.getInt("NamXuatBan"));
+//            sc.setLanTaiBan(rs.getInt("LanTaiBan"));
+//            sc.setNgonNgu(rs.getString("NgonNgu"));
+//            sc.setSoLuong(rs.getInt("SoLuong"));
+//            sc.setMaKhuVuc(rs.getInt("MaKhuVuc"));
+//            return sc;
+//        }, likeKeyword, likeKeyword);
+//    }
+
 }

@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import raven.drawer.TabbedForm;
 import util.jdbchelper;
+
 /**
  *
  * @author ACER
@@ -28,7 +29,7 @@ public class QL_sach extends TabbedForm {
      * Creates new form QL_sach
      */
     public QL_sach() {
-          initComponents();
+        initComponents();
         loadNhaXuatBanID();
         loadTacGiaID();
         loadTheLoaiID();
@@ -64,7 +65,7 @@ public class QL_sach extends TabbedForm {
 
     }
 
-   private List<String> maTheLoaiArr = new ArrayList<>();
+    private List<String> maTheLoaiArr = new ArrayList<>();
 
     private void loadTheLoaiID() {
         String query = "SELECT MaTheLoai, TenTheLoai FROM TheLoai";
@@ -150,199 +151,197 @@ public class QL_sach extends TabbedForm {
         }
     }
 
- public void addSach() {
-    try {
-        // Kiểm tra các ô nhập liệu bắt buộc
-        if (txt_tensach.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sách!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (txt_madausach.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập mã đầu sách!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (txt_namxuatban.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập năm xuất bản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (txt_soluong.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (txt_lantainban.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập lần tái bản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    public void addSach() {
+        try {
+            // Kiểm tra các ô nhập liệu bắt buộc
+            if (txt_tensach.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sách!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (txt_madausach.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mã đầu sách!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (txt_namxuatban.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập năm xuất bản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (txt_soluong.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (txt_lantainban.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập lần tái bản!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-        // Kiểm tra hợp lệ combobox
-        if (cbb_theloai.getSelectedIndex() < 0 || cbb_theloai.getSelectedIndex() >= maTheLoaiArr.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn thể loại hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
+            // Kiểm tra hợp lệ combobox
+            if (cbb_theloai.getSelectedIndex() < 0 || cbb_theloai.getSelectedIndex() >= maTheLoaiArr.size()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn thể loại hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (cbb_tacgia.getSelectedIndex() < 0 || cbb_tacgia.getSelectedIndex() >= maTacGiaArr.size()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn tác giả hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (cbb_nhaxuatban.getSelectedIndex() < 0 || cbb_nhaxuatban.getSelectedIndex() >= maNXBArr.size()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà xuất bản hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (cbo_Makhuvuc.getSelectedIndex() < 0 || cbo_Makhuvuc.getSelectedIndex() >= maKhuVucArr.size()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khu vực hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (cbo_NgonNgu.getSelectedIndex() < 0 || cbo_NgonNgu.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn ngôn ngữ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Lấy dữ liệu từ form
+            int maTheLoai = Integer.parseInt(maTheLoaiArr.get(cbb_theloai.getSelectedIndex()));
+            int maTacGia = Integer.parseInt(maTacGiaArr.get(cbb_tacgia.getSelectedIndex()));
+            int maNXB = Integer.parseInt(maNXBArr.get(cbb_nhaxuatban.getSelectedIndex()));
+            int maKhuVuc = Integer.parseInt(maKhuVucArr.get(cbo_Makhuvuc.getSelectedIndex()));
+
+            int namXuatBan = Integer.parseInt(txt_namxuatban.getText().trim());
+            int soLuong = Integer.parseInt(txt_soluong.getText().trim());
+            int lanTaiBan = Integer.parseInt(txt_lantainban.getText().trim());
+            String ngonNgu = cbo_NgonNgu.getSelectedItem().toString();
+
+            // Tạo đối tượng sách
+            Sach sach = new Sach();
+            sach.setTenSach(txt_tensach.getText().trim());
+            sach.setMaDauSach(txt_madausach.getText().trim());
+            sach.setNamXuatBan(namXuatBan);
+            sach.setNgonNgu(ngonNgu);
+            sach.setSoLuong(soLuong);
+            sach.setLanTaiBan(lanTaiBan);
+            sach.setMaTheLoai(maTheLoai);
+            sach.setMaTacGia(maTacGia);
+            sach.setMaNhaXuatBan(maNXB);
+            sach.setMaKhuVuc(maKhuVuc);
+
+            // Gọi DAO để thêm sách vào cơ sở dữ liệu
+            boolean isSuccess = SachDAO.insert(sach);
+            if (isSuccess) {
+                // Hiển thị tên vào bảng
+                String tenTheLoai = cbb_theloai.getSelectedItem().toString();
+                String tenTacGia = cbb_tacgia.getSelectedItem().toString();
+                String tenNXB = cbb_nhaxuatban.getSelectedItem().toString();
+                String tenKhuVuc = cbo_Makhuvuc.getSelectedItem().toString();
+
+                DefaultTableModel model = (DefaultTableModel) tbl_sach.getModel();
+                model.addRow(new Object[]{
+                    txt_madausach.getText().trim(),
+                    txt_tensach.getText().trim(),
+                    ngonNgu,
+                    tenTheLoai,
+                    tenTacGia,
+                    tenNXB,
+                    tenKhuVuc,
+                    namXuatBan,
+                    soLuong,
+                    lanTaiBan
+                });
+
+                clean(); // reset form
+                JOptionPane.showMessageDialog(this, "Thêm sách thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm sách thất bại! Vui lòng kiểm tra dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số cho năm xuất bản, số lượng và lần tái bản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-        if (cbb_tacgia.getSelectedIndex() < 0 || cbb_tacgia.getSelectedIndex() >= maTacGiaArr.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn tác giả hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (cbb_nhaxuatban.getSelectedIndex() < 0 || cbb_nhaxuatban.getSelectedIndex() >= maNXBArr.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà xuất bản hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (cbo_Makhuvuc.getSelectedIndex() < 0 || cbo_Makhuvuc.getSelectedIndex() >= maKhuVucArr.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khu vực hợp lệ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (cbo_NgonNgu.getSelectedIndex() < 0 || cbo_NgonNgu.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngôn ngữ!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Lấy dữ liệu từ form
-        int maTheLoai = Integer.parseInt(maTheLoaiArr.get(cbb_theloai.getSelectedIndex()));
-        int maTacGia = Integer.parseInt(maTacGiaArr.get(cbb_tacgia.getSelectedIndex()));
-        int maNXB = Integer.parseInt(maNXBArr.get(cbb_nhaxuatban.getSelectedIndex()));
-        int maKhuVuc = Integer.parseInt(maKhuVucArr.get(cbo_Makhuvuc.getSelectedIndex()));
-
-        int namXuatBan = Integer.parseInt(txt_namxuatban.getText().trim());
-        int soLuong = Integer.parseInt(txt_soluong.getText().trim());
-        int lanTaiBan = Integer.parseInt(txt_lantainban.getText().trim());
-        String ngonNgu = cbo_NgonNgu.getSelectedItem().toString();
-
-        // Tạo đối tượng sách
-        Sach sach = new Sach();
-        sach.setTenSach(txt_tensach.getText().trim());
-        sach.setMaDauSach(txt_madausach.getText().trim());
-        sach.setNamXuatBan(namXuatBan);
-        sach.setNgonNgu(ngonNgu);
-        sach.setSoLuong(soLuong);
-        sach.setLanTaiBan(lanTaiBan);
-        sach.setMaTheLoai(maTheLoai);
-        sach.setMaTacGia(maTacGia);
-        sach.setMaNhaXuatBan(maNXB);
-        sach.setMaKhuVuc(maKhuVuc);
-
-        // Gọi DAO để thêm sách vào cơ sở dữ liệu
-        boolean isSuccess = SachDAO.insert(sach);
-        if (isSuccess) {
-            // Hiển thị tên vào bảng
-            String tenTheLoai = cbb_theloai.getSelectedItem().toString();
-            String tenTacGia = cbb_tacgia.getSelectedItem().toString();
-            String tenNXB = cbb_nhaxuatban.getSelectedItem().toString();
-            String tenKhuVuc = cbo_Makhuvuc.getSelectedItem().toString();
-
-            DefaultTableModel model = (DefaultTableModel) tbl_sach.getModel();
-            model.addRow(new Object[]{
-                txt_madausach.getText().trim(),
-                txt_tensach.getText().trim(),
-                ngonNgu,
-                tenTheLoai,
-                tenTacGia,
-                tenNXB,
-                tenKhuVuc,
-                namXuatBan,
-                soLuong,
-                lanTaiBan
-            });
-
-            clean(); // reset form
-            JOptionPane.showMessageDialog(this, "Thêm sách thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm sách thất bại! Vui lòng kiểm tra dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số cho năm xuất bản, số lượng và lần tái bản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-}
-
-
-   public void updateSach() {
-    int index = tbl_sach.getSelectedRow();
-    if (index == -1) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn sách từ bảng để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
     }
 
-    // Kiểm tra dữ liệu nhập
-    if (txt_tensach.getText().trim().isEmpty()
-            || txt_madausach.getText().trim().isEmpty()
-            || txt_namxuatban.getText().trim().isEmpty()
-            || txt_soluong.getText().trim().isEmpty()
-            || txt_lantainban.getText().trim().isEmpty()
-            || cbo_NgonNgu.getSelectedItem() == null
-            || cbb_theloai.getSelectedIndex() < 0
-            || cbb_tacgia.getSelectedIndex() < 0
-            || cbb_nhaxuatban.getSelectedIndex() < 0
-            || cbo_Makhuvuc.getSelectedIndex() < 0) {
-
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập/ chọn đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    try {
-        // Lấy mã sách từ bảng (giả sử mã sách nằm ở cột 0)
-        int maSach = Integer.parseInt(tbl_sach.getValueAt(index, 0).toString());
-
-        // Lấy các giá trị từ form
-        String tenSach = txt_tensach.getText().trim();
-        String maDauSach = txt_madausach.getText().trim();
-        int namXuatBan = Integer.parseInt(txt_namxuatban.getText().trim());
-        int soLuong = Integer.parseInt(txt_soluong.getText().trim());
-        int lanTaiBan = Integer.parseInt(txt_lantainban.getText().trim());
-        String ngonNgu = cbo_NgonNgu.getSelectedItem().toString();
-
-        int maTheLoai = Integer.parseInt(maTheLoaiArr.get(cbb_theloai.getSelectedIndex()));
-        int maTacGia = Integer.parseInt(maTacGiaArr.get(cbb_tacgia.getSelectedIndex()));
-        int maNXB = Integer.parseInt(maNXBArr.get(cbb_nhaxuatban.getSelectedIndex()));
-        int maKhuVuc = Integer.parseInt(maKhuVucArr.get(cbo_Makhuvuc.getSelectedIndex()));
-
-        // Tạo đối tượng sách
-        Sach sach = new Sach();
-        sach.setMaSach(maSach);
-        sach.setTenSach(tenSach);
-        sach.setMaDauSach(maDauSach);
-        sach.setNamXuatBan(namXuatBan);
-        sach.setSoLuong(soLuong);
-        sach.setLanTaiBan(lanTaiBan);
-        sach.setNgonNgu(ngonNgu);
-        sach.setMaTheLoai(maTheLoai);
-        sach.setMaTacGia(maTacGia);
-        sach.setMaNhaXuatBan(maNXB);
-        sach.setMaKhuVuc(maKhuVuc);
-
-        // Gọi DAO cập nhật
-        boolean isSuccess = SachDAO.update(sach);
-        if (isSuccess) {
-            // Cập nhật lại bảng
-            DefaultTableModel model = (DefaultTableModel) tbl_sach.getModel();
-            model.setValueAt(maSach, index, 0); // không cần thiết nếu mã sách không đổi
-            model.setValueAt(tenSach, index, 1);
-            model.setValueAt(cbb_theloai.getSelectedItem().toString(), index, 2);
-            model.setValueAt(cbb_tacgia.getSelectedItem().toString(), index, 3);
-            model.setValueAt(cbb_nhaxuatban.getSelectedItem().toString(), index, 4);
-            model.setValueAt(maDauSach, index, 5);
-            model.setValueAt(namXuatBan, index, 6);
-            model.setValueAt(ngonNgu, index, 7);
-            model.setValueAt(soLuong, index, 8);
-            model.setValueAt(lanTaiBan, index, 9);
-            model.setValueAt(cbo_Makhuvuc.getSelectedItem().toString(), index, 10);
-
-            JOptionPane.showMessageDialog(this, "Cập nhật sách thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            clean();
-        } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật sách thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    public void updateSach() {
+        int index = tbl_sach.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sách từ bảng để cập nhật!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-}
+        // Kiểm tra dữ liệu nhập
+        if (txt_tensach.getText().trim().isEmpty()
+                || txt_madausach.getText().trim().isEmpty()
+                || txt_namxuatban.getText().trim().isEmpty()
+                || txt_soluong.getText().trim().isEmpty()
+                || txt_lantainban.getText().trim().isEmpty()
+                || cbo_NgonNgu.getSelectedItem() == null
+                || cbb_theloai.getSelectedIndex() < 0
+                || cbb_tacgia.getSelectedIndex() < 0
+                || cbb_nhaxuatban.getSelectedIndex() < 0
+                || cbo_Makhuvuc.getSelectedIndex() < 0) {
 
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập/ chọn đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // Lấy mã sách từ bảng (giả sử mã sách nằm ở cột 0)
+            int maSach = Integer.parseInt(tbl_sach.getValueAt(index, 0).toString());
+
+            // Lấy các giá trị từ form
+            String tenSach = txt_tensach.getText().trim();
+            String maDauSach = txt_madausach.getText().trim();
+            int namXuatBan = Integer.parseInt(txt_namxuatban.getText().trim());
+            int soLuong = Integer.parseInt(txt_soluong.getText().trim());
+            int lanTaiBan = Integer.parseInt(txt_lantainban.getText().trim());
+            String ngonNgu = cbo_NgonNgu.getSelectedItem().toString();
+
+            int maTheLoai = Integer.parseInt(maTheLoaiArr.get(cbb_theloai.getSelectedIndex()));
+            int maTacGia = Integer.parseInt(maTacGiaArr.get(cbb_tacgia.getSelectedIndex()));
+            int maNXB = Integer.parseInt(maNXBArr.get(cbb_nhaxuatban.getSelectedIndex()));
+            int maKhuVuc = Integer.parseInt(maKhuVucArr.get(cbo_Makhuvuc.getSelectedIndex()));
+
+            // Tạo đối tượng sách
+            Sach sach = new Sach();
+            sach.setMaSach(maSach);
+            sach.setTenSach(tenSach);
+            sach.setMaDauSach(maDauSach);
+            sach.setNamXuatBan(namXuatBan);
+            sach.setSoLuong(soLuong);
+            sach.setLanTaiBan(lanTaiBan);
+            sach.setNgonNgu(ngonNgu);
+            sach.setMaTheLoai(maTheLoai);
+            sach.setMaTacGia(maTacGia);
+            sach.setMaNhaXuatBan(maNXB);
+            sach.setMaKhuVuc(maKhuVuc);
+
+            // Gọi DAO cập nhật
+            boolean isSuccess = SachDAO.update(sach);
+            if (isSuccess) {
+                // Cập nhật lại bảng
+                DefaultTableModel model = (DefaultTableModel) tbl_sach.getModel();
+                model.setValueAt(maSach, index, 0); // không cần thiết nếu mã sách không đổi
+                model.setValueAt(tenSach, index, 1);
+                model.setValueAt(cbb_theloai.getSelectedItem().toString(), index, 2);
+                model.setValueAt(cbb_tacgia.getSelectedItem().toString(), index, 3);
+                model.setValueAt(cbb_nhaxuatban.getSelectedItem().toString(), index, 4);
+                model.setValueAt(maDauSach, index, 5);
+                model.setValueAt(namXuatBan, index, 6);
+                model.setValueAt(ngonNgu, index, 7);
+                model.setValueAt(soLuong, index, 8);
+                model.setValueAt(lanTaiBan, index, 9);
+                model.setValueAt(cbo_Makhuvuc.getSelectedItem().toString(), index, 10);
+
+                JOptionPane.showMessageDialog(this, "Cập nhật sách thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                clean();
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật sách thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public void removeSach() {
         int[] selectedRows = tbl_sach.getSelectedRows();
@@ -417,39 +416,37 @@ public class QL_sach extends TabbedForm {
             JOptionPane.showMessageDialog(this, "Lỗi khi load dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    private void loadNgonNguComboBox() {
-    cbo_NgonNgu.removeAllItems();
-    cbo_NgonNgu.addItem("Tiếng Việt");
-    cbo_NgonNgu.addItem("Tiếng Anh");
-}
 
+    private void loadNgonNguComboBox() {
+        cbo_NgonNgu.removeAllItems();
+        cbo_NgonNgu.addItem("Tiếng Việt");
+        cbo_NgonNgu.addItem("Tiếng Anh");
+    }
 
     public void loadRowIndexField(int rowIndex) {
-    int maSach = (int) tbl_sach.getValueAt(rowIndex, 0);
-    String tenSach = (String) tbl_sach.getValueAt(rowIndex, 1);
-    int maTheLoai = (int) tbl_sach.getValueAt(rowIndex, 2);
-    int maTacGia = (int) tbl_sach.getValueAt(rowIndex, 3);
-    int maNhaXuatBan = (int) tbl_sach.getValueAt(rowIndex, 4);
-    String maDauSach = (String) tbl_sach.getValueAt(rowIndex, 5);
-    int namXuatBan = (int) tbl_sach.getValueAt(rowIndex, 6);
-    String ngonNgu = (String) tbl_sach.getValueAt(rowIndex, 7);
-    int soLuong = (int) tbl_sach.getValueAt(rowIndex, 8);
-    int lanTaiBan = (int) tbl_sach.getValueAt(rowIndex, 9);
-    int maKhuVuc = (int) tbl_sach.getValueAt(rowIndex, 10);
+        int maSach = (int) tbl_sach.getValueAt(rowIndex, 0);
+        String tenSach = (String) tbl_sach.getValueAt(rowIndex, 1);
+        int maTheLoai = (int) tbl_sach.getValueAt(rowIndex, 2);
+        int maTacGia = (int) tbl_sach.getValueAt(rowIndex, 3);
+        int maNhaXuatBan = (int) tbl_sach.getValueAt(rowIndex, 4);
+        String maDauSach = (String) tbl_sach.getValueAt(rowIndex, 5);
+        int namXuatBan = (int) tbl_sach.getValueAt(rowIndex, 6);
+        String ngonNgu = (String) tbl_sach.getValueAt(rowIndex, 7);
+        int soLuong = (int) tbl_sach.getValueAt(rowIndex, 8);
+        int lanTaiBan = (int) tbl_sach.getValueAt(rowIndex, 9);
+        int maKhuVuc = (int) tbl_sach.getValueAt(rowIndex, 10);
 
-    txt_tensach.setText(tenSach);
-    cbb_theloai.setSelectedItem(maTheLoai);
-    cbb_tacgia.setSelectedItem(maTacGia);
-    cbb_nhaxuatban.setSelectedItem(maNhaXuatBan);
-    txt_madausach.setText(maDauSach);
-    txt_namxuatban.setText(String.valueOf(namXuatBan));
-    cbo_NgonNgu.setSelectedItem(ngonNgu); // ✅ đã sửa dòng này
-    txt_soluong.setText(String.valueOf(soLuong));
-    txt_lantainban.setText(String.valueOf(lanTaiBan));
-    cbo_Makhuvuc.setSelectedItem(maKhuVuc);
-}
-
+        txt_tensach.setText(tenSach);
+        cbb_theloai.setSelectedItem(maTheLoai);
+        cbb_tacgia.setSelectedItem(maTacGia);
+        cbb_nhaxuatban.setSelectedItem(maNhaXuatBan);
+        txt_madausach.setText(maDauSach);
+        txt_namxuatban.setText(String.valueOf(namXuatBan));
+        cbo_NgonNgu.setSelectedItem(ngonNgu); // ✅ đã sửa dòng này
+        txt_soluong.setText(String.valueOf(soLuong));
+        txt_lantainban.setText(String.valueOf(lanTaiBan));
+        cbo_Makhuvuc.setSelectedItem(maKhuVuc);
+    }
 
     public void clean() {
         txt_tensach.setText("");
@@ -464,46 +461,64 @@ public class QL_sach extends TabbedForm {
         cbo_Makhuvuc.setSelectedIndex(0);
     }
 
-  public void clickSach() {
-    // Kiểm tra bảng có dữ liệu không
-    if (tbl_sach.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this, "Không có dữ liệu trong bảng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
+    public void clickSach() {
+        // Kiểm tra bảng có dữ liệu không
+        if (tbl_sach.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu trong bảng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Lấy dòng đang chọn
+        int row = tbl_sach.getSelectedRow();
+
+        // Kiểm tra xem đã chọn dòng chưa
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn dòng nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Lấy dữ liệu từ bảng an toàn
+        String tenSach = String.valueOf(tbl_sach.getValueAt(row, 1));
+        String theLoai = String.valueOf(tbl_sach.getValueAt(row, 2));
+        String tacGia = String.valueOf(tbl_sach.getValueAt(row, 3));
+        String nhaXuatBan = String.valueOf(tbl_sach.getValueAt(row, 4));
+        String maDauSach = String.valueOf(tbl_sach.getValueAt(row, 5));
+        String namXuatBan = String.valueOf(tbl_sach.getValueAt(row, 6));
+        String ngonNgu = String.valueOf(tbl_sach.getValueAt(row, 7));
+        String soLuong = String.valueOf(tbl_sach.getValueAt(row, 8));
+        String lanTaiBan = String.valueOf(tbl_sach.getValueAt(row, 9));
+        String maKhuVuc = String.valueOf(tbl_sach.getValueAt(row, 10));
+
+        // Gán dữ liệu vào các ô nhập
+        txt_tensach.setText(tenSach);
+        cbb_theloai.setSelectedItem(theLoai);
+        cbb_tacgia.setSelectedItem(tacGia);
+        cbb_nhaxuatban.setSelectedItem(nhaXuatBan);
+        txt_madausach.setText(maDauSach);
+        txt_namxuatban.setText(namXuatBan);
+        cbo_NgonNgu.setSelectedItem(ngonNgu);
+        txt_soluong.setText(soLuong);
+        txt_lantainban.setText(lanTaiBan);
+        cbo_Makhuvuc.setSelectedItem(maKhuVuc);
     }
 
-    // Lấy dòng đang chọn
-    int row = tbl_sach.getSelectedRow();
-
-    // Kiểm tra xem đã chọn dòng chưa
-    if (row == -1) {
-        JOptionPane.showMessageDialog(this, "Chưa chọn dòng nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // Lấy dữ liệu từ bảng an toàn
-    String tenSach     = String.valueOf(tbl_sach.getValueAt(row, 1));
-    String theLoai     = String.valueOf(tbl_sach.getValueAt(row, 2));
-    String tacGia      = String.valueOf(tbl_sach.getValueAt(row, 3));
-    String nhaXuatBan  = String.valueOf(tbl_sach.getValueAt(row, 4));
-    String maDauSach   = String.valueOf(tbl_sach.getValueAt(row, 5));
-    String namXuatBan  = String.valueOf(tbl_sach.getValueAt(row, 6));
-    String ngonNgu     = String.valueOf(tbl_sach.getValueAt(row, 7));
-    String soLuong     = String.valueOf(tbl_sach.getValueAt(row, 8));
-    String lanTaiBan   = String.valueOf(tbl_sach.getValueAt(row, 9));
-    String maKhuVuc    = String.valueOf(tbl_sach.getValueAt(row, 10));
-
-    // Gán dữ liệu vào các ô nhập
-    txt_tensach.setText(tenSach);
-    cbb_theloai.setSelectedItem(theLoai);
-    cbb_tacgia.setSelectedItem(tacGia);
-    cbb_nhaxuatban.setSelectedItem(nhaXuatBan);
-    txt_madausach.setText(maDauSach);
-    txt_namxuatban.setText(namXuatBan);
-    cbo_NgonNgu.setSelectedItem(ngonNgu);
-    txt_soluong.setText(soLuong);
-    txt_lantainban.setText(lanTaiBan);
-    cbo_Makhuvuc.setSelectedItem(maKhuVuc);
-}
+    // tìm kiếm dựa vào mã và tên sách
+//    public void search() {
+//        String keyword = txt_timkiem.getText().trim(); // Lấy từ khóa và xóa khoảng trắng thừa
+//
+//        List<Sach> sachs;
+//        if (keyword.isEmpty()) {
+//            sachs = sachdao.getAll(); // Lấy toàn bộ dữ liệu nếu không nhập từ khóa
+//        } else {
+//            sachs = sachdao.searchBooks(keyword); // Gọi phương thức tìm kiếm
+//        }
+//
+//        if (sachs.isEmpty()) {
+//            JOptionPane.showMessageDialog(this, "Không tìm thấy sách nào!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+//        } else {
+//            showData(sachs); // Hiển thị dữ liệu lên bảng
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.

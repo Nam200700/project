@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -26,7 +25,6 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import raven.drawer.TabbedForm;
 import swing.RoundTablemuonsach;
-import swing.RoundTabletrasach;
 import util.jdbchelper;
 
 /**
@@ -44,30 +42,81 @@ public class QL_Muon extends TabbedForm {
         initComponents();
         fillTable();
         guimuonsach();
-        loadDocGiaID();
+        loadTenDocGia();
+        txt_madocgia.disable();
+//        loadMaDocGiaID();
     }
 
-    private void loadDocGiaID() {
-        String query = getSelectDocGiaCodeQuery(); // Gọi câu lệnh SELECT từ phương thức khác
+//    private void loadMaDocGiaID() {
+//        String query = getSelectDocGiaCodeQuery(); // Gọi câu lệnh SELECT từ phương thức khác
+//        try {
+//            // Sử dụng jdbcHelper để thực thi truy vấn và trả về ResultSet
+//            ResultSet rs = jdbchelper.executeQuery(query); // Dùng ResultSet trực tiếp
+//
+//            cbb_madocgia.removeAllItems(); // Xóa tất cả các mục hiện có trong ComboBox
+//
+//            // Duyệt qua kết quả trong ResultSet
+//            while (rs.next()) {
+//                String maDocGia = rs.getString("MaDocGia"); // Lấy mã phiếu mượn từ ResultSet
+//                cbb_madocgia.addItem(maDocGia); // Thêm maphieumuon vào ComboBox
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải danh sách độc giả.");
+//        }
+//    }
+//
+//    private String getSelectDocGiaCodeQuery() {
+//        return "SELECT MaDocGia FROM docgia"; // Sửa câu lệnh này tùy thuộc vào cơ sở dữ liệu của bạn
+//    }
+    // hiển thị mã độc giả khi click chọn vào tên độc giả trong combobox
+    private void hienThiMaDocGia() {
+        String tenDocGia = (String) cbb_tendocgia.getSelectedItem();
+        
+        if (tenDocGia == null || tenDocGia.trim().isEmpty()) {
+            txt_madocgia.setText(""); // Bỏ chọn nếu tên rỗng
+            return;
+        }
+
+        String query = "SELECT MaDocGia FROM docgia WHERE HoTen = ?";
+
+        try {
+            ResultSet rs = jdbchelper.executeQuery(query, tenDocGia);
+
+            if (rs.next()) {
+//                String maDocGia = ;
+                txt_madocgia.setText(rs.getString("MaDocGia")); // Hiển thị mã độc giả trong ComboBox
+            } else {
+                txt_madocgia.setText("Không tìm thấy"); // Có thể thay bằng null
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi lấy mã độc giả");
+        }
+    }
+
+    // truy vấn dữ liệu tên độc giả
+    private void loadTenDocGia() {
+        String query = getSelectTenDocGiaCodeQuery(); // Gọi câu lệnh SELECT từ phương thức khác
         try {
             // Sử dụng jdbcHelper để thực thi truy vấn và trả về ResultSet
             ResultSet rs = jdbchelper.executeQuery(query); // Dùng ResultSet trực tiếp
 
-            cbb_madocgia.removeAllItems(); // Xóa tất cả các mục hiện có trong ComboBox
+            cbb_tendocgia.removeAllItems(); // Xóa tất cả các mục hiện có trong ComboBox
 
             // Duyệt qua kết quả trong ResultSet
             while (rs.next()) {
-                String maDocGia = rs.getString("MaDocGia"); // Lấy mã phiếu mượn từ ResultSet
-                cbb_madocgia.addItem(maDocGia); // Thêm maphieumuon vào ComboBox
+                String tenDocGia = rs.getString("HoTen"); // Lấy mã phiếu mượn từ ResultSet
+                cbb_tendocgia.addItem(tenDocGia); // Thêm maphieumuon vào ComboBox
             }
         } catch (Exception e) {
             e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải danh sách độc giả.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi khi tải tên độc giả.");
         }
     }
 
-    private String getSelectDocGiaCodeQuery() {
-        return "SELECT MaDocGia FROM docgia"; // Sửa câu lệnh này tùy thuộc vào cơ sở dữ liệu của bạn
+    private String getSelectTenDocGiaCodeQuery() {
+        return "SELECT HoTen FROM docgia"; // Sửa câu lệnh này tùy thuộc vào cơ sở dữ liệu của bạn
     }
 
     public void guimuonsach() {
@@ -105,7 +154,7 @@ public class QL_Muon extends TabbedForm {
 
     public void addtaophieu() {
         // Kiểm tra các trường nhập liệu
-        String maDocgia = cbb_madocgia.getSelectedItem().toString().trim();
+        String maDocgia = txt_madocgia.getText().trim();
 
         if (maDocgia.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Mã độc giả không được để trống!!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
@@ -207,7 +256,7 @@ public class QL_Muon extends TabbedForm {
         }
 
         // Lấy dữ liệu từ form
-        String maDocgia = cbb_madocgia.getSelectedItem().toString().trim();
+        String maDocgia = txt_madocgia.getText().trim();
 
         try {
             java.sql.Date ngayMuon = new java.sql.Date(System.currentTimeMillis()); // Ngày mượn là hôm nay
@@ -253,11 +302,11 @@ public class QL_Muon extends TabbedForm {
 //        String ngayTra = (String) tbl_phieumuon.getValueAt(newRowIndex, 3); // Đảm bảo đúng cột
 //        String trangthai = (String) tbl_phieumuon.getValueAt(newRowIndex, 4); // Đảm bảo đúng cột
 
-        cbb_madocgia.setSelectedItem(maDocgia);
+        txt_madocgia.setText(maDocgia);
     }
 
     public void clean() {
-        cbb_madocgia.setSelectedIndex(-1);
+        txt_madocgia.setText("");
     }
 
     public void clickphieumuon() {
@@ -276,7 +325,7 @@ public class QL_Muon extends TabbedForm {
             String madocgia = tbl_phieumuon.getValueAt(row, 1).toString();
             // Cập nhật các trường nhập liệu
 
-            cbb_madocgia.setSelectedItem(madocgia);
+            txt_madocgia.setText(madocgia);
 
         } else {
             // Nếu không có dòng nào được chọn
@@ -298,9 +347,11 @@ public class QL_Muon extends TabbedForm {
         jLabel1 = new javax.swing.JLabel();
         btn_chinhsuaphieu = new javax.swing.JButton();
         btn_xoaphieumuon = new javax.swing.JButton();
-        cbb_madocgia = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_phieumuon = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        cbb_tendocgia = new javax.swing.JComboBox<>();
+        txt_madocgia = new javax.swing.JTextField();
 
         setOpaque(false);
 
@@ -327,8 +378,6 @@ public class QL_Muon extends TabbedForm {
             }
         });
 
-        cbb_madocgia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         tbl_phieumuon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -347,36 +396,51 @@ public class QL_Muon extends TabbedForm {
         });
         jScrollPane1.setViewportView(tbl_phieumuon);
 
+        jLabel2.setText("Tên độc giả");
+
+        cbb_tendocgia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_tendocgia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbb_tendocgiaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
         roundedPanel1Layout.setHorizontalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
-                .addGap(348, 348, 348)
-                .addComponent(jLabel1)
+                .addGap(185, 185, 185)
+                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbb_madocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbb_tendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txt_madocgia, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_taophieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(96, 96, 96)
-                .addComponent(btn_chinhsuaphieu)
-                .addGap(98, 98, 98)
-                .addComponent(btn_xoaphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(135, 135, 135))
+                .addComponent(btn_taophieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68)
+                .addComponent(btn_chinhsuaphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(90, 90, 90)
+                .addComponent(btn_xoaphieumuon, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(111, 111, 111))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
-                .addContainerGap(43, Short.MAX_VALUE)
+                .addContainerGap(44, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 821, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(roundedPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbb_madocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(cbb_tendocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_madocgia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
@@ -394,7 +458,7 @@ public class QL_Muon extends TabbedForm {
             .addGroup(layout.createSequentialGroup()
                 .addGap(57, 57, 57)
                 .addComponent(roundedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -421,15 +485,21 @@ public class QL_Muon extends TabbedForm {
         updatePhieuMuon();
     }//GEN-LAST:event_btn_chinhsuaphieuActionPerformed
 
+    private void cbb_tendocgiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_tendocgiaActionPerformed
+        hienThiMaDocGia();
+    }//GEN-LAST:event_cbb_tendocgiaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_chinhsuaphieu;
     private javax.swing.JButton btn_taophieumuon;
     private javax.swing.JButton btn_xoaphieumuon;
-    private javax.swing.JComboBox<String> cbb_madocgia;
+    private javax.swing.JComboBox<String> cbb_tendocgia;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private swing.RoundedPanel roundedPanel1;
     private javax.swing.JTable tbl_phieumuon;
+    private javax.swing.JTextField txt_madocgia;
     // End of variables declaration//GEN-END:variables
 }

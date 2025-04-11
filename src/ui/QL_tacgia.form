@@ -63,8 +63,8 @@
                           <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                          <Component id="txtTenTacGia" min="-2" pref="122" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="207" max="-2" attributes="0"/>
+                          <Component id="txtTenTacGia" min="-2" pref="168" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
                           <Component id="btnThem" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="btnXoa" min="-2" max="-2" attributes="0"/>

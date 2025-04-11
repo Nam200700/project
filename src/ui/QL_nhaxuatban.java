@@ -47,6 +47,7 @@ public class QL_nhaxuatban extends TabbedForm {
         panel.setBounds(50, 50, 250, 150);
 
     }
+
     public void guinhaxuatban() {
         // Áp dụng FlatLaf
         FlatLightLaf.setup();
@@ -85,21 +86,27 @@ public class QL_nhaxuatban extends TabbedForm {
         // Refresh UI
         SwingUtilities.updateComponentTreeUI(jScrollPane1);
     }
+
     public void addNhaXuatBan() {
-        // Kiểm tra các trường nhập liệu
-        if (txt_tennhaxuatban.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Chưa nhập tên nhà xuất bản", "Error", JOptionPane.WARNING_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Thêm thất bại", "Error", JOptionPane.WARNING_MESSAGE);
+        String tenNXB = txt_tennhaxuatban.getText().trim();
+
+        if (tenNXB.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập tên nhà xuất bản", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Tạo đối tượng nhà xuất bản
-        NhaXuatBan nxb = new NhaXuatBan();
-        nxb.setTennhaxuatban(txt_tennhaxuatban.getText());
+        // Kiểm tra trùng tên
+        if (NhaXuatBanDAO.kiemTraTrungTen(tenNXB)) {
+            JOptionPane.showMessageDialog(this, "Tên nhà xuất bản đã tồn tại!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        // Thêm nhà xuất bản vào danh sách và cập nhật giao diện
+        // Tạo đối tượng NXB mới
+        NhaXuatBan nxb = new NhaXuatBan();
+        nxb.setTennhaxuatban(tenNXB);
+
+        // Thêm vào danh sách và database
         dsNhaXuatBan.add(nxb);
-        // Lưu nhà xuất bản vào cơ sở dữ liệu
         NhaXuatBanDAO.insert(nxb);
         fillTable();
         clean();
@@ -113,26 +120,28 @@ public class QL_nhaxuatban extends TabbedForm {
             return;
         }
 
-        // Kiểm tra danh sách có dữ liệu hợp lệ không
         if (index >= dsNhaXuatBan.size()) {
             JOptionPane.showMessageDialog(this, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Lấy thông tin tác giả từ danh sách
         NhaXuatBan nhaxuatban = dsNhaXuatBan.get(index);
         String tennhaxuatban = txt_tennhaxuatban.getText().trim();
 
-        // Kiểm tra tên tác giả có bị rỗng không
         if (tennhaxuatban.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên nhà xuất bản không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Cập nhật thông tin tác giả
+        // Kiểm tra trùng tên (ngoại trừ chính nó) equalsIgnoreCase so sánh ko phân biệt hoa hay thường
+        if (!tennhaxuatban.equalsIgnoreCase(nhaxuatban.getTennhaxuatban())
+                && NhaXuatBanDAO.kiemTraTrungTen(tennhaxuatban)) {
+            JOptionPane.showMessageDialog(this, "Tên nhà xuất bản đã tồn tại!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         nhaxuatban.setTennhaxuatban(tennhaxuatban);
 
-        // Cập nhật vào cơ sở dữ liệu
         try {
             NhaXuatBanDAO.update(nhaxuatban);
             fillTable();
