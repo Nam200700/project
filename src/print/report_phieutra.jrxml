@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_pay" language="groovy" pageWidth="226" pageHeight="842" columnWidth="204" leftMargin="11" rightMargin="11" topMargin="0" bottomMargin="0" uuid="e85f8a0c-148f-465d-a4e7-5b7837dc9f27">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="maphieutra" class="java.lang.String"/>
+	<parameter name="madocgia" class="java.lang.String"/>
+	<parameter name="hoten" class="java.lang.String"/>
+	<parameter name="ngaytra" class="java.sql.Date"/>
+	<field name="mpt" class="java.lang.String"/>
+	<field name="ms" class="java.lang.String"/>
+	<field name="ten" class="java.lang.String"/>
+	<field name="soluong" class="java.lang.Integer"/>
+	<field name="tinhtrangsach" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="204" height="20" uuid="42cacdc9-f3a5-4942-a6f4-5e1cb5b3c7fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phiếu trả sách]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="102" height="15" uuid="2f889604-f4fe-4b4f-8f36-08553459bfad"/>
+				<textElement>
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<text><![CDATA[Mã Phiếu trả]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="35" width="102" height="15" uuid="3da27491-e647-4de4-9f8a-1a9aa46015cb"/>
+				<textElement>
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<text><![CDATA[Mã độc giả]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="20" width="102" height="15" uuid="b40a9b18-8728-49e5-bc49-848307dd2553"/>
+				<textElement textAlignment="Right">
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{maphieutra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="102" y="35" width="102" height="15" uuid="749784e4-c7c1-4bcc-a37d-6e02087e940b"/>
+				<textElement textAlignment="Right">
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{madocgia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="50" width="102" height="14" uuid="868b5ecc-237d-44ee-a9be-bdd463103eba"/>
+				<text><![CDATA[Tên độc giả]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="50" width="102" height="14" uuid="8b27934a-b353-4856-a390-1d3f88ac9032"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hoten}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="64" width="102" height="16" uuid="d8678a20-a1f0-4dcc-b3a1-b210ad684610"/>
+				<text><![CDATA[Ngày trả]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="64" width="102" height="16" uuid="c4823769-906b-4d9f-9c25-c59fe04f6769"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ngaytra}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15">
+			<staticText>
+				<reportElement x="0" y="0" width="51" height="15" uuid="d2b003c2-d602-4b79-a710-3bdb6ae82914"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="7"/>
+				</textElement>
+				<text><![CDATA[Mã phiếu trả]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="0" width="51" height="15" uuid="1712192a-0971-4261-b53f-a4ed15fce034"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="7"/>
+				</textElement>
+				<text><![CDATA[Mã sách]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="102" y="0" width="51" height="15" uuid="b3e9280f-e9fc-4e82-97a8-8090af7eeffe"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="7"/>
+				</textElement>
+				<text><![CDATA[Tên sách]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="153" y="0" width="51" height="15" uuid="5df58659-486b-42b3-b552-280542411942"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="7"/>
+				</textElement>
+				<text><![CDATA[Số lượng]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="51" height="15" uuid="f75c68e9-21c8-4d24-8e22-4b6e4b2a08f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mpt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="51" y="0" width="51" height="15" uuid="8fa64d2f-77c0-4963-9b7e-58c127b6dd98"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ms}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0.##">
+				<reportElement x="102" y="0" width="51" height="15" uuid="079ee08a-c555-4fd6-87af-db3d053de8b5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Roboto" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ten}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="153" y="0" width="51" height="15" uuid="b0f7932f-af8d-489c-a8bd-55162a849314"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soluong}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="31" width="204" height="1" uuid="a56e4fe8-70f1-415f-8796-cc54e0376a11"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="16" width="102" height="16" uuid="c5d283cd-4823-4823-bb77-b9601585bc99"/>
+				<text><![CDATA[Tình trạng sách]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="102" y="16" width="102" height="16" uuid="fe87ca87-5853-4f22-a884-3e5a6d1567ed"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tinhtrangsach}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="54">
+			<staticText>
+				<reportElement x="0" y="0" width="204" height="54" uuid="ccb33d0c-af84-410e-b1e6-7b989955eaaf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Cảm ơn đã trả sách]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

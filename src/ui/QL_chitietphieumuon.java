@@ -6,13 +6,21 @@ package ui;
 
 import DAO.ChiTietPhieuMuonDAO;
 import Entity.ChiTietPhieuMuon;
+import util.DatabaseConnection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import print.ReportManager;
+import print_model.FieldReportMuon;
+import print_model.ParameterReportMuon;
 import raven.drawer.TabbedForm;
 import util.jdbchelper;
 
@@ -29,10 +37,19 @@ public class QL_chitietphieumuon extends TabbedForm {
      */
     public QL_chitietphieumuon() {
         initComponents();
+        // để kết nối cái này dành cho reportchat
+        try {
+            DatabaseConnection.getInstance().connectToDatabase();
+            ReportManager.getInstance().compileReport();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //
         loadPhieuMuonID();
         loadTenSachID();
         soluong();
         fillTable();
+
     }
 
     private void loadPhieuMuonID() {
@@ -318,6 +335,50 @@ public class QL_chitietphieumuon extends TabbedForm {
             JOptionPane.showMessageDialog(this, "Chưa chọn dòng nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
         }
     }
+// phần report 
+
+    public ParameterReportMuon getDataPrintMuon(String maphieu) throws SQLException {
+        String sql = "SELECT pm.MaPhieuMuon, pm.MaDocGia, dg.HoTen, pm.NgayMuon, pm.HanTra, pm.TrangThai FROM phieumuon pm INNER JOIN docgia dg ON pm.MaDocGia = dg.MaDocGia WHERE pm.MaPhieuMuon = ? ORDER BY pm.MaPhieuMuon";
+        PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
+        p.setString(1, maphieu);
+
+        ResultSet r = p.executeQuery();
+
+        ParameterReportMuon param = null;
+
+        if (r.next()) {
+            String madocgia = r.getString("MaDocGia");
+            String hoten = r.getString("HoTen");
+            Date ngayMuon = r.getDate("NgayMuon");  // Thêm lấy Ngày Mượn
+            Date hanTra = r.getDate("HanTra");  // Thêm lấy Hạn Trả
+            String trangthai = r.getString("TrangThai");
+            // Lấy chi tiết phiếu mượn
+            String sqlDetail = "SELECT MaPhieuMuon, MaSach, TenSach, SoLuong FROM chitietmuon WHERE MaPhieuMuon = ?";
+            PreparedStatement p2 = DatabaseConnection.getInstance().getConnection().prepareStatement(sqlDetail);
+            p2.setString(1, maphieu);
+            ResultSet r2 = p2.executeQuery();
+
+            List<FieldReportMuon> ds = new ArrayList<>();
+            while (r2.next()) {
+                String mpm = r2.getString("MaPhieuMuon");
+                String ms = r2.getString("MaSach");
+                String ten = r2.getString("TenSach");
+                int soluong = r2.getInt("SoLuong");
+
+                ds.add(new FieldReportMuon(mpm, ms, ten, soluong));
+            }
+
+            r2.close();
+            p2.close();
+// Thêm Ngày Mượn và Hạn Trả vào trong constructor của ParameterReportMuon
+            param = new ParameterReportMuon(maphieu, madocgia, hoten, ngayMuon, hanTra, trangthai, ds);
+        }
+
+        r.close();
+        p.close();
+
+        return param;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -339,6 +400,7 @@ public class QL_chitietphieumuon extends TabbedForm {
         jLabel3 = new javax.swing.JLabel();
         btn_taophieuchitiet = new javax.swing.JButton();
         btn_xoaphieuchitiet = new javax.swing.JButton();
+        btn_print = new javax.swing.JButton();
         roundedPanel2 = new swing.RoundedPanel();
         jLabel4 = new javax.swing.JLabel();
         lbl_masach = new javax.swing.JLabel();
@@ -400,6 +462,13 @@ public class QL_chitietphieumuon extends TabbedForm {
             }
         });
 
+        btn_print.setText("Print");
+        btn_print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_printActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout roundedPanel1Layout = new javax.swing.GroupLayout(roundedPanel1);
         roundedPanel1.setLayout(roundedPanel1Layout);
         roundedPanel1Layout.setHorizontalGroup(
@@ -420,12 +489,17 @@ public class QL_chitietphieumuon extends TabbedForm {
                 .addGap(85, 85, 85)
                 .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_xoaphieuchitiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_taophieuchitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_taophieuchitiet, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
                 .addContainerGap(50, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 743, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47))
+                .addGroup(roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 743, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, roundedPanel1Layout.createSequentialGroup()
+                        .addComponent(btn_print, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95))))
         );
         roundedPanel1Layout.setVerticalGroup(
             roundedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -446,6 +520,8 @@ public class QL_chitietphieumuon extends TabbedForm {
                         .addComponent(cbb_tensach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(7, 7, 7)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_print)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -579,8 +655,36 @@ public class QL_chitietphieumuon extends TabbedForm {
         hienThiThongTinSach();
     }//GEN-LAST:event_cbb_tensachActionPerformed
 
+    private void btn_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_printActionPerformed
+        String phieumuon = (String) cbb_maphieumuon.getSelectedItem();
+
+        if (phieumuon == null || phieumuon.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn mã phiếu mượn!");
+            return;
+        }
+
+        try {
+            // Gọi hàm có truyền tham số mã phiếu mượn
+            ParameterReportMuon data = getDataPrintMuon(phieumuon);
+
+            if (data == null) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy phiếu mượn: " + phieumuon);
+                return;
+            }
+
+            // In báo cáo thông qua ReportManager
+            ReportManager.getInstance().printReportMuon(data);
+
+        } catch (SQLException | JRException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi in phiếu: " + ex.getMessage());
+        }
+
+    }//GEN-LAST:event_btn_printActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_print;
     private javax.swing.JButton btn_taophieuchitiet;
     private javax.swing.JButton btn_xoaphieuchitiet;
     private javax.swing.JComboBox<String> cbb_maphieumuon;
